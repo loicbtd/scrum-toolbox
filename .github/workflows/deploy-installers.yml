@@ -1,0 +1,160 @@
+name: Deploy desktop app installers
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/deploy-installers.yml
+      - apps/app-desktop-angular/**
+      - apps/app-desktop-electron/**
+      - libs/**
+
+concurrency:
+  group: deploy-installers
+  cancel-in-progress: true
+
+jobs:
+  retrieve_information:
+    name: Retrieve information
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.15.0'
+
+      - name: Write file
+        run: |
+          echo $(node -e "console.log(require('./package.json').name)") > name.txt
+          echo $(node -e "console.log(require('./package.json').version)") > version.txt
+          echo "APP_NAME=$(cat name.txt)" >> $GITHUB_ENV
+          echo "APP_VERSION=$(cat version.txt)" >> $GITHUB_ENV
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: information
+          path: |
+            name.txt
+            version.txt
+
+  build_linux_installer:
+    name: Build Linux installer
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.15.0'
+
+      - name: Build
+        run: |
+          npm install
+          npm run postinstall
+          npm run publish:linux
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux
+          path: dist/executables/app.AppImage
+
+  build_window_installer:
+    name: Build Windows installer
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.15.0'
+
+      - name: Build
+        run: |
+          npm install
+          npm run postinstall
+          npm run publish:windows
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows
+          path: dist/executables/app.exe
+
+  build_macos_installer:
+    name: Build macOS installer
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16.15.0'
+
+      - name: Build
+        run: |
+          npm install
+          npm run postinstall
+          npm run publish:macos
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos
+          path: dist/executables/app.dmg
+
+  release:
+    name: Release
+    needs: [retrieve_information, build_linux_installer, build_window_installer, build_macos_installer]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+
+      - name: Set GITHUB_ENV
+        run: |
+          echo "APP_NAME=$(cat information/name.txt)" >> $GITHUB_ENV
+          echo "APP_VERSION=$(cat information/version.txt)" >> $GITHUB_ENV
+
+      - name: Prepare files
+        run: |
+          cp linux/app.AppImage ${{env.APP_NAME}}-latest.AppImage         
+          mv linux/app.AppImage ${{env.APP_NAME}}-${{env.APP_VERSION}}.AppImage
+          cp windows/app.exe ${{env.APP_NAME}}-latest.exe         
+          mv windows/app.exe ${{env.APP_NAME}}-${{env.APP_VERSION}}.exe
+          cp macos/app.dmg ${{env.APP_NAME}}-latest.dmg         
+          mv macos/app.dmg ${{env.APP_NAME}}-${{env.APP_VERSION}}.dmg
+
+      - name: Update current version release
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: false
+          automatic_release_tag: ${{env.APP_VERSION}}
+          title: ${{env.APP_NAME}}-${{env.APP_VERSION}}
+          files: |
+            ${{env.APP_NAME}}-${{env.APP_VERSION}}.AppImage
+            ${{env.APP_NAME}}-${{env.APP_VERSION}}.exe
+            ${{env.APP_NAME}}-${{env.APP_VERSION}}.dmg
+
+      - name: Update latest version release
+        uses: marvinpinto/action-automatic-releases@v1.2.1
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          prerelease: false
+          automatic_release_tag: latest
+          title: ${{env.APP_NAME}}-latest
+          files: |
+            ${{env.APP_NAME}}-latest.AppImage
+            ${{env.APP_NAME}}-latest.exe
+            ${{env.APP_NAME}}-latest.dmg

@@ -1,0 +1,25 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "strictPropertyInitialization": false,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": ["es2017", "dom"],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@libraries/lib-angular": ["libs/lib-angular/src/index.ts"],
+      "@libraries/lib-common": ["libs/lib-common/src/index.ts"],
+      "@libraries/lib-electron": ["libs/lib-electron/src/index.ts"]
+    }
+  },
+  "exclude": ["node_modules", "tmp"]
+}

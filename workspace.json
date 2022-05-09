@@ -1,0 +1,259 @@
+{
+  "version": 2,
+  "projects": {
+    "app-desktop-angular": {
+      "projectType": "application",
+      "root": "apps/app-desktop-angular",
+      "sourceRoot": "apps/app-desktop-angular/src",
+      "prefix": "app",
+      "targets": {
+        "build": {
+          "executor": "@angular-devkit/build-angular:browser",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/apps/app-desktop-angular",
+            "index": "apps/app-desktop-angular/src/index.html",
+            "main": "apps/app-desktop-angular/src/main.ts",
+            "polyfills": "apps/app-desktop-angular/src/polyfills.ts",
+            "tsConfig": "apps/app-desktop-angular/tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
+            "assets": [
+              "apps/app-desktop-angular/src/favicon.ico",
+              "apps/app-desktop-angular/src/assets",
+              {
+                "glob": "**",
+                "input": "libs/lib-common/src/assets/",
+                "output": "assets/"
+              }
+            ],
+            "styles": ["apps/app-desktop-angular/src/styles.scss"],
+            "scripts": []
+          },
+          "configurations": {
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            },
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "4mb",
+                  "maximumError": "5mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "apps/app-desktop-angular/src/environments/environment.ts",
+                  "with": "apps/app-desktop-angular/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            }
+          }
+        },
+        "serve": {
+          "executor": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "development": {
+              "browserTarget": "app-desktop-angular:build:development"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/app-desktop-angular/src/**/*.ts", "apps/app-desktop-angular/src/**/*.html"]
+          }
+        }
+      }
+    },
+    "app-desktop-electron": {
+      "root": "apps/app-desktop-electron",
+      "sourceRoot": "apps/app-desktop-electron/src",
+      "projectType": "application",
+      "prefix": "app",
+      "targets": {
+        "build": {
+          "executor": "nx-electron:build",
+          "options": {
+            "outputPath": "dist/apps/app-desktop-electron",
+            "main": "apps/app-desktop-electron/src/main.ts",
+            "tsConfig": "apps/app-desktop-electron/tsconfig.app.json",
+            "assets": [
+              "apps/app-desktop-electron/src/assets",
+              {
+                "glob": "**",
+                "input": "libs/lib-common/src/assets/",
+                "output": "assets/"
+              }
+            ]
+          },
+          "configurations": {
+            "development": {},
+            "production": {
+              "optimization": true,
+              "extractLicenses": true,
+              "inspect": false,
+              "fileReplacements": [
+                {
+                  "replace": "apps/app-desktop-electron/src/environments/environment.ts",
+                  "with": "apps/app-desktop-electron/src/environments/environment.prod.ts"
+                }
+              ]
+            }
+          }
+        },
+        "serve": {
+          "executor": "nx-electron:execute",
+          "options": {
+            "buildTarget": "app-desktop-electron:build"
+          },
+          "configurations": {
+            "development": {
+              "buildTarget": "app-desktop-electron:build:development"
+            }
+          }
+        },
+        "package": {
+          "executor": "nx-electron:package",
+          "options": {},
+          "configurations": {
+            "production": {
+              "name": "app-desktop-electron",
+              "frontendProject": "app-desktop-angular",
+              "outputPath": "dist/packages",
+              "prepackageOnly": true,
+              "makerOptionsPath": "apps/app-desktop-electron/maker.options.json"
+            }
+          }
+        },
+        "make": {
+          "executor": "nx-electron:make",
+          "options": {},
+          "configurations": {
+            "production": {
+              "name": "app-desktop-electron",
+              "frontendProject": "app-desktop-angular",
+              "outputPath": "dist/executables",
+              "makerOptionsPath": "apps/app-desktop-electron/maker.options.json"
+            }
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["apps/app-desktop-electron/**/*.ts"]
+          }
+        }
+      }
+    },
+    "lib-angular": {
+      "projectType": "library",
+      "root": "libs/lib-angular",
+      "sourceRoot": "libs/lib-angular/src",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/angular:ng-packagr-lite",
+          "outputs": ["dist/libs/lib-angular"],
+          "options": {
+            "project": "libs/lib-angular/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "libs/lib-angular/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "libs/lib-angular/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "options": {
+            "lintFilePatterns": ["libs/lib-angular/src/**/*.ts", "libs/lib-angular/src/**/*.html"]
+          }
+        }
+      }
+    },
+    "lib-common": {
+      "root": "libs/lib-common",
+      "sourceRoot": "libs/lib-common/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/lib-common",
+            "tsConfig": "libs/lib-common/tsconfig.lib.json",
+            "packageJson": "libs/lib-common/package.json",
+            "main": "libs/lib-common/src/index.ts",
+            "assets": ["libs/lib-common/*.md"]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/lib-common/**/*.ts"]
+          }
+        }
+      }
+    },
+    "lib-electron": {
+      "root": "libs/lib-electron",
+      "sourceRoot": "libs/lib-electron/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/lib-electron",
+            "tsConfig": "libs/lib-electron/tsconfig.lib.json",
+            "packageJson": "libs/lib-electron/package.json",
+            "main": "libs/lib-electron/src/index.ts",
+            "assets": ["libs/lib-electron/*.md"]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/lib-electron/**/*.ts"]
+          }
+        }
+      }
+    }
+  },
+  "cli": {
+    "defaultCollection": "@nrwl/angular"
+  },
+  "generators": {
+    "@nrwl/angular:application": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "none",
+      "e2eTestRunner": "none"
+    },
+    "@nrwl/angular:library": {
+      "style": "scss",
+      "linter": "eslint",
+      "unitTestRunner": "none"
+    },
+    "@nrwl/angular:component": {
+      "style": "scss"
+    }
+  }
+}
