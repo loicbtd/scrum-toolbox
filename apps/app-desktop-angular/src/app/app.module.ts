@@ -43,15 +43,15 @@ export class AppComponent {
       [
         {
           path: appRoutes.startup.root,
-          loadChildren: () => import('./modules/startup/startup.module').then((m) => m.StartupModule),
+          loadChildren: () => import('./modules/startup/startup.module').then((_) => _.StartupModule),
         },
         {
-          path: appRoutes.backlog.root,
-          loadChildren: () => import('./modules/backlog/backlog.module').then((m) => m.BacklogModule),
+          path: appRoutes.scrumToolbox.root,
+          loadChildren: () => import('./modules/scrum-toolbox/scrum-toolbox.module').then((_) => _.ScrumToolboxModule),
         },
         {
           path: '**',
-          redirectTo: appRoutes.backlog.root,
+          redirectTo: appRoutes.scrumToolbox.root,
         },
       ],
       { initialNavigation: 'enabledBlocking', useHash: true }

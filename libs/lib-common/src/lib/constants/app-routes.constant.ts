@@ -2,8 +2,9 @@ export const appRoutes = {
   startup: {
     root: 'startup',
   },
-  backlog: {
-    root: 'backlog',
+  scrumToolbox: {
+    root: 'scrumToolbox',
+    mainMenu: 'mainMenu',
     all: 'all',
   },
 };
