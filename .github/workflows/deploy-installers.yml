@@ -1,4 +1,5 @@
 name: Deploy desktop app installers
+
 on:
   push:
     branches:
@@ -141,7 +142,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
           automatic_release_tag: ${{env.APP_VERSION}}
-          title: ${{env.APP_NAME}}-${{env.APP_VERSION}}
+          title: Open days with Alexa ${{env.APP_VERSION}}
           files: |
             ${{env.APP_NAME}}-${{env.APP_VERSION}}.AppImage
             ${{env.APP_NAME}}-${{env.APP_VERSION}}.exe
@@ -153,7 +154,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           prerelease: false
           automatic_release_tag: latest
-          title: ${{env.APP_NAME}}-latest
+          title: Open days with Alexa latest
           files: |
             ${{env.APP_NAME}}-latest.AppImage
             ${{env.APP_NAME}}-latest.exe
