@@ -6,6 +6,13 @@
       "request": "launch",
       "type": "node-terminal",
       "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
+    },
+    {
+      "command": "npm run storybook",
+      "name": "development-storybook",
+      "request": "launch",
+      "type": "node-terminal",
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/node_modules/**"]
     }
   ]
 }
