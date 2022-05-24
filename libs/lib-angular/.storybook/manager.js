@@ -9,4 +9,8 @@ addons.setConfig({
     brandTitle: 'Scrum Toolbox UI Library',
     brandImage: 'https://upload.wikimedia.org/wikipedia/fr/b/be/Utbm.svg',
   }),
+  a11y: {
+    disable: true,
+  },
+  
 });

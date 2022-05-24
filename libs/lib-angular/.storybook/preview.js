@@ -1,3 +1,7 @@
 export const parameters = {
-  controls: { expanded: true },
+  controls: { expanded: false },
+  previewTabs: {
+    'storybook/docs/panel': { hidden: true },
+  },
+  viewMode: 'canvas',
 };

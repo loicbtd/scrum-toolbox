@@ -48,7 +48,7 @@
     "@nestjs/swagger": "^5.2.1",
     "@nestjs/typeorm": "^8.0.3",
     "@nestjs/websockets": "^8.4.4",
-    "@storybook/addon-a11y": "^6.5.3",
+    "@storybook/addon-a11y": "^6.5.4",
     "@storybook/addon-console": "^1.2.3",
     "@storybook/addon-docs": "^6.5.3",
     "@storybook/addons": "^6.5.3",
