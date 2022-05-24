@@ -1,7 +1,7 @@
 {
   "$schema": "../../node_modules/nx-electron/src/validation/maker.schema.json",
-  "productName": "Open days with Alexa",
-  "appId": "fr.utbm.open-days-with-alexa",
+  "productName": "Scrum Toolbox",
+  "appId": "fr.utbm.scrum-toolbox",
   "artifactName": "app.${ext}",
   "win": {
     "icon": "libs/lib-common/src/assets/images/icon.ico",
