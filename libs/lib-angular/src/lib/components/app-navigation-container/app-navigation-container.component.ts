@@ -1,11 +1,12 @@
-import { Component, EventEmitter, HostListener, Input, Output } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { NavigationItemModel } from './navigation-item.model';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ResponsiveService } from '../../services/responsive.service';
+import { NavigationItemModel } from '../../models/navigation-item.model';
 
 @Component({
   selector: 'app-navigation-container',
   template: `
-    <ng-container *ngIf="isMobile | async; then mobile; else desktop"></ng-container>
+    <ng-container *ngIf="isMobile$ | async; then mobile; else desktop"></ng-container>
 
     <ng-template #mobile>
       <app-navigation-container-mobile [navigationItems]="navigationItems">
@@ -14,47 +15,47 @@ import { NavigationItemModel } from './navigation-item.model';
     </ng-template>
 
     <ng-template #desktop>
-      <app-navigation-container-desktop [(navigationExpanded)]="navigationExpanded" [navigationItems]="navigationItems">
+      <app-navigation-container-desktop
+        [(desktopNavigationExpanded)]="desktopNavigationExpanded"
+        [navigationItems]="navigationItems"
+        [avatarNavigationItems]="avatarNavigationItems"
+        [avatarImageSource]="avatarImageSource"
+        [logoImageSource]="logoImageSource"
+        [username]="username"
+      >
         <ng-container navigationBarContent><ng-content select="[navigationBarContent]"></ng-content></ng-container>
-        <ng-container appContent><ng-content select="[appContent]"></ng-content></ng-container>
+        <ng-container appContent><ng-content></ng-content></ng-container>
       </app-navigation-container-desktop>
     </ng-template>
   `,
 })
 export class AppNavigationContainerComponent {
-  private readonly _isMobile: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
+  private _desktopNavigationExpanded = false;
 
-  private _navigationExpanded = false;
-
-  get isMobile(): Observable<boolean> {
-    return this._isMobile.asObservable();
+  get isMobile$(): Observable<boolean> {
+    return this._responsiveService.isMobile$;
   }
 
-  @Input() mobileBreakpoint = 960;
+  @Input() navigationItems: NavigationItemModel[] = [];
 
-  @Input() navigationItems: NavigationItemModel[];
+  @Input() avatarNavigationItems: NavigationItemModel[] = [];
 
-  @Input() set navigationExpanded(value: boolean) {
-    this._navigationExpanded = value;
-    this.navigationExpandedChange.emit(value);
+  @Input() logoImageSource = '';
+
+  @Input() avatarImageSource = '';
+
+  @Input() username = '';
+
+  @Input() set desktopNavigationExpanded(value: boolean) {
+    this._desktopNavigationExpanded = value;
+    this.desktopNavigationExpandedChange.emit(value);
   }
 
-  get navigationExpanded(): boolean {
-    return this._navigationExpanded;
+  get desktopNavigationExpanded(): boolean {
+    return this._desktopNavigationExpanded;
   }
 
-  @Output() navigationExpandedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() desktopNavigationExpandedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  @HostListener('window:resize')
-  updateScreenSize() {
-    let width = document.querySelector('body')?.offsetWidth;
-
-    console.log(width);
-
-    if (!width) {
-      width = window.innerWidth;
-    }
-
-    this._isMobile.next(width < this.mobileBreakpoint);
-  }
+  constructor(private readonly _responsiveService: ResponsiveService) {}
 }

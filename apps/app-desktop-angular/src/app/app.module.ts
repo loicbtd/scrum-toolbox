@@ -4,7 +4,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from './shared.module';
 import { appRoutes } from '@libraries/lib-common';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { BlockUiService } from './global/services/block-ui.service';
 
 @Component({

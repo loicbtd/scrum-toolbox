@@ -5,47 +5,57 @@ import { AppNavigationContainerComponent } from './app-navigation-container.comp
   selector: 'app-navigation-container-desktop',
   template: `
     <nav class="navigation-bar">
-      <a class="logo-container" [routerLink]="['#']">
-        <img src="https://bibliotheque.utbm.fr/wp-content/uploads/2015/04/logo_utbm_seul.png" alt="application logo" />
+      <a class="logo-container" [routerLink]="['/']">
+        <img [src]="logoImageSource" alt="application logo" />
       </a>
       <div class="navigation-bar-content">
         <ng-content select="[navigationBarContent]"></ng-content>
       </div>
       <div class="avatar-container">
+        <div class="username">{{ username | slice: 0:43 }}</div>
         <div class="avatar">
-          <img src="https://cdn.pixabay.com/photo/2016/04/01/10/11/avatar-1299805_960_720.png" alt="user avatar" />
+          <img [src]="avatarImageSource" alt="user avatar" />
         </div>
       </div>
     </nav>
     <nav
       [ngClass]="{
         navigation: true,
-        expanded: navigationExpanded,
-        collapsed: !navigationExpanded
+        expanded: desktopNavigationExpanded,
+        collapsed: !desktopNavigationExpanded
       }"
     >
-      <a [routerLink]="item.routerLink" *ngFor="let item of navigationItems">
-        <div class="icon-container">
+      <a [routerLink]="item.routerLink" *ngFor="let item of navigationItems" (click)="item.action()">
+        <div *ngIf="item.iconClass" class="icon-container">
           <i [class]="item.iconClass"></i>
         </div>
-        <div class="label" *ngIf="navigationExpanded">{{ item.label }}</div>
+        <div *ngIf="desktopNavigationExpanded && item.label" class="label">{{ item.label | slice: 0:20 }}</div>
       </a>
 
       <hr class="separator" />
 
-      <div class="expander-button" (click)="navigationExpanded = !navigationExpanded">
-        <i *ngIf="!navigationExpanded" class="fa-solid fa-chevron-right"></i>
-        <i *ngIf="navigationExpanded" class="fa-solid fa-chevron-left"></i>
+      <div class="expander-button" (click)="desktopNavigationExpanded = !desktopNavigationExpanded">
+        <i *ngIf="!desktopNavigationExpanded" class="fa-solid fa-chevron-right"></i>
+        <i *ngIf="desktopNavigationExpanded" class="fa-solid fa-chevron-left"></i>
       </div>
     </nav>
     <div
       [ngClass]="{
         'app-container': true,
-        'navigation-expanded': navigationExpanded,
-        'navigation-collapsed': !navigationExpanded
+        'navigation-expanded': desktopNavigationExpanded,
+        'navigation-collapsed': !desktopNavigationExpanded
       }"
     >
-      <ng-content select="[appContent]"></ng-content>
+      <ng-content></ng-content>
+    </div>
+
+    <div class="avatar-navigation">
+      <a [routerLink]="item.routerLink" *ngFor="let item of avatarNavigationItems" (click)="item.action()">
+        <div *ngIf="item.iconClass" class="icon-container">
+          <i [class]="item.iconClass"></i>
+        </div>
+        <div *ngIf="item.label" class="label">{{ item.label | slice: 0:20 }}</div>
+      </a>
     </div>
   `,
   styles: [
@@ -71,20 +81,19 @@ import { AppNavigationContainerComponent } from './app-navigation-container.comp
       }
 
       .navigation-bar .logo-container {
+        padding-left: 10px;
         height: 100%;
-        width: 100px;
         display: flex;
+        margin-right: auto;
       }
 
       .navigation-bar .logo-container img {
         margin: auto;
         height: 60px;
-        width: 60px;
       }
 
       .navigation-bar-content {
-        margin-left: auto;
-        margin-right: auto;
+        margin: auto;
       }
 
       .navigation {
@@ -96,14 +105,30 @@ import { AppNavigationContainerComponent } from './app-navigation-container.comp
 
       .avatar-container {
         margin-left: auto;
+        height: 100%;
+        display: flex;
+        padding-right: 10px;
       }
 
-      .avatar-container {
-        margin-left: auto;
+      .avatar {
+        height: 50px;
+        width: 50px;
+        display: flex;
+        border: 1px solid #000;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: auto 0 auto 10px;
       }
 
       .avatar img {
-        height: 20px;
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        margin: auto;
+      }
+
+      .username {
+        margin: auto auto auto 0;
       }
 
       .navigation.collapsed {
@@ -180,11 +205,12 @@ import { AppNavigationContainerComponent } from './app-navigation-container.comp
 
       .separator {
         margin-top: auto;
-        border-top: 1px solid #fff;
+        border: 1px solid #fff;
+        background: #fff;
       }
 
       .navigation.collapsed .separator {
-        width: calc(var(--navigation-collapsed-width) - 40px);
+        width: calc(var(--navigation-collapsed-width) - 20px);
       }
 
       .navigation.expanded .separator {
@@ -200,16 +226,37 @@ import { AppNavigationContainerComponent } from './app-navigation-container.comp
         cursor: pointer;
       }
 
-      .collapsed .expander-button {
-        justify-content: center;
-      }
-
-      .expanded .expander-button {
-        justify-content: right;
+      .collapsed .expander-button i {
+        margin: auto;
       }
 
       .expanded .expander-button i {
-        margin-right: 15px;
+        margin: auto 20px auto auto;
+      }
+
+      .avatar-navigation {
+        position: fixed;
+        top: calc(var(--navigation-bar-heigth) + var(--navigation-bar-bottom-border-size));
+        right: 10px;
+        display: flex;
+        flex-direction: column;
+        background-color: #fff;
+        box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+        min-width: 200px;
+      }
+
+      .avatar-navigation a {
+        display: flex;
+        flex-wrap: no-wrap;
+        text-decoration: none;
+        color: #000;
+        height: 30px;
+        align-items: center;
+      }
+
+      .avatar-navigation a:hover {
+        background-color: #007bc0;
+        color: #fff;
       }
     `,
   ],

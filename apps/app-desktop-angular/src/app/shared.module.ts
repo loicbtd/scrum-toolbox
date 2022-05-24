@@ -39,7 +39,7 @@ import { ToolbarModule } from 'primeng/toolbar';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { BlockableDivModule, DurationPipeModule } from '@libraries/lib-angular';
 import { InputSwitchModule } from 'primeng/inputswitch';
-import { NavigationModule } from '@libraries/lib-angular';
+import { AppNavigationContainerModule } from '@libraries/lib-angular';
 
 const importedAndExportedModules = [
   CommonModule,
@@ -85,7 +85,7 @@ const importedAndExportedModules = [
   InputNumberModule,
   DurationPipeModule,
   InputSwitchModule,
-  NavigationModule,
+  AppNavigationContainerModule,
 ];
 
 @NgModule({

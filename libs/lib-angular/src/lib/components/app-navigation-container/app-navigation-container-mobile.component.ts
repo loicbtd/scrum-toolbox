@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NavigationItemModel } from './navigation-item.model';
+import { NavigationItemModel } from '../../models/navigation-item.model';
 
 @Component({
   selector: 'app-navigation-container-mobile',
