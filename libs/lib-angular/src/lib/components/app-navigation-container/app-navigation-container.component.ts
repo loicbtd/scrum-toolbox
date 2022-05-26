@@ -112,6 +112,14 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         <div class="avatar">
           <img [src]="avatarImageSource" alt="user avatar" />
         </div>
+        <div class="avatar-navigation">
+          <a [routerLink]="item.routerLink" *ngFor="let item of avatarNavigationItems" (click)="item.action()">
+            <div *ngIf="item.iconClass" class="icon-container">
+              <i [class]="item.iconClass"></i>
+            </div>
+            <div *ngIf="item.label" class="label">{{ item.label | slice: 0:20 }}</div>
+          </a>
+        </div>
       </div>
     </nav>
     <nav
@@ -143,15 +151,6 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
       }"
     >
       <ng-content></ng-content>
-    </div>
-
-    <div class="avatar-navigation">
-      <a [routerLink]="item.routerLink" *ngFor="let item of avatarNavigationItems" (click)="item.action()">
-        <div *ngIf="item.iconClass" class="icon-container">
-          <i [class]="item.iconClass"></i>
-        </div>
-        <div *ngIf="item.label" class="label">{{ item.label | slice: 0:20 }}</div>
-      </a>
     </div>
   `,
   styles: [

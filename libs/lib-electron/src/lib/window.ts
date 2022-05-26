@@ -1,11 +1,28 @@
-import { BrowserWindow, dialog, Menu, MenuItem, nativeImage, screen, shell } from 'electron';
+import {
+  BrowserWindow,
+  dialog,
+  Menu,
+  MenuItem,
+  MenuItemConstructorOptions,
+  nativeImage,
+  screen,
+  shell,
+} from 'electron';
 import { join } from 'path';
-import App from '../app';
-import { rendererAppName, rendererAppPort } from '../constants/app.constant';
-import { AppHelper } from '../helpers/app.helper';
+import { Application } from './application';
 
-export class BaseWindow extends BrowserWindow {
+export abstract class Window extends BrowserWindow {
   route: string;
+
+  confirmClose?: boolean;
+
+  confirmMessage?: string;
+
+  confirmYes?: string;
+
+  confirmNo?: string;
+
+  menuItems: MenuItemConstructorOptions[];
 
   constructor(
     route: string,
@@ -16,6 +33,10 @@ export class BaseWindow extends BrowserWindow {
       frame?: boolean;
       resizable?: boolean;
       confirmClose?: boolean;
+      confirmMessage?: string;
+      confirmYes?: string;
+      confirmNo?: string;
+      menuItems?: MenuItemConstructorOptions[];
     }
   ) {
     super({
@@ -23,7 +44,7 @@ export class BaseWindow extends BrowserWindow {
       height: options.height ?? Math.min(720, screen.getPrimaryDisplay().workAreaSize.height || 720),
       show: false,
       frame: !!options.frame,
-      resizable: AppHelper.isDevelopmentMode() ? true : !!options?.resizable,
+      resizable: options?.resizable || true,
       webPreferences: {
         contextIsolation: true,
         backgroundThrottling: false,
@@ -35,9 +56,23 @@ export class BaseWindow extends BrowserWindow {
     });
 
     this.route = route;
+    this.confirmClose = options.confirmClose;
+    this.confirmMessage = options.confirmMessage;
+    this.confirmYes = options.confirmYes;
+    this.confirmNo = options.confirmNo;
+    this.menuItems = options.menuItems;
+  }
 
-    const menu = new Menu();
-    if (AppHelper.isDevelopmentMode()) {
+  initialize() {
+    let menu: Menu;
+
+    if (this.menuItems) {
+      menu = Menu.buildFromTemplate(this.menuItems);
+    } else {
+      menu = new Menu();
+    }
+
+    if (process.env.ELECTRON_IS_DEV) {
       menu.append(
         new MenuItem({
           label: 'Development',
@@ -63,9 +98,8 @@ export class BaseWindow extends BrowserWindow {
         })
       );
     }
-    this.setMenu(menu);
 
-    this.once('ready-to-show', () => this.show());
+    this.setMenu(menu);
 
     this.webContents.on('will-navigate', (event, url) => {
       if (url !== this.webContents.getURL()) {
@@ -83,27 +117,29 @@ export class BaseWindow extends BrowserWindow {
 
     this.on('close', async (event) => {
       event.preventDefault();
-      if (options?.confirmClose) {
+      if (this.confirmClose) {
         if (
           (
             await dialog.showMessageBox({
               title: 'Confirmation',
-              message: 'Are you sure you want to close the window ?',
-              buttons: ['No', 'Yes'],
+              message: this.confirmMessage || 'Are you sure you want to close the window ?',
+              buttons: [this.confirmNo || 'No', this.confirmYes || 'Yes'],
             })
           ).response === 1
         ) {
-          App.unload(this.id);
+          Application.getInstance().unloadWindow(this.id);
         }
       } else {
-        App.unload(this.id);
+        Application.getInstance().unloadWindow(this.id);
       }
     });
 
-    if (!App.application.isPackaged) {
-      this.loadURL(`http://localhost:${rendererAppPort}#/${route}`);
+    if (!Application.getInstance().electronApplication.isPackaged) {
+      this.loadURL(`http://localhost:${Application.getInstance().rendererAppPort}#/${this.route}`);
     } else {
-      this.loadURL(`file://${join(__dirname, '..', rendererAppName, 'index.html')}#/${route}`);
+      this.loadURL(
+        `file://${join(__dirname, '..', Application.getInstance().rendererAppName, 'index.html')}#/${this.route}`
+      );
     }
   }
 }

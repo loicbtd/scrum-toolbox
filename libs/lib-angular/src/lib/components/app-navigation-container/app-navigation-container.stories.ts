@@ -1,7 +1,6 @@
 import { Meta, moduleMetadata, Story } from '@storybook/angular';
 import { NavigationItemModel } from '../../models/navigation-item.model';
-import { AppNavigationContainerComponent } from './app-navigation-container.component';
-import { AppNavigationContainerModule } from './app-navigation-container.module';
+import { AppNavigationContainerComponent, AppNavigationContainerModule } from './app-navigation-container.component';
 
 export default {
   title: 'App navigation container',
