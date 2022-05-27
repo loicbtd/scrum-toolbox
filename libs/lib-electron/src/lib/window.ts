@@ -37,11 +37,16 @@ export abstract class Window extends BrowserWindow {
       confirmYes?: string;
       confirmNo?: string;
       menuItems?: MenuItemConstructorOptions[];
+      minWidth?: number;
+      minHeight?: number;
+      iconSource?: string[];
     }
   ) {
     super({
       width: options.width ?? Math.min(1280, screen.getPrimaryDisplay().workAreaSize.width || 1280),
       height: options.height ?? Math.min(720, screen.getPrimaryDisplay().workAreaSize.height || 720),
+      minWidth: options.minWidth ?? 0,
+      minHeight: options.minHeight ?? 0,
       show: false,
       frame: !!options.frame,
       resizable: options?.resizable || true,
@@ -51,7 +56,7 @@ export abstract class Window extends BrowserWindow {
         preload: join(__dirname, `preload.js`),
       },
       title: options.title ?? '',
-      icon: nativeImage.createFromPath(join(__dirname, 'assets', 'images', `icon.ico`)),
+      icon: options.iconSource ? nativeImage.createFromPath(join(__dirname, ...options.iconSource)) : null,
       center: true,
     });
 
@@ -72,7 +77,7 @@ export abstract class Window extends BrowserWindow {
       menu = new Menu();
     }
 
-    if (process.env.ELECTRON_IS_DEV) {
+    if (process.env.SOLUTION_ENVIRONMENT == 'development') {
       menu.append(
         new MenuItem({
           label: 'Development',

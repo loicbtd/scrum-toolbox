@@ -15,7 +15,7 @@ export class ResponsiveService implements OnDestroy {
   private readonly _mediaBreakpoint: BehaviorSubject<MediaBreakpointEnumeration> =
     new BehaviorSubject<MediaBreakpointEnumeration>(MediaBreakpointEnumeration.md);
 
-  public mobileBreakpoint = 960;
+  public mobileBreakpoint = 900;
 
   public xsMediaBreakpoint = 0;
 
@@ -75,7 +75,7 @@ export class ResponsiveService implements OnDestroy {
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
       this._isMobile.next(true);
     } else {
-      this._isMobile.next(width < this.mobileBreakpoint);
+      this._isMobile.next(width <= this.mobileBreakpoint);
     }
   }
 }

@@ -80,7 +80,7 @@ export class Application {
   }
 
   public unloadWindow(id: number) {
-    for (let index: number; index < Application.getInstance().windows.length; index++) {
+    for (let index = 0; index < Application.getInstance().windows.length; index++) {
       if (this.windows[index].id == id) {
         this.windows[index].destroy();
         this.windows.splice(index, 1);
