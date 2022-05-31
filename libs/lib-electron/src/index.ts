@@ -1,5 +1,4 @@
-import 'reflect-metadata';
-
 export * from './lib/application';
-export * from './lib/tray';
-export * from './lib/window';
+export * from './lib/background-tasks/base.background-task';
+export * from './lib/trays/base.tray';
+export * from './lib/windows/base.window';

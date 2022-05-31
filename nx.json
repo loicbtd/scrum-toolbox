@@ -41,6 +41,9 @@
     },
     "lib-electron": {
       "tags": []
+    },
+    "lib-electron-web": {
+      "tags": []
     }
   },
   "cli": {

@@ -1,26 +1,20 @@
-import { IpcChannels, IpcResponseModel } from '@libraries/lib-common';
-import { Application, Tray } from '@libraries/lib-electron';
-import { ipcMain } from 'electron';
-import { MainWindow } from './app/windows/main.window';
+import { Application } from '@libraries/lib-electron';
+import { homedir } from 'os';
+import { IpcEventHandler as IpcEventsHandler } from './app/ipc-events-handler';
+import { MainTray } from './app/main.tray';
+import { MainWindow } from './app/main.window';
 
 (async () => {
   const application = Application.getInstance();
-  await application.initialize('app-desktop-angular', 4200);
 
-  ipcMain.on(IpcChannels.common.GET_APP_VERSION, (event) => {
-    const ipcResponse: IpcResponseModel<string> = { data: '0.1.0' };
-
-    event.sender.send(IpcChannels.common.GET_APP_VERSION, ipcResponse);
+  await application.initialize('app-desktop-angular', 4200, {
+    settingsPath: [homedir(), '.scrum-toolbox'],
+    enableDatabases: true,
   });
 
-  // this.services = ServicesConfiguration.generate();
-  // this.monitoringToolDatabaseConnection = await AppDatabaseConnectionConfiguration.generate();
-  // this.appBackgroundtask = await AppBackgroundtask.getInstance().initialize();
+  application.loadIpcRequestHandler(IpcEventsHandler);
 
-  application.tray = new Tray([
-    { label: 'Afficher', click: () => application.loadWindow(MainWindow) },
-    { label: 'Quitter', click: () => application.electronApplication.exit() },
-  ]);
+  application.loadTray(MainTray);
 
   application.loadWindow(MainWindow);
 })();

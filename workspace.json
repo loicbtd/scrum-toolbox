@@ -269,6 +269,31 @@
           }
         }
       }
+    },
+    "lib-electron-web": {
+      "root": "libs/lib-electron-web",
+      "sourceRoot": "libs/lib-electron-web/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/lib-electron-web",
+            "tsConfig": "libs/lib-electron-web/tsconfig.lib.json",
+            "packageJson": "libs/lib-electron-web/package.json",
+            "main": "libs/lib-electron-web/src/index.ts",
+            "assets": ["libs/lib-electron-web/*.md"]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/lib-electron-web/**/*.ts"]
+          }
+        }
+      }
     }
   }
 }

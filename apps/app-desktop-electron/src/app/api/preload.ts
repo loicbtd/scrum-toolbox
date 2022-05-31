@@ -1,7 +1,3 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { IpcModel } from '@libraries/lib-electron-web';
 
-contextBridge.exposeInMainWorld('electron', {
-  on: (channel: string, listener: any) => ipcRenderer.on(channel, listener),
-  send: (channel: string, ...args: any[]) => ipcRenderer.send(channel, ...args),
-  removeListener: (channel: string, listener: any) => ipcRenderer.removeListener(channel, listener),
-});
+IpcModel.Expose();

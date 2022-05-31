@@ -1,8 +1,14 @@
 import { app } from 'electron';
-import { Container } from 'inversify';
 import { Connection } from 'typeorm';
-import { Tray } from './tray';
-import { Window } from './window';
+import { BackgroundTasksService } from './services/background-tasks.service';
+import { DatabasesService } from './services/databases.service';
+import { BaseTray } from './trays/base.tray';
+import { BaseWindow } from './windows/base.window';
+import Pino from 'pino';
+import { PrettyOptions } from 'pino-pretty';
+import { BaseBackgroundTask } from './background-tasks/base.background-task';
+import { IpcMainService } from './services/ipc-main.service';
+import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
 
 export class Application {
   private static _instance: Application;
@@ -14,22 +20,38 @@ export class Application {
     return this._instance;
   }
 
-  windows: Window[];
+  windows: BaseWindow[];
 
   electronApplication: Electron.App;
 
-  services: Container;
-
   monitoringToolDatabaseConnection: Connection;
 
-  tray: Tray;
+  tray: BaseTray;
 
-  rendererAppName: string;
+  rendererApplicationName: string;
 
-  rendererAppPort: number;
+  rendererApplicationPort: number;
+
+  databases: DatabasesService;
+
+  backgroundTasksManager: BackgroundTasksService;
+
+  ipcMainService: IpcMainService;
+
+  logger: Pino.Logger;
 
   constructor() {
     this.electronApplication = app;
+    this.logger = Pino({
+      level: process.env.SOLUTION_ENVIRONMENT == 'development' ? 'trace' : 'info',
+      transport: {
+        target: 'pino-pretty',
+        options: {
+          ignore: 'pid,hostname',
+          translateTime: 'SYS:yyyy-mm-dd HH:MM:ss',
+        } as PrettyOptions,
+      },
+    });
 
     if (!this.electronApplication.requestSingleInstanceLock()) {
       this.electronApplication.quit();
@@ -39,15 +61,58 @@ export class Application {
     this.electronApplication.on('window-all-closed', (event: any) => event.preventDefault());
   }
 
-  public initialize(rendererAppName: string, rendererAppPort: number): Promise<void> {
-    this.rendererAppName = rendererAppName;
-    this.rendererAppPort = rendererAppPort;
-    return new Promise<void>((resolve) => {
+  public async initialize(
+    rendererApplicationName: string,
+    rendererApplicationPort: number,
+    options?: { settingsPath?: string[]; enableDatabases?: boolean }
+  ): Promise<void> {
+    this.rendererApplicationName = rendererApplicationName;
+    this.rendererApplicationPort = rendererApplicationPort;
+
+    if (options?.enableDatabases) {
+      this.databases = new DatabasesService(options?.settingsPath);
+    }
+
+    this.backgroundTasksManager = new BackgroundTasksService();
+
+    this.ipcMainService = new IpcMainService();
+
+    await new Promise<void>((resolve) => {
       this.electronApplication.on('ready', () => resolve());
     });
+
+    this.logger.debug('Application started');
   }
 
-  public loadWindow(windowType: new () => Window, loadNewWindow = false) {
+  public loadIpcRequestHandler(ipcRequestHandlerType: (new () => IpcRequestHandlerInterface)) {
+    // this.ipcMainService.(new eventHandlerType());
+  }
+
+  public unloadIpcRequestHandler(ipcRequestHandlerType: new () => IpcRequestHandlerInterface) {
+    // this.ipcManager.unsetEventsHandler();
+  }
+
+  public loadTray(trayType: new () => BaseTray) {
+    this.tray = new trayType();
+  }
+
+  public unloadTray() {
+    this.tray = null;
+  }
+
+  public loadBackgroundTask(backgroundTaskType: new () => BaseBackgroundTask) {
+    this.backgroundTasksManager.startTask(new backgroundTaskType());
+  }
+
+  public unloadBackgroundTask(id: string) {
+    this.backgroundTasksManager.stopTask(id);
+  }
+
+  public unloadAllBackgroundTasks() {
+    this.backgroundTasksManager.stopAllTasks();
+  }
+
+  public loadWindow(windowType: new () => BaseWindow, loadNewWindow = false) {
     if (!this.windows) {
       this.windows = [];
     }
@@ -67,7 +132,7 @@ export class Application {
     this.windows.push(window);
   }
 
-  public unloadAllWindows(windowType: new () => Window) {
+  public unloadAllWindows(windowType: new () => BaseWindow) {
     const matchingWindowsIndices = this.windows
       .map((existingWindow, index) => (existingWindow.constructor.name === windowType.name ? index : -1))
       .filter((index) => index !== -1)

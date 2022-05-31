@@ -9,9 +9,9 @@ import {
   shell,
 } from 'electron';
 import { join } from 'path';
-import { Application } from './application';
+import { Application } from '../application';
 
-export abstract class Window extends BrowserWindow {
+export abstract class BaseWindow extends BrowserWindow {
   route: string;
 
   confirmClose?: boolean;
@@ -140,10 +140,10 @@ export abstract class Window extends BrowserWindow {
     });
 
     if (!Application.getInstance().electronApplication.isPackaged) {
-      this.loadURL(`http://localhost:${Application.getInstance().rendererAppPort}#/${this.route}`);
+      this.loadURL(`http://localhost:${Application.getInstance().rendererApplicationPort}#/${this.route}`);
     } else {
       this.loadURL(
-        `file://${join(__dirname, '..', Application.getInstance().rendererAppName, 'index.html')}#/${this.route}`
+        `file://${join(__dirname, '..', Application.getInstance().rendererApplicationName, 'index.html')}#/${this.route}`
       );
     }
   }

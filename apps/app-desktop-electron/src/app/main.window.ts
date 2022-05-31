@@ -1,7 +1,7 @@
 import { appRoutes } from '@libraries/lib-common';
-import { Window } from '@libraries/lib-electron';
+import { BaseWindow } from '@libraries/lib-electron';
 
-export class MainWindow extends Window {
+export class MainWindow extends BaseWindow {
   constructor() {
     super(appRoutes.scrumToolbox.root, {
       title: 'Scrum Toolbox',
