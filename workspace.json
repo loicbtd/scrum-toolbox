@@ -276,13 +276,12 @@
       "projectType": "library",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:package",
+          "executor": "@nrwl/js:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/lib-electron-web",
-            "tsConfig": "libs/lib-electron-web/tsconfig.lib.json",
-            "packageJson": "libs/lib-electron-web/package.json",
             "main": "libs/lib-electron-web/src/index.ts",
+            "tsConfig": "libs/lib-electron-web/tsconfig.lib.json",
             "assets": ["libs/lib-electron-web/*.md"]
           }
         },
@@ -293,7 +292,8 @@
             "lintFilePatterns": ["libs/lib-electron-web/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     }
   }
 }

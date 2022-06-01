@@ -1,10 +1,10 @@
 import { IpcRequestHandlerInterface } from '../interfaces/ipc-request-handler.interface';
-import { IpcModel } from '../models/ipc.model';
 import { IpcRequestInterface } from '../interfaces/ipc-request.interface';
 import { IpcResponseInterface } from '../interfaces/ipc-response.interface';
+import { IpcInterface } from '../interfaces/ipc.interface';
 
 export class IpcRendererService {
-  private readonly _ipc: IpcModel;
+  private readonly _ipc: IpcInterface;
 
   private readonly _requestHandlers: IpcRequestHandlerInterface[];
 
@@ -13,19 +13,19 @@ export class IpcRendererService {
     this._requestHandlers = [];
   }
 
-  public async query<T>(channel: string, data: any): Promise<IpcResponseInterface<T>> {
+  public async query<T>(channel: string, data: any): Promise<T> {
     const uniqueId = this.generateUniqueId();
 
     const listeningChannel = `${channel} ${uniqueId}`;
 
     const request: IpcRequestInterface<any> = { id: uniqueId, data: data };
 
-    return await new Promise<IpcResponseInterface<T>>((resolve, reject) => {
+    return await new Promise<T>((resolve, reject) => {
       const listener = (_: any, event: IpcResponseInterface<T>) => {
         if (event.errorMessage) {
           reject(new Error(event.errorMessage));
         } else {
-          resolve(event);
+          resolve(event.data as T);
         }
         this._ipc.removeAllListeners(listeningChannel);
       };
@@ -39,8 +39,8 @@ export class IpcRendererService {
   public subscribe<ProgressType, LastType>(
     channel: string,
     data?: any,
-    progressAction?: (event: IpcResponseInterface<ProgressType>) => void,
-    endAction?: (data: IpcResponseInterface<LastType>) => void
+    progressAction?: (progressData: ProgressType) => void,
+    endAction?: (lastData: LastType) => void
   ) {
     const uniqueId = this.generateUniqueId();
 
@@ -48,13 +48,18 @@ export class IpcRendererService {
 
     const request: IpcRequestInterface<any> = { id: uniqueId, data: data };
 
-    const listener = (_: any, event: IpcResponseInterface<ProgressType | LastType>) => {
-      if (!event.nextExpected) {
+    const listener = (_: any, response: IpcResponseInterface<ProgressType | LastType>) => {
+      if (!response.nextExpected) {
         this._ipc.removeAllListeners(listeningChannel);
-        endAction(event as IpcResponseInterface<LastType>);
+        if (endAction) {
+          endAction(response.data as LastType);
+        }
         return;
       }
-      progressAction(event as IpcResponseInterface<ProgressType>);
+
+      if (progressAction) {
+        progressAction(response.data as ProgressType);
+      }
     };
 
     this._ipc.onResponse(listeningChannel, listener);

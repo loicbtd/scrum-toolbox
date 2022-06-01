@@ -79,6 +79,7 @@
     "@nrwl/node": "^12.9.0",
     "@nrwl/storybook": "^14.1.7",
     "@nrwl/tao": "12.9.0",
+    "@nrwl/web": "^14.1.9",
     "@nrwl/workspace": "12.9.0",
     "@storybook/addon-essentials": "~6.4.12",
     "@storybook/angular": "~6.4.12",

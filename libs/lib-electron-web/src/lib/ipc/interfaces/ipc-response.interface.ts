@@ -1,7 +1,7 @@
 export interface IpcResponseInterface<T> {
-  data: T;
+  data?: T;
 
-  errorMessage: string;
+  errorMessage?: string;
 
-  nextExpected: boolean;
+  nextExpected?: boolean;
 }

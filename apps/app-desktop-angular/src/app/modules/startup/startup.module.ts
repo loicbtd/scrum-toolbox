@@ -2,7 +2,6 @@ import { NgModule, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { Component } from '@angular/core';
-import { IpcChannels } from '@libraries/lib-common';
 import { IpcService } from '../../global/services/ipc.service';
 
 @Component({
@@ -24,7 +23,7 @@ export class StartupComponent implements OnInit {
   constructor(private readonly _ipcService: IpcService) {}
 
   async ngOnInit() {
-    this.version = await this._ipcService.query<string>(IpcChannels.common.GET_APP_VERSION);
+    this.version = await this._ipcService.query<string>('test', null);
   }
 }
 
