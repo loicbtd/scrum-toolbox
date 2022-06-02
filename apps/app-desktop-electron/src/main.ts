@@ -1,6 +1,6 @@
 import { Application } from '@libraries/lib-electron';
 import { homedir } from 'os';
-import { IpcEventHandler as IpcEventsHandler } from './app/ipc-events-handler';
+import { TestHandler } from './app/ipc-request-handlers/test.handler';
 import { MainTray } from './app/main.tray';
 import { MainWindow } from './app/main.window';
 
@@ -12,7 +12,7 @@ import { MainWindow } from './app/main.window';
     enableDatabases: true,
   });
 
-  application.loadIpcRequestHandler(IpcEventsHandler);
+  application.loadIpcRequestHandler(TestHandler);
 
   application.loadTray(MainTray);
 

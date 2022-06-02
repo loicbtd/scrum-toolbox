@@ -84,7 +84,7 @@ export class Application {
     this.logger.debug('Application started');
   }
 
-  public loadIpcRequestHandler(ipcRequestHandlerType: (new () => IpcRequestHandlerInterface)) {
+  public loadIpcRequestHandler(ipcRequestHandlerType: new () => IpcRequestHandlerInterface) {
     this.ipcMainService.addRequestHandler(new ipcRequestHandlerType());
   }
 

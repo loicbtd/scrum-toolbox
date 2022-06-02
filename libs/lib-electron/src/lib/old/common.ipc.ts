@@ -8,11 +8,11 @@ export class CommonIpc {
   }
 }
 
-ipcMain.on(IpcChannels.common.GET_APP_VERSION, (event) => {
-  const ipcResponse: IpcResponseModel<string> = { data: '0.1.0' };
+// ipcMain.on(IpcChannels.common.GET_APP_VERSION, (event) => {
+//   const ipcResponse: IpcResponseModel<string> = { data: '0.1.0' };
 
-  event.sender.send(IpcChannels.common.GET_APP_VERSION, ipcResponse);
-});
+//   event.sender.send(IpcChannels.common.GET_APP_VERSION, ipcResponse);
+// });
 
 // ipcMain.on(IpcChannels.common.GET_PLATFORM, (event) => {
 //   const ipcResponse: IpcResponseModel<string> = { data: process.platform.toString() };

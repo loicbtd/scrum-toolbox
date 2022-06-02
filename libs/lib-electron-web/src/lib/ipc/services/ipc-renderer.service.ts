@@ -13,7 +13,7 @@ export class IpcRendererService {
     this._requestHandlers = [];
   }
 
-  public async query<T>(channel: string, data: any): Promise<T> {
+  public async query<T>(channel: string, data?: any): Promise<T> {
     const uniqueId = this.generateUniqueId();
 
     const listeningChannel = `${channel} ${uniqueId}`;
@@ -21,16 +21,17 @@ export class IpcRendererService {
     const request: IpcRequestInterface<any> = { id: uniqueId, data: data };
 
     return await new Promise<T>((resolve, reject) => {
-      const listener = (_: any, event: IpcResponseInterface<T>) => {
-        if (event.errorMessage) {
-          reject(new Error(event.errorMessage));
+      const listener = (_: any, response: IpcResponseInterface<T>) => {
+        if (response.errorMessage) {
+          reject(new Error(response.errorMessage));
         } else {
-          resolve(event.data as T);
+          resolve(response.data as T);
         }
+
         this._ipc.removeAllListeners(listeningChannel);
       };
 
-      this._ipc.onResponse(listeningChannel, listener);
+      this._ipc.on(listeningChannel, listener);
 
       this._ipc.send(channel, request);
     });
@@ -49,11 +50,17 @@ export class IpcRendererService {
     const request: IpcRequestInterface<any> = { id: uniqueId, data: data };
 
     const listener = (_: any, response: IpcResponseInterface<ProgressType | LastType>) => {
+      if (response.errorMessage) {
+        throw new Error(response.errorMessage);
+      }
+
       if (!response.nextExpected) {
         this._ipc.removeAllListeners(listeningChannel);
+
         if (endAction) {
           endAction(response.data as LastType);
         }
+
         return;
       }
 
@@ -62,7 +69,7 @@ export class IpcRendererService {
       }
     };
 
-    this._ipc.onResponse(listeningChannel, listener);
+    this._ipc.on(listeningChannel, listener);
 
     this._ipc.send(channel, request);
   }
@@ -72,8 +79,8 @@ export class IpcRendererService {
       return;
     }
 
-    this._ipc.onRequest(requestHandler.channel, (_: any, request: IpcRequestInterface<any>) => {
-      requestHandler.handle(request);
+    this._ipc.on(requestHandler.channel, async (event, request) => {
+      event.sender.send(`${requestHandler.channel} ${request.id}`, await requestHandler.handle(request.data));
     });
 
     this._requestHandlers.push(requestHandler);

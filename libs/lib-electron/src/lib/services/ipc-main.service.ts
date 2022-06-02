@@ -1,63 +1,62 @@
-import {
-  IpcInterface,
-  IpcRequestHandlerInterface,
-  IpcRequestInterface,
-  IpcResponseInterface,
-} from '@libraries/lib-electron-web';
-import { contextBridge, ipcMain, ipcRenderer } from 'electron';
+import { IpcRequestHandlerInterface, IpcRequestInterface, IpcResponseInterface } from '@libraries/lib-electron-web';
+import { ipcMain, ipcRenderer } from 'electron';
+import { IpcMainEvent } from 'electron/main';
+import { Application } from '../application';
 
 export class IpcMainService {
   private readonly _requestHandlers: IpcRequestHandlerInterface[];
 
-  public static Expose(apiKey = 'electron') {
-    contextBridge.exposeInMainWorld(apiKey, {
-      onRequest(channel: string, listener: (_: any, response: IpcRequestInterface<any>) => void): void {
-        ipcRenderer.on(channel, listener);
-      },
-      onResponse(channel: string, listener: (_: any, response: IpcResponseInterface<any>) => void): void {
-        ipcRenderer.on(channel, listener);
-      },
-      send(channel: string, request: IpcRequestInterface<any>): void {
-        ipcRenderer.send(channel, request);
-      },
-      removeAllListeners(channel: string): void {
-        ipcRenderer.removeAllListeners(channel);
-      },
-    } as IpcInterface);
-  }
+  // public static Expose(apiKey = 'electron') {
+  //   contextBridge.exposeInMainWorld(apiKey, {
+  //     onRequest(channel: string, listener: (_: any, response: IpcRequestInterface<any>) => void): void {
+  //       ipcRenderer.on(channel, listener);
+  //     },
+  //     onResponse(channel: string, listener: (_: any, response: IpcResponseInterface<any>) => void): void {
+  //       ipcRenderer.on(channel, listener);
+  //     },
+  //     send(channel: string, request: IpcRequestInterface<any>): void {
+  //       ipcRenderer.send(channel, request);
+  //     },
+  //     removeAllListeners(channel: string): void {
+  //       ipcRenderer.removeAllListeners(channel);
+  //     },
+  //   } as IpcInterface);
+  // }
 
   constructor() {
     this._requestHandlers = [];
   }
 
-  public async query<T>(channel: string, data: any): Promise<IpcResponseInterface<T>> {
+  public async query<T>(channel: string, data?: any): Promise<T> {
     const uniqueId = this.generateUniqueId();
 
     const listeningChannel = `${channel} ${uniqueId}`;
 
     const request: IpcRequestInterface<any> = { id: uniqueId, data: data };
 
-    return await new Promise<IpcResponseInterface<T>>((resolve, reject) => {
+    return await new Promise<T>((resolve, reject) => {
       const listener = (_: any, event: IpcResponseInterface<T>) => {
         if (event.errorMessage) {
           reject(new Error(event.errorMessage));
         } else {
-          resolve(event);
+          resolve(event.data);
         }
         ipcMain.removeAllListeners(listeningChannel);
       };
 
       ipcMain.on(listeningChannel, listener);
 
-      ipcMain.emit(channel, request);
+      for (const window of Application.getInstance().windows) {
+        window.webContents.send(channel, request);
+      }
     });
   }
 
   public subscribe<ProgressType, LastType>(
     channel: string,
     data?: any,
-    progressAction?: (event: IpcResponseInterface<ProgressType>) => void,
-    endAction?: (data: IpcResponseInterface<LastType>) => void
+    progressAction?: (progressData: ProgressType) => void,
+    endAction?: (lastData: LastType) => void
   ) {
     const uniqueId = this.generateUniqueId();
 
@@ -65,17 +64,21 @@ export class IpcMainService {
 
     const request: IpcRequestInterface<any> = { id: uniqueId, data: data };
 
-    const listener = (_: any, event: IpcResponseInterface<ProgressType | LastType>) => {
-      if (!event.nextExpected) {
+    const listener = (_: any, response: IpcResponseInterface<ProgressType | LastType>) => {
+      if (response.errorMessage) {
+        throw new Error(response.errorMessage);
+      }
+
+      if (!response.nextExpected) {
         ipcMain.removeAllListeners(listeningChannel);
         if (endAction) {
-          endAction(event as IpcResponseInterface<LastType>);
+          endAction(response.data as LastType);
         }
         return;
       }
 
       if (progressAction) {
-        progressAction(event as IpcResponseInterface<ProgressType>);
+        progressAction(response.data as ProgressType);
       }
     };
 
@@ -89,8 +92,8 @@ export class IpcMainService {
       return;
     }
 
-    ipcMain.on(requestHandler.channel, (_: any, request: IpcRequestInterface<any>) => {
-      requestHandler.handle(request);
+    ipcMain.on(requestHandler.channel, (event: IpcMainEvent, request: IpcRequestInterface<any>) => {
+      event.sender.send(`${requestHandler.channel} ${request.id}`, requestHandler.handle(request.data));
     });
 
     this._requestHandlers.push(requestHandler);
@@ -115,30 +118,4 @@ export class IpcMainService {
   private generateUniqueId(): string {
     return Math.random().toString(16).slice(2);
   }
-
-  // public setEventHandler(eventHandler: IpcRequestHandlerInterface): void {
-  //   this.unsetEventHandler(eventHandler.channel);
-  //   ipcMain.handle(eventHandler.channel, async (_event, data: EventInterface) => {
-  //     return await eventHandler.handle(data);
-  //   });
-  // }
-  // public unsetEventHandler(channel: string): void {
-  //   ipcMain.removeHandler(channel);
-  // }
-  // ipcMain.on(IpcChannels.common.ASK_CONFIRMATION_BY_DIALOG, async (event, message: string) => {
-  //   const ipcResponse = new IpcResponseModel<boolean>();
-  //   try {
-  //     ipcResponse.data =
-  //       (
-  //         await dialog.showMessageBox({
-  //           title: 'Confirmation',
-  //           message: message,
-  //           buttons: ['No', 'Yes'],
-  //         })
-  //       ).response === 1;
-  //   } catch (error) {
-  //     ipcResponse.data = error.message;
-  //   }
-  //   event.sender.send(IpcChannels.common.ASK_CONFIRMATION_BY_DIALOG, ipcResponse);
-  // });
 }

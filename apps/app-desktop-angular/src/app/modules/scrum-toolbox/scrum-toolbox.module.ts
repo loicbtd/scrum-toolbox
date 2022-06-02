@@ -5,6 +5,7 @@ import { Component } from '@angular/core';
 import { appRoutes } from '@libraries/lib-common';
 import { ProjectsComponent } from './components/projects/projects.component';
 import { NavigationItemModel } from '@libraries/lib-angular';
+import { IpcService } from '../../global/services/ipc.service';
 
 @Component({
   template: `
@@ -15,8 +16,8 @@ import { NavigationItemModel } from '@libraries/lib-angular';
       avatarImageSource="https://cdn.pixabay.com/photo/2016/04/01/10/11/avatar-1299805_960_720.png"
       username="Firstname LASTNAME"
     >
-      <ng-container navigationBarContent>Navigation bar content</ng-container>
-      Application content
+      <ng-container navigationBarContent>Navigation bar content </ng-container>
+      Application content <p-button label="Test IPC" (click)="testIpc()"></p-button>
     </app-navigation-container>
   `,
 })
@@ -48,6 +49,12 @@ export class ScrumToolboxComponent {
       routerLink: ['logout'],
     }),
   ];
+
+  constructor(private readonly _ipcService: IpcService) {}
+
+  testIpc() {
+    this._ipcService.query('test');
+  }
 }
 
 @NgModule({
