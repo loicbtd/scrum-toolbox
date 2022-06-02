@@ -8,9 +8,7 @@ import { TestHandler } from '../ipc-request-handlers/test.handler';
   providedIn: 'root',
 })
 export class IpcService extends IpcRendererService {
-  constructor(@Inject(DOCUMENT) document: Document, toastMessageService: ToastMessageService) {
+  constructor(@Inject(DOCUMENT) document: Document) {
     super(document);
-
-    super.addRequestHandler(new TestHandler());
   }
 }

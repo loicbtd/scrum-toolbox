@@ -87,32 +87,42 @@ export class IpcMainService {
     ipcMain.emit(channel, request);
   }
 
-  public addRequestHandler(requestHandler: IpcRequestHandlerInterface): void {
-    if (this._requestHandlers.some((_) => _.channel == requestHandler.channel)) {
+  public addRequestHandler(handlerType: new () => IpcRequestHandlerInterface): void {
+    const handler = new handlerType();
+
+    if (this._requestHandlers.some((_) => _.channel == handler.channel)) {
       return;
     }
 
-    ipcMain.on(requestHandler.channel, (event: IpcMainEvent, request: IpcRequestInterface<any>) => {
-      event.sender.send(`${requestHandler.channel} ${request.id}`, requestHandler.handle(request.data));
+    ipcMain.on(handler.channel, (event: IpcMainEvent, request: IpcRequestInterface<any>) => {
+      event.sender.send(`${handler.channel} ${request.id}`, handler.handle(request.data));
     });
 
-    this._requestHandlers.push(requestHandler);
+    this._requestHandlers.push(handler);
   }
 
-  public addRequestHandlers(requestHandlers: IpcRequestHandlerInterface[]): void {
-    for (const requestHandler of requestHandlers) {
-      this.addRequestHandler(requestHandler);
+  public addRequestHandlers(handlerTypes: (new () => IpcRequestHandlerInterface)[]): void {
+    for (const handlerType of handlerTypes) {
+      this.addRequestHandler(handlerType);
     }
   }
 
-  public removeRequestHandler(channel: string): void {
-    if (!this._requestHandlers.some((_) => _.channel == channel)) {
+  public removeRequestHandler(handlerType: new () => IpcRequestHandlerInterface): void {
+    const handler = new handlerType();
+
+    if (!this._requestHandlers.some((_) => _.channel == handler.channel)) {
       return;
     }
 
-    ipcMain.removeAllListeners(channel);
+    ipcMain.removeAllListeners(handler.channel);
 
-    this._requestHandlers.filter((_) => !(_.channel == channel));
+    this._requestHandlers.filter((_) => !(_.channel == handler.channel));
+  }
+
+  public removeRequestHandlers(handlerTypes: (new () => IpcRequestHandlerInterface)[]): void {
+    for (const handlerType of handlerTypes) {
+      this.removeRequestHandler(handlerType);
+    }
   }
 
   private generateUniqueId(): string {

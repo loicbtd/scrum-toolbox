@@ -294,6 +294,31 @@
         }
       },
       "tags": []
+    },
+    "lib-scrum-toolbox": {
+      "root": "libs/lib-scrum-toolbox",
+      "sourceRoot": "libs/lib-scrum-toolbox/src",
+      "projectType": "library",
+      "targets": {
+        "build": {
+          "executor": "@nrwl/node:package",
+          "outputs": ["{options.outputPath}"],
+          "options": {
+            "outputPath": "dist/libs/lib-scrum-toolbox",
+            "tsConfig": "libs/lib-scrum-toolbox/tsconfig.lib.json",
+            "packageJson": "libs/lib-scrum-toolbox/package.json",
+            "main": "libs/lib-scrum-toolbox/src/index.ts",
+            "assets": ["libs/lib-scrum-toolbox/*.md"]
+          }
+        },
+        "lint": {
+          "executor": "@nrwl/linter:eslint",
+          "outputs": ["{options.outputFile}"],
+          "options": {
+            "lintFilePatterns": ["libs/lib-scrum-toolbox/**/*.ts"]
+          }
+        }
+      }
     }
   }
 }

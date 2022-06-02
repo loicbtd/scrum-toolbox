@@ -1,11 +1,9 @@
-import { IpcRequestHandlerInterface, IpcRequestInterface, IpcResponseInterface } from '@libraries/lib-electron-web';
+import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
 
 export class TestHandler implements IpcRequestHandlerInterface {
   channel = 'test';
 
-  handle(event: IpcRequestInterface<any>): IpcResponseInterface<any> {
+  handle(data: any) {
     console.log('hello from ipcMain');
-
-    return {};
   }
 }

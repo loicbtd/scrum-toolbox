@@ -74,32 +74,42 @@ export class IpcRendererService {
     this._ipc.send(channel, request);
   }
 
-  public addRequestHandler(requestHandler: IpcRequestHandlerInterface): void {
-    if (this._requestHandlers.some((_) => _.channel == requestHandler.channel)) {
+  public addRequestHandler(handlerType: new () => IpcRequestHandlerInterface): void {
+    const handler = new handlerType();
+
+    if (this._requestHandlers.some((_) => _.channel == handler.channel)) {
       return;
     }
 
-    this._ipc.on(requestHandler.channel, async (event, request) => {
-      event.sender.send(`${requestHandler.channel} ${request.id}`, await requestHandler.handle(request.data));
+    this._ipc.on(handler.channel, async (event, request) => {
+      event.sender.send(`${handler.channel} ${request.id}`, await handler.handle(request.data));
     });
 
-    this._requestHandlers.push(requestHandler);
+    this._requestHandlers.push(handler);
   }
 
-  public addRequestHandlers(requestHandlers: IpcRequestHandlerInterface[]): void {
-    for (const requestHandler of requestHandlers) {
-      this.addRequestHandler(requestHandler);
+  public addRequestHandlers(handlerTypes: (new () => IpcRequestHandlerInterface)[]): void {
+    for (const handlerType of handlerTypes) {
+      this.addRequestHandler(handlerType);
     }
   }
 
-  public removeRequestHandler(channel: string): void {
-    if (!this._requestHandlers.some((_) => _.channel == channel)) {
+  public removeRequestHandler(handlerType: new () => IpcRequestHandlerInterface): void {
+    const handler = new handlerType();
+
+    if (!this._requestHandlers.some((_) => _.channel == handler.channel)) {
       return;
     }
 
-    this._ipc.removeAllListeners(channel);
+    this._ipc.removeAllListeners(handler.channel);
 
-    this._requestHandlers.filter((_) => !(_.channel == channel));
+    this._requestHandlers.filter((_) => !(_.channel == handler.channel));
+  }
+
+  public removeRequestHandlers(handlerTypes: (new () => IpcRequestHandlerInterface)[]): void {
+    for (const handlerType of handlerTypes) {
+      this.removeRequestHandler(handlerType);
+    }
   }
 
   private generateUniqueId(): string {

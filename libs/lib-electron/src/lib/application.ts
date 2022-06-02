@@ -85,11 +85,11 @@ export class Application {
   }
 
   public loadIpcRequestHandler(ipcRequestHandlerType: new () => IpcRequestHandlerInterface) {
-    this.ipcMainService.addRequestHandler(new ipcRequestHandlerType());
+    this.ipcMainService.addRequestHandler(ipcRequestHandlerType);
   }
 
   public unloadIpcRequestHandler(ipcRequestHandlerType: new () => IpcRequestHandlerInterface) {
-    this.ipcMainService.removeRequestHandler(new ipcRequestHandlerType().channel);
+    this.ipcMainService.removeRequestHandler(ipcRequestHandlerType);
   }
 
   public loadTray(trayType: new () => BaseTray) {
