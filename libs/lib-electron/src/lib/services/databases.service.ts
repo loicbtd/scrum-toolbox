@@ -1,7 +1,32 @@
+import {
+  User,
+  Project,
+  Sprint,
+  SprintStatus,
+  Task,
+  TaskStatus,
+  UserSprint,
+  UserType,
+  UserUserTypeProject,
+  TaskType,
+} from '@liraries/lib-scrum-toolbox';
 import { existsSync, mkdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { Connection, ConnectionManager } from 'typeorm';
 import { ElectronApplicationError } from '../errors/electron-application.error';
+
+const ENTITIES = [
+  User,
+  Sprint,
+  Project,
+  UserSprint,
+  SprintStatus,
+  UserType,
+  UserUserTypeProject,
+  Task,
+  TaskStatus,
+  TaskType,
+];
 
 export class DatabasesService {
   databasesPath: string[];
@@ -22,7 +47,7 @@ export class DatabasesService {
     const connection = new ConnectionManager().create({
       type: 'better-sqlite3',
       database: join(...this.databasesPath, `${databaseName}.sqlite3`),
-      entities: [],
+      entities: ENTITIES,
       synchronize: true,
     });
 
