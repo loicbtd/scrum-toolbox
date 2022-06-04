@@ -17,6 +17,8 @@ import { MainWindow } from './app/main.window';
   application.loadTray(MainTray);
 
   application.loadWindow(MainWindow);
+
+  application.databases.getConnection('production.database');
 })();
 
 // if (SquirrelEvents.handleEvents()) {
