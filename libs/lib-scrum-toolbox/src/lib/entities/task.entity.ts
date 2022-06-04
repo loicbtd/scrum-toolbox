@@ -1,6 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany } from 'typeorm';
-import { Project } from './project.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
 import { Sprint } from './sprint.entity';
+import { Project } from './project.entity';
 import { TaskStatus } from './task-status.entity';
 import { TaskType } from './task-type.entity';
 import { User } from './user.entity';
@@ -28,7 +28,8 @@ export class Task {
   @JoinColumn({ name: 'projectId' })
   project?: Project;
 
-  @ManyToMany(() => User, (user) => user.id)
+  @ManyToMany(() => User, (user) => user.tasks, { eager: true })
+  @JoinTable()
   users?: User[];
 
   @ManyToOne(() => Sprint, (sprint) => sprint.id, { nullable: true, eager: true })

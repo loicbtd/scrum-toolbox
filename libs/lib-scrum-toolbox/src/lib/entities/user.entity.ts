@@ -18,6 +18,6 @@ export class User {
   @CreateDateColumn()
   createdAt?: Date;
 
-  @ManyToMany(() => Task, (task) => task.users, { eager: true })
+  @ManyToMany(() => Task, (task) => task.users)
   tasks?: Task[];
 }
