@@ -5,7 +5,7 @@
   "scripts": {
     "nx": "nx",
     "postinstall": "exitzero electron-builder install-app-deps && ngcc --properties es2015 browser module main",
-    "storybook": "nx run lib-angular:storybook ",
+    "storybook": "nx run lib-angular:storybook",
     "start": "run-p start:app-desktop",
     "start:app-desktop": "run-p start:app-desktop-angular start:app-desktop-electron",
     "start:app-desktop-angular": "nx serve app-desktop-angular --configuration=development",

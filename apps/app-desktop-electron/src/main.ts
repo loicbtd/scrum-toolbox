@@ -12,7 +12,7 @@ import { MainWindow } from './app/main.window';
     enableDatabases: true,
   });
 
-  application.loadIpcRequestHandler(TestHandler);
+  application.loadIpcRequestHandlers([TestHandler]);
 
   application.loadTray(MainTray);
 

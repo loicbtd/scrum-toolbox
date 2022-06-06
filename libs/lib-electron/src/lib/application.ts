@@ -84,12 +84,12 @@ export class Application {
     this.logger.debug('Application started');
   }
 
-  public loadIpcRequestHandler(ipcRequestHandlerType: new () => IpcRequestHandlerInterface) {
-    this.ipcMainService.addRequestHandler(ipcRequestHandlerType);
+  public loadIpcRequestHandlers(ipcRequestHandlerTypes: (new () => IpcRequestHandlerInterface)[]) {
+    this.ipcMainService.addRequestHandlers(ipcRequestHandlerTypes);
   }
 
-  public unloadIpcRequestHandler(ipcRequestHandlerType: new () => IpcRequestHandlerInterface) {
-    this.ipcMainService.removeRequestHandler(ipcRequestHandlerType);
+  public unloadIpcRequestHandlers(ipcRequestHandlerTypes: (new () => IpcRequestHandlerInterface)[]) {
+    this.ipcMainService.removeRequestHandlers(ipcRequestHandlerTypes);
   }
 
   public loadTray(trayType: new () => BaseTray) {
