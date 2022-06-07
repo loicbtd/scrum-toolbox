@@ -5,5 +5,6 @@ export class TestHandler implements IpcRequestHandlerInterface {
 
   handle(data: any) {
     console.log('hello from ipcMain');
+    console.log(data);
   }
 }

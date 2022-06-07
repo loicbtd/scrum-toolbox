@@ -88,8 +88,16 @@ export class Application {
     this.ipcMainService.addRequestHandler(ipcRequestHandlerType);
   }
 
+  public loadIpcRequestHandlers(ipcRequestHandlerType: (new () => IpcRequestHandlerInterface)[]) {
+    this.ipcMainService.addRequestHandlers(ipcRequestHandlerType);
+  }
+
   public unloadIpcRequestHandler(ipcRequestHandlerType: new () => IpcRequestHandlerInterface) {
     this.ipcMainService.removeRequestHandler(ipcRequestHandlerType);
+  }
+
+  public unloadIpcRequestHandlers(ipcRequestHandlerType: (new () => IpcRequestHandlerInterface)[]) {
+    this.ipcMainService.removeRequestHandlers(ipcRequestHandlerType);
   }
 
   public loadTray(trayType: new () => BaseTray) {

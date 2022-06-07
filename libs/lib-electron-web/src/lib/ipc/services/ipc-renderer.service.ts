@@ -19,13 +19,15 @@ export class IpcRendererService {
     const listeningChannel = `${channel} ${uniqueId}`;
 
     const request: IpcRequestInterface<any> = { id: uniqueId, data: data };
-
-    return await new Promise<T>((resolve, reject) => {
+    console.log('PROMISE');
+    return new Promise<T>((resolve, reject) => {
       const listener = (_: any, response: IpcResponseInterface<T>) => {
-        if (response.errorMessage) {
+        if (response?.errorMessage) {
+          console.log('REJECT');
           reject(new Error(response.errorMessage));
         } else {
-          resolve(response.data as T);
+          console.log('RESOLVE');
+          resolve(response?.data as T);
         }
 
         this._ipc.removeAllListeners(listeningChannel);

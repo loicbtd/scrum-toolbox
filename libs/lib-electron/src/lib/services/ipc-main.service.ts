@@ -34,7 +34,7 @@ export class IpcMainService {
 
     const request: IpcRequestInterface<any> = { id: uniqueId, data: data };
 
-    return await new Promise<T>((resolve, reject) => {
+    return new Promise<T>((resolve, reject) => {
       const listener = (_: any, event: IpcResponseInterface<T>) => {
         if (event.errorMessage) {
           reject(new Error(event.errorMessage));
@@ -45,6 +45,7 @@ export class IpcMainService {
       };
 
       ipcMain.on(listeningChannel, listener);
+      console.log('HANDLE');
 
       for (const window of Application.getInstance().windows) {
         window.webContents.send(channel, request);
@@ -93,6 +94,10 @@ export class IpcMainService {
     if (this._requestHandlers.some((_) => _.channel == handler.channel)) {
       return;
     }
+
+    // ipcMain.on(handler.channel, (event: IpcMainEvent, request: IpcRequestInterface<any>) => {
+    //   event.sender.send(`${handler.channel} ${request.id}`, handler.handle(request.data));
+    // });
 
     ipcMain.on(handler.channel, (event: IpcMainEvent, request: IpcRequestInterface<any>) => {
       event.sender.send(`${handler.channel} ${request.id}`, handler.handle(request.data));

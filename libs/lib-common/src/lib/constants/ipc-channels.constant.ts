@@ -9,4 +9,12 @@ export class IpcChannels {
     LOG: 'LOG',
     ASK_CONFIRMATION_BY_DIALOG: 'ASK_CONFIRMATION_BY_DIALOG',
   };
+  public static readonly custom = {
+    user: {
+      create: 'USER-CREATE',
+      update: 'USER-UPDATE',
+      delete: 'USER-DELETE',
+      retrieveAll: 'USER-RETRIEVE-ALL',
+    },
+  };
 }
