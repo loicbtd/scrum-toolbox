@@ -1,9 +1,9 @@
 import { appRoutes } from '@libraries/lib-common';
 import { BaseWindow } from '@libraries/lib-electron';
-
+//TODO change appRoutes.login by the vue you need to see
 export class MainWindow extends BaseWindow {
   constructor() {
-    super(appRoutes.scrumToolbox.root, {
+    super(appRoutes.login, {
       title: 'Scrum Toolbox',
       frame: true,
       resizable: true,

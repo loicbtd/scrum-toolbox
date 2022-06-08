@@ -16,7 +16,7 @@ import { NavigationItemModel } from '@libraries/lib-angular';
       username="Firstname LASTNAME"
     >
       <ng-container navigationBarContent>Navigation bar content </ng-container>
-      Application content
+      <router-outlet></router-outlet>
     </app-navigation-container>
   `,
 })
@@ -68,6 +68,10 @@ export class ScrumToolboxComponent {
             path: appRoutes.scrumToolbox.all,
             component: ProjectsComponent,
           },
+          /* {
+            path: appRoutes.scrumToolbox.login,
+            component: LoginComponent,
+          }, */
           {
             path: '**',
             redirectTo: appRoutes.scrumToolbox.all,
