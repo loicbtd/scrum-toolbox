@@ -1,12 +1,15 @@
-import { IpcChannels } from '@libraries/lib-common';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
-import { User } from '@liraries/lib-scrum-toolbox';
-import { UserService } from '../../services/user.service';
+import { appIpcs, User } from '@libraries/lib-scrum-toolbox';
+import { inject, injectable } from 'inversify';
+import { UsersService } from '../../services/users.service';
 
+@injectable()
 export class UpdateUserHandler implements IpcRequestHandlerInterface {
-  channel = IpcChannels.custom.user.update;
+  constructor(@inject(UsersService.constructor.name) private readonly _usersService: UsersService) {}
 
-  handle(data: User) {
-    new UserService().update(data);
+  channel = appIpcs.updateUser;
+
+  async handle(data: User) {
+    await this._usersService.update(data);
   }
 }

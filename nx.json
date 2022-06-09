@@ -36,10 +36,10 @@
     "lib-angular": {
       "tags": []
     },
-    "lib-common": {
+    "lib-electron": {
       "tags": []
     },
-    "lib-electron": {
+    "lib-electron-web": {
       "tags": []
     },
     "lib-scrum-toolbox": {

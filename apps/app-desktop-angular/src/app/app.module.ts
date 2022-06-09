@@ -3,9 +3,9 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from './shared.module';
-import { appRoutes } from '@libraries/lib-common';
 import { Component } from '@angular/core';
 import { BlockUiService } from './global/services/block-ui.service';
+import { appRoutes } from '@libraries/lib-scrum-toolbox';
 
 @Component({
   selector: 'app-root',

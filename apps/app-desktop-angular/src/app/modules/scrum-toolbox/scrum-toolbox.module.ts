@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { Component } from '@angular/core';
-import { appRoutes, IpcChannels } from '@libraries/lib-common';
 import { ProjectsComponent } from './components/projects/projects.component';
 import { NavigationItemModel } from '@libraries/lib-angular';
 import { IpcService } from '../../global/services/ipc.service';
+import { appIpcs, appRoutes } from '@libraries/lib-scrum-toolbox';
 
 @Component({
   template: `
@@ -60,7 +60,7 @@ export class ScrumToolboxComponent {
     this._ipcService.query('test');
   }
   async createUser() {
-    const user = await this._ipcService.query(IpcChannels.custom.user.create, {
+    const user = await this._ipcService.query(appIpcs.createUser, {
       username: 'titi',
       firstname: 'Toto',
       lastname: 'TITI',
@@ -69,7 +69,7 @@ export class ScrumToolboxComponent {
   }
 
   updateUser() {
-    this._ipcService.query(IpcChannels.custom.user.update, {
+    this._ipcService.query(appIpcs.updateUser, {
       id: 'b053e43d-ca55-4ede-b16d-ad4b2d0ed971',
       username: 'titi',
       firstname: 'Tartenpion',
@@ -77,13 +77,13 @@ export class ScrumToolboxComponent {
     });
   }
   deleteUser() {
-    this._ipcService.query(IpcChannels.custom.user.delete, {
+    this._ipcService.query(appIpcs.deleteUser, {
       id: 'b053e43d-ca55-4ede-b16d-ad4b2d0ed971',
     });
   }
 
   async retrieveAllUsers() {
-    const users = await this._ipcService.query(IpcChannels.custom.user.retrieveAll);
+    const users = await this._ipcService.query(appIpcs.retrieveAllUsers);
     console.log(users);
   }
 }

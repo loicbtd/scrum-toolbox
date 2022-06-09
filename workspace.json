@@ -17,15 +17,7 @@
             "polyfills": "apps/app-desktop-angular/src/polyfills.ts",
             "tsConfig": "apps/app-desktop-angular/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              "apps/app-desktop-angular/src/favicon.ico",
-              "apps/app-desktop-angular/src/assets",
-              {
-                "glob": "**",
-                "input": "libs/lib-common/src/assets/",
-                "output": "assets/"
-              }
-            ],
+            "assets": ["apps/app-desktop-angular/src/favicon.ico", "apps/app-desktop-angular/src/assets"],
             "styles": ["apps/app-desktop-angular/src/styles.scss"],
             "scripts": []
           },
@@ -89,14 +81,7 @@
             "outputPath": "dist/apps/app-desktop-electron",
             "main": "apps/app-desktop-electron/src/main.ts",
             "tsConfig": "apps/app-desktop-electron/tsconfig.app.json",
-            "assets": [
-              "apps/app-desktop-electron/src/assets",
-              {
-                "glob": "**",
-                "input": "libs/lib-common/src/assets/",
-                "output": "assets/"
-              }
-            ]
+            "assets": ["apps/app-desktop-electron/src/assets"]
           },
           "configurations": {
             "development": {},
@@ -220,31 +205,6 @@
         }
       }
     },
-    "lib-common": {
-      "root": "libs/lib-common",
-      "sourceRoot": "libs/lib-common/src",
-      "projectType": "library",
-      "targets": {
-        "build": {
-          "executor": "@nrwl/node:package",
-          "outputs": ["{options.outputPath}"],
-          "options": {
-            "outputPath": "dist/libs/lib-common",
-            "tsConfig": "libs/lib-common/tsconfig.lib.json",
-            "packageJson": "libs/lib-common/package.json",
-            "main": "libs/lib-common/src/index.ts",
-            "assets": ["libs/lib-common/*.md"]
-          }
-        },
-        "lint": {
-          "executor": "@nrwl/linter:eslint",
-          "outputs": ["{options.outputFile}"],
-          "options": {
-            "lintFilePatterns": ["libs/lib-common/**/*.ts"]
-          }
-        }
-      }
-    },
     "lib-electron": {
       "root": "libs/lib-electron",
       "sourceRoot": "libs/lib-electron/src",
@@ -292,8 +252,7 @@
             "lintFilePatterns": ["libs/lib-electron-web/**/*.ts"]
           }
         }
-      },
-      "tags": []
+      }
     },
     "lib-scrum-toolbox": {
       "root": "libs/lib-scrum-toolbox",

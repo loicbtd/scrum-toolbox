@@ -1,5 +1,5 @@
-import { appRoutes } from '@libraries/lib-common';
 import { BaseWindow } from '@libraries/lib-electron';
+import { appRoutes } from '@libraries/lib-scrum-toolbox';
 
 export class MainWindow extends BaseWindow {
   constructor() {

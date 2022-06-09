@@ -1,6 +1,13 @@
+import 'reflect-metadata';
+
 export * from './lib/background-tasks/base.background-task';
 
+export * from './lib/constants/dependencies.contant';
+
 export * from './lib/errors/electron-application.error';
+
+export * from './lib/interfaces/database-configuration.interface';
+export * from './lib/interfaces/database.interface';
 
 export * from './lib/services/background-tasks.service';
 export * from './lib/services/databases.service';

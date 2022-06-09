@@ -19,14 +19,11 @@ export class IpcRendererService {
     const listeningChannel = `${channel} ${uniqueId}`;
 
     const request: IpcRequestInterface<any> = { id: uniqueId, data: data };
-    console.log('PROMISE');
     return new Promise<T>((resolve, reject) => {
       const listener = (_: any, response: IpcResponseInterface<T>) => {
         if (response?.errorMessage) {
-          console.log('REJECT');
           reject(new Error(response.errorMessage));
         } else {
-          console.log('RESOLVE');
           resolve(response?.data as T);
         }
 
@@ -84,7 +81,23 @@ export class IpcRendererService {
     }
 
     this._ipc.on(handler.channel, async (event, request) => {
-      event.sender.send(`${handler.channel} ${request.id}`, await handler.handle(request.data));
+      const response: IpcResponseInterface<any> = {};
+
+      try {
+        response.data = handler.handle(request.data);
+      } catch (error: any) {
+        response.errorMessage = error.message;
+      }
+
+      if (typeof response.data === 'object' && typeof response.data.then === 'function') {
+        try {
+          response.data = await response.data;
+        } catch (error: any) {
+          response.errorMessage = error.message;
+        }
+      }
+
+      event.sender.send(`${handler.channel} ${request.id}`, response);
     });
 
     this._requestHandlers.push(handler);
@@ -115,6 +128,10 @@ export class IpcRendererService {
   }
 
   private generateUniqueId(): string {
-    return Math.random().toString(16).slice(2);
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c == 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 }

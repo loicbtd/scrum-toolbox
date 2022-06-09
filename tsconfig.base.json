@@ -17,10 +17,9 @@
     "baseUrl": ".",
     "paths": {
       "@libraries/lib-angular": ["libs/lib-angular/src/index.ts"],
-      "@libraries/lib-common": ["libs/lib-common/src/index.ts"],
       "@libraries/lib-electron": ["libs/lib-electron/src/index.ts"],
       "@libraries/lib-electron-web": ["libs/lib-electron-web/src/index.ts"],
-      "@liraries/lib-scrum-toolbox": ["libs/lib-scrum-toolbox/src/index.ts"]
+      "@libraries/lib-scrum-toolbox": ["libs/lib-scrum-toolbox/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

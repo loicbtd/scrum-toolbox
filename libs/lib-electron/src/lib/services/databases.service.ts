@@ -1,58 +1,59 @@
-import {
-  User,
-  Project,
-  Sprint,
-  SprintStatus,
-  Task,
-  TaskStatus,
-  UserSprint,
-  UserType,
-  UserUserTypeProject,
-  TaskType,
-} from '@liraries/lib-scrum-toolbox';
+import { TaskType } from '@libraries/lib-scrum-toolbox';
 import { existsSync, mkdirSync } from 'fs';
+import { injectable } from 'inversify';
 import { dirname, join } from 'path';
-import { Connection, ConnectionManager } from 'typeorm';
+import { DataSource } from 'typeorm';
+import { Application } from '../application';
 import { ElectronApplicationError } from '../errors/electron-application.error';
+import { DatabaseConfiguration } from '../interfaces/database-configuration.interface';
+import { Database } from '../interfaces/database.interface';
 
-const ENTITIES = [
-  User,
-  Sprint,
-  Project,
-  UserSprint,
-  SprintStatus,
-  UserType,
-  UserUserTypeProject,
-  Task,
-  TaskStatus,
-  TaskType,
-];
-
+@injectable()
 export class DatabasesService {
-  databasesPath: string[];
+  private _databases: Database[];
 
-  constructor(settingsPath: string[]) {
-    if (!settingsPath) {
-      throw new ElectronApplicationError('settingsPath is undefined');
-    }
-
-    this.databasesPath = [...settingsPath, 'databases'];
-
-    if (!existsSync(dirname(join(...this.databasesPath)))) {
-      mkdirSync(join(...this.databasesPath), { recursive: true });
-    }
+  constructor() {
+    this._databases = [];
   }
 
-  public async getConnection(databaseName: string): Promise<Connection> {
-    const connection = new ConnectionManager().create({
-      type: 'better-sqlite3',
-      database: join(...this.databasesPath, `${databaseName}.sqlite3`),
-      entities: ENTITIES,
-      synchronize: true,
-    });
+  public getDataSource(id: string): DataSource {
+    const database = this._databases.find((_) => _.id == id);
 
-    await connection.connect();
+    if (!database) {
+      throw new Error('database does not exist');
+    }
 
-    return connection;
+    return database.dataSource;
+  }
+
+  public async initialize(databaseConfigurations: DatabaseConfiguration[]): Promise<void> {
+    if (!databaseConfigurations) {
+      throw new ElectronApplicationError('databaseConfigurations is undefined');
+    }
+
+    for (const configuration of databaseConfigurations) {
+      let databaseDirectoryPath: string[];
+
+      if (configuration.customPath) {
+        databaseDirectoryPath = configuration.customPath;
+      } else {
+        databaseDirectoryPath = [...Application.getInstance().settingsDirectoryPath, 'databases'];
+      }
+
+      if (!existsSync(dirname(join(...databaseDirectoryPath)))) {
+        mkdirSync(join(...databaseDirectoryPath), { recursive: true });
+      }
+
+      const dataSource = new DataSource({
+        type: 'better-sqlite3',
+        entities: configuration.entities || [],
+        database: join(...databaseDirectoryPath, `${configuration.id}.sqlite3`),
+        synchronize: true,
+      });
+
+      await dataSource.initialize();
+
+      this._databases.push({ id: configuration.id, dataSource: dataSource });
+    }
   }
 }

@@ -1,30 +1,53 @@
 import { Application } from '@libraries/lib-electron';
 import { homedir } from 'os';
-import { CreateUserHandler } from './app/ipc-request-handlers/user/create-user.handler';
-import { TestHandler } from './app/ipc-request-handlers/test.handler';
+import { RetrieveAllUsersHandler } from './app/ipc-request-handlers/user/retrieve-all-users.handler';
 import { MainTray } from './app/main.tray';
+import {
+  Project,
+  Sprint,
+  SprintStatus,
+  Task,
+  TaskStatus,
+  TaskType,
+  User,
+  UserSprint,
+  UserType,
+  UserUserTypeProject,
+} from '@libraries/lib-scrum-toolbox';
 import { MainWindow } from './app/main.window';
-import { UpdateUserHandler } from './app/ipc-request-handlers/user/update-user.handler';
-import { DeleteUserHandler } from './app/ipc-request-handlers/user/delete-user.handler';
-import { RetrieveAlllUsersHandler } from './app/ipc-request-handlers/user/retreive-all-user.handler';
-
-const HANDLERS = [TestHandler, CreateUserHandler, UpdateUserHandler, DeleteUserHandler, RetrieveAlllUsersHandler];
 
 (async () => {
   const application = Application.getInstance();
 
   await application.initialize('app-desktop-angular', 4200, {
-    settingsPath: [homedir(), '.scrum-toolbox'],
-    enableDatabases: true,
+    databaseConfigurations: [
+      {
+        id: 'main',
+        entities: [
+          TaskType,
+          User,
+          Sprint,
+          Project,
+          UserSprint,
+          SprintStatus,
+          UserType,
+          UserUserTypeProject,
+          Task,
+          TaskStatus,
+          TaskType,
+        ],
+      },
+    ],
+    ipcRequestHandlers: [RetrieveAllUsersHandler],
+    settingsDirectoryPath: [homedir(), '.scrum-toolbox'],
   });
 
-  application.loadIpcRequestHandlers(HANDLERS);
+  // application.dependencies.bind<UsersService>('users').to(UsersService);
+  application.dependencies.bind<RetrieveAllUsersHandler>('RetrieveAllUsersHandler').to(RetrieveAllUsersHandler);
 
   application.loadTray(MainTray);
 
   application.loadWindow(MainWindow);
-
-  application.monitoringToolDatabaseConnection = await application.databases.getConnection(process.env.DATABASE_NAME);
 })();
 
 // if (SquirrelEvents.handleEvents()) {

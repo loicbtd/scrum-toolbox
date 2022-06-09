@@ -1,20 +1,21 @@
 import { ToadScheduler, AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
-import { Application } from '../application';
 import { BaseBackgroundTask } from '../background-tasks/base.background-task';
 import { ElectronApplicationError } from '../errors/electron-application.error';
+import { inject, injectable } from 'inversify';
+import { dependencies } from '../constants/dependencies.contant';
+import { LoggerService } from './logger.service';
 
+@injectable()
 export class BackgroundTasksService {
-  private _scheduler: ToadScheduler;
+  private readonly _scheduler: ToadScheduler;
 
-  constructor() {
+  constructor(@inject(dependencies.logger) private readonly _loggerService: LoggerService) {
     this._scheduler = new ToadScheduler();
   }
 
-  public stopAllTasks() {
-    this._scheduler.stop();
-  }
+  public startTask(taskType: new (...args: any[]) => BaseBackgroundTask): void {
+    const task = new taskType();
 
-  public startTask(task: BaseBackgroundTask) {
     if (this._scheduler.getById(task.id)) {
       this._scheduler.removeById(task.id);
     }
@@ -32,7 +33,7 @@ export class BackgroundTasksService {
             }
           },
           (error: Error) => {
-            Application.getInstance().logger.error(error.stack);
+            this._loggerService.error(error.stack);
             task.handleError(error);
           }
         )
@@ -40,7 +41,17 @@ export class BackgroundTasksService {
     );
   }
 
-  public stopTask(id: string) {
+  public startTasks(taskTypes: (new (...args: any[]) => BaseBackgroundTask)[]) {
+    for (const taskType of taskTypes) {
+      this.startTask(taskType);
+    }
+  }
+
+  public stopTask(id: string): void {
     this._scheduler.removeById(id);
+  }
+
+  public stopTasks(): void {
+    this._scheduler.stop();
   }
 }

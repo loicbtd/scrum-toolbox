@@ -1,8 +1,10 @@
 import { IpcRequestHandlerInterface, IpcRequestInterface, IpcResponseInterface } from '@libraries/lib-electron-web';
-import { ipcMain, ipcRenderer } from 'electron';
+import { ipcMain } from 'electron';
 import { IpcMainEvent } from 'electron/main';
+import { injectable } from 'inversify';
 import { Application } from '../application';
 
+@injectable()
 export class IpcMainService {
   private readonly _requestHandlers: IpcRequestHandlerInterface[];
 
@@ -45,7 +47,6 @@ export class IpcMainService {
       };
 
       ipcMain.on(listeningChannel, listener);
-      console.log('HANDLE');
 
       for (const window of Application.getInstance().windows) {
         window.webContents.send(channel, request);
@@ -58,7 +59,7 @@ export class IpcMainService {
     data?: any,
     progressAction?: (progressData: ProgressType) => void,
     endAction?: (lastData: LastType) => void
-  ) {
+  ): void {
     const uniqueId = this.generateUniqueId();
 
     const listeningChannel = `${channel} ${uniqueId}`;
@@ -88,31 +89,43 @@ export class IpcMainService {
     ipcMain.emit(channel, request);
   }
 
-  public addRequestHandler(handlerType: new () => IpcRequestHandlerInterface): void {
+  public addRequestHandler(handlerType: new (...args: any[]) => IpcRequestHandlerInterface): void {
     const handler = new handlerType();
 
     if (this._requestHandlers.some((_) => _.channel == handler.channel)) {
       return;
     }
 
-    // ipcMain.on(handler.channel, (event: IpcMainEvent, request: IpcRequestInterface<any>) => {
-    //   event.sender.send(`${handler.channel} ${request.id}`, handler.handle(request.data));
-    // });
+    ipcMain.on(handler.channel, async (event: IpcMainEvent, request: IpcRequestInterface<any>) => {
+      const response: IpcResponseInterface<any> = {};
 
-    ipcMain.on(handler.channel, (event: IpcMainEvent, request: IpcRequestInterface<any>) => {
-      event.sender.send(`${handler.channel} ${request.id}`, handler.handle(request.data));
+      try {
+        response.data = handler.handle(request.data);
+      } catch (error: any) {
+        response.errorMessage = error.message;
+      }
+
+      if (typeof response.data === 'object' && typeof response.data.then === 'function') {
+        try {
+          response.data = await response.data;
+        } catch (error: any) {
+          response.errorMessage = error.message;
+        }
+      }
+
+      event.sender.send(`${handler.channel} ${request.id}`, response);
     });
 
     this._requestHandlers.push(handler);
   }
 
-  public addRequestHandlers(handlerTypes: (new () => IpcRequestHandlerInterface)[]): void {
+  public addRequestHandlers(handlerTypes: (new (...args: any[]) => IpcRequestHandlerInterface)[]): void {
     for (const handlerType of handlerTypes) {
       this.addRequestHandler(handlerType);
     }
   }
 
-  public removeRequestHandler(handlerType: new () => IpcRequestHandlerInterface): void {
+  public removeRequestHandler(handlerType: new (...args: any[]) => IpcRequestHandlerInterface): void {
     const handler = new handlerType();
 
     if (!this._requestHandlers.some((_) => _.channel == handler.channel)) {
@@ -124,13 +137,17 @@ export class IpcMainService {
     this._requestHandlers.filter((_) => !(_.channel == handler.channel));
   }
 
-  public removeRequestHandlers(handlerTypes: (new () => IpcRequestHandlerInterface)[]): void {
+  public removeRequestHandlers(handlerTypes: (new (...args: any[]) => IpcRequestHandlerInterface)[]): void {
     for (const handlerType of handlerTypes) {
       this.removeRequestHandler(handlerType);
     }
   }
 
   private generateUniqueId(): string {
-    return Math.random().toString(16).slice(2);
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+      const r = (Math.random() * 16) | 0;
+      const v = c == 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
   }
 }
