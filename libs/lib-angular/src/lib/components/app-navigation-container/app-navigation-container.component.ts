@@ -330,14 +330,18 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
       }
 
       .avatar-navigation {
+        display: none;
         position: fixed;
         top: calc(var(--navigation-bar-heigth) + var(--navigation-bar-bottom-border-size));
         right: 10px;
-        display: flex;
         flex-direction: column;
         background-color: #fff;
         box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
         min-width: 200px;
+      }
+
+      .avatar-navigation.expanded {
+        display: flex;
       }
 
       .avatar-navigation a {

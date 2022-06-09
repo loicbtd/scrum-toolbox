@@ -42,7 +42,6 @@ import { MainWindow } from './app/main.window';
     settingsDirectoryPath: [homedir(), '.scrum-toolbox'],
   });
 
-  // application.dependencies.bind<UsersService>('users').to(UsersService);
   application.dependencies.bind<RetrieveAllUsersHandler>('RetrieveAllUsersHandler').to(RetrieveAllUsersHandler);
 
   application.loadTray(MainTray);
@@ -50,6 +49,7 @@ import { MainWindow } from './app/main.window';
   application.loadWindow(MainWindow);
 })();
 
+// TODO : restore and adapt squirrel update logic
 // if (SquirrelEvents.handleEvents()) {
 //   app.quit();
 // }

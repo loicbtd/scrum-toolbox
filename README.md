@@ -12,15 +12,15 @@ Le rapport de qualité du code de la solution est disponible ici : https://sonar
 
 ## 1.3. Stack technologique
 
-- Environnement de développement multi-plateformes : [Electron](https://www.electronjs.org/)
-- Langage de programmation : [TypeScript](https://www.typescriptlang.org/)
-- Plateforme logicielle : [Node.js](https://nodejs.org/)
-- Workspace : [Nx workspace](https://nx.dev/)
-- Framework frontend : [Angular](https://angular.io/)
-- Bibliothèque de composants Angular : [PrimeNG](https://primefaces.org/primeng/showcase)
-- Gestion des états Angular : [NGXS](https://www.ngxs.io/)
-- Framework  CSS : [PrimeFlex](https://www.primefaces.org/primeflex/display)
-- Pack d'icônes : [Font Awesome](https://fontawesome.com/)
+-   Environnement de développement multi-plateformes : [Electron](https://www.electronjs.org/)
+-   Langage de programmation : [TypeScript](https://www.typescriptlang.org/)
+-   Plateforme logicielle : [Node.js](https://nodejs.org/)
+-   Workspace : [Nx workspace](https://nx.dev/)
+-   Framework frontend : [Angular](https://angular.io/)
+-   Bibliothèque de composants Angular : [PrimeNG](https://primefaces.org/primeng/showcase)
+-   Gestion des états Angular : [NGXS](https://www.ngxs.io/)
+-   Framework CSS : [PrimeFlex](https://www.primefaces.org/primeflex/display)
+-   Pack d'icônes : [Font Awesome](https://fontawesome.com/)
 
 ## 1.4. Présentation de l'architecture
 
@@ -71,20 +71,26 @@ Ce projet de bibliothèque Electron contient le code source qui peut s'exécuter
 
 Il existe 5 types d'issues :
 
-* **User story** : Demande de fonctionnalité formulée tel que : « En tant que x, je souhaite y, afin de z »
-* **Documentation** : Demande de documentation
-* **Conception** : Demande de conception
-* **Bug** : Demande de résolution de bug
-* **Technical story** : Tâche technique autre
+-   **User story** : Demande de fonctionnalité formulée tel que : « En tant que x, je souhaite y, afin de z »
+-   **Documentation** : Demande de documentation
+-   **Conception** : Demande de conception
+-   **Bug** : Demande de résolution de bug
+-   **Technical story** : Tâche technique autre
 
 > NB : Ticket = Issue
 
 ## 2.2. Principaux scripts
 
-* `npm install` : installer les dépendances de la solution
-* `npm start` : démarrer la solution en mode de développement
+-   `npm install` : installer les dépendances de la solution
+-   `npm start` : démarrer la solution en mode de développement
 
 ## 2.3. Procédure d'implémentation d'une issue
+
+0. Créer un fichier .env en racine de l'espace de travail et le compléter avec les valeurs suivantes :
+
+    ```env
+    SOLUTION_ENVIRONMENT=development
+    ```
 
 1. Se rendre sur la liste des issues du projet
 
@@ -99,10 +105,9 @@ Il existe 5 types d'issues :
 6. Ajouter les fichiers au versionnement, les commiter et pousser la branche finalisée vers le dépôt de code
 
 7. Créer une demande de fusion « Pull Requests »
-   
 8. Faire relire son code par un autre membre de l'équipe
 
-9.  Procéder à la fusion de la branche
+9. Procéder à la fusion de la branche
 
 10. Clôturer l'issue
 
@@ -123,14 +128,13 @@ Il existe 5 types d'issues :
 
 **Installer Java 11**
 
-* Pour Windows, télécharger et installer le fichier suivant : https://aka.ms/download-jdk/microsoft-jdk-17.0.2.8.1-windows-x64.msi
-* Pour macOS, télécharger et installer le fichier suivant : https://aka.ms/download-jdk/microsoft-jdk-17.0.2.8.1-macOS-x64.pkg
+-   Pour Windows, télécharger et installer le fichier suivant : https://aka.ms/download-jdk/microsoft-jdk-17.0.2.8.1-windows-x64.msi
+-   Pour macOS, télécharger et installer le fichier suivant : https://aka.ms/download-jdk/microsoft-jdk-17.0.2.8.1-macOS-x64.pkg
 
 **Installer Node.js 16.15.0**
 
-* Pour Windows, télécharger et installer le fichier suivant : https://nodejs.org/dist/v16.15.0/node-v16.15.0-x64.msi
-* Pour macOS, télécharger et installer le fichier suivant : https://nodejs.org/dist/v16.15.0/node-v16.15.0.pkg
-
+-   Pour Windows, télécharger et installer le fichier suivant : https://nodejs.org/dist/v16.15.0/node-v16.15.0-x64.msi
+-   Pour macOS, télécharger et installer le fichier suivant : https://nodejs.org/dist/v16.15.0/node-v16.15.0.pkg
 
 ## 3.2. Installation des outils de développement
 
@@ -138,13 +142,13 @@ Il existe 5 types d'issues :
 
 **Installer l'IDE**
 
-* Pour Windows, télécharger et installer le fichier suivant : https://az764295.vo.msecnd.net/stable/dfd34e8260c270da74b5c2d86d61aee4b6d56977/VSCodeUserSetup-x64-1.66.2.exe
-* Pour macOS, télécharger et installer le fichier suivant : https://az764295.vo.msecnd.net/stable/dfd34e8260c270da74b5c2d86d61aee4b6d56977/VSCode-darwin-universal.zip
+-   Pour Windows, télécharger et installer le fichier suivant : https://az764295.vo.msecnd.net/stable/dfd34e8260c270da74b5c2d86d61aee4b6d56977/VSCodeUserSetup-x64-1.66.2.exe
+-   Pour macOS, télécharger et installer le fichier suivant : https://az764295.vo.msecnd.net/stable/dfd34e8260c270da74b5c2d86d61aee4b6d56977/VSCode-darwin-universal.zip
 
 **Installer les extensions**
 
-* [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
-* [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-* [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode)
-* [Angular Language Service](https://marketplace.visualstudio.com/items?itemName=Angular.ng-template)
-* [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
+-   [EditorConfig](https://marketplace.visualstudio.com/items?itemName=EditorConfig.EditorConfig)
+-   [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+-   [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode)
+-   [Angular Language Service](https://marketplace.visualstudio.com/items?itemName=Angular.ng-template)
+-   [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
