@@ -13,6 +13,3 @@ export * from './lib/entities/user-user-type-project.entity';
 export * from './lib/entities/task.entity';
 export * from './lib/entities/task-status.entity';
 export * from './lib/entities/task-type.entity';
-
-export * from './lib/models/ipc-response.model';
-export * from './lib/models/user-ipc-response.model';

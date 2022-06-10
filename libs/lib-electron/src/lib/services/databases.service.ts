@@ -1,4 +1,3 @@
-import { TaskType } from '@libraries/lib-scrum-toolbox';
 import { existsSync, mkdirSync } from 'fs';
 import { injectable } from 'inversify';
 import { dirname, join } from 'path';

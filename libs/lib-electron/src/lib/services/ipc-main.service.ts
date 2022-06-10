@@ -8,23 +8,6 @@ import { Application } from '../application';
 export class IpcMainService {
   private readonly _requestHandlers: IpcRequestHandlerInterface[];
 
-  // public static Expose(apiKey = 'electron') {
-  //   contextBridge.exposeInMainWorld(apiKey, {
-  //     onRequest(channel: string, listener: (_: any, response: IpcRequestInterface<any>) => void): void {
-  //       ipcRenderer.on(channel, listener);
-  //     },
-  //     onResponse(channel: string, listener: (_: any, response: IpcResponseInterface<any>) => void): void {
-  //       ipcRenderer.on(channel, listener);
-  //     },
-  //     send(channel: string, request: IpcRequestInterface<any>): void {
-  //       ipcRenderer.send(channel, request);
-  //     },
-  //     removeAllListeners(channel: string): void {
-  //       ipcRenderer.removeAllListeners(channel);
-  //     },
-  //   } as IpcInterface);
-  // }
-
   constructor() {
     this._requestHandlers = [];
   }
