@@ -86,6 +86,7 @@ export class IpcRendererService {
       try {
         response.data = handler.handle(request.data);
       } catch (error: any) {
+        response.data = undefined;
         response.errorMessage = error.message;
       }
 
@@ -93,6 +94,7 @@ export class IpcRendererService {
         try {
           response.data = await response.data;
         } catch (error: any) {
+          response.data = undefined;
           response.errorMessage = error.message;
         }
       }
