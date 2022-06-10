@@ -33,8 +33,9 @@ La solution est organisée par un espace de travail Nx tel que l'arborescence pr
    |--/app-desktop-electron
 |--/libs
    |--/lib-angular
-   |--/lib-common
    |--/lib-electron
+   |--/lib-electron-web
+   |--/lib-scrum-toolbox
 ```
 
 ### 1.4.1. Applications
@@ -57,13 +58,17 @@ Les bibliothèques sont contenues dans le dossier `/libs`
 
 Ce projet de bibliothèque Angular contient le code source qui peut s'exécuter dans une application Angular.
 
-**lib-common**
-
-Ce projet de bibliothèque TypeScript contient le code source qui peut être exécuté dans une application écrite en TypeScript.
-
 **lib-electron**
 
 Ce projet de bibliothèque Electron contient le code source qui peut s'exécuter dans une application Electron.
+
+**lib-electron-web**
+
+Ce projet de bibliothèque web contient le code source qui peut s'exécuter dans une application JavaScript. 
+
+**lib-scrum-toolbox**
+
+Ce projet de bibliothèque contient le code source inhérent à la logique métier du projet actuel afin de le rendre accessible depuis plusieurs applications.
 
 # 2. Règles de développement
 
