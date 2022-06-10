@@ -1,9 +1,7 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
 import { appIpcs, User } from '@libraries/lib-scrum-toolbox';
-import { inject, injectable } from 'inversify';
 
-@injectable()
 export class RetrieveAllUsersHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.retrieveAllUsers;
 

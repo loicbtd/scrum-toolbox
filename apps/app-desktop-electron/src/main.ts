@@ -15,6 +15,9 @@ import {
   UserUserTypeProject,
 } from '@libraries/lib-scrum-toolbox';
 import { MainWindow } from './app/main.window';
+import { CreateUserHandler } from './app/ipc-request-handlers/user/create-user.handler';
+import { DeleteUserHandler } from './app/ipc-request-handlers/user/delete-user.handler';
+import { UpdateUserHandler } from './app/ipc-request-handlers/user/update-user.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -38,11 +41,9 @@ import { MainWindow } from './app/main.window';
         ],
       },
     ],
-    ipcRequestHandlers: [RetrieveAllUsersHandler],
+    ipcRequestHandlers: [CreateUserHandler, DeleteUserHandler, RetrieveAllUsersHandler, UpdateUserHandler],
     settingsDirectoryPath: [homedir(), '.scrum-toolbox'],
   });
-
-  application.dependencies.bind<RetrieveAllUsersHandler>('RetrieveAllUsersHandler').to(RetrieveAllUsersHandler);
 
   application.loadTray(MainTray);
 
