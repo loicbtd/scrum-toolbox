@@ -1,6 +1,5 @@
 import { IpcInterface, IpcRequestInterface } from '@libraries/lib-electron-web';
-import { contextBridge, ipcRenderer } from 'electron';
-import { IpcRendererEvent } from 'electron/main';
+import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 
 contextBridge.exposeInMainWorld('electron', {
   on(channel: string, listener: (event: IpcRendererEvent, request: IpcRequestInterface<any>) => void): void {
