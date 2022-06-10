@@ -98,10 +98,6 @@ export class IpcMainService {
         }
       }
 
-      console.log('here');
-
-      console.log(response);
-
       event.sender.send(`${handler.channel} ${request.id}`, response);
     });
 
