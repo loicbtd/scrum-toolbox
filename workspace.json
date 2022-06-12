@@ -236,7 +236,7 @@
       "projectType": "library",
       "targets": {
         "build": {
-          "executor": "@nrwl/js:tsc",
+          "executor": "@nrwl/workspace:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/lib-electron-web",
@@ -260,13 +260,12 @@
       "projectType": "library",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:package",
+          "executor": "@nrwl/workspace:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/lib-scrum-toolbox",
-            "tsConfig": "libs/lib-scrum-toolbox/tsconfig.lib.json",
-            "packageJson": "libs/lib-scrum-toolbox/package.json",
             "main": "libs/lib-scrum-toolbox/src/index.ts",
+            "tsConfig": "libs/lib-scrum-toolbox/tsconfig.lib.json",
             "assets": ["libs/lib-scrum-toolbox/*.md"]
           }
         },
