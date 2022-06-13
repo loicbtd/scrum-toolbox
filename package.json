@@ -78,7 +78,6 @@
     "@nrwl/cli": "12.9.0",
     "@nrwl/eslint-plugin-nx": "12.9.0",
     "@nrwl/jest": "^12.9.0",
-    "@nrwl/js": "^13.10.5",
     "@nrwl/linter": "^12.9.0",
     "@nrwl/node": "^12.9.0",
     "@nrwl/schematics": "^8.12.11",
