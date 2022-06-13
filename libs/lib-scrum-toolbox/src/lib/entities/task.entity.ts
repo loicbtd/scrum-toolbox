@@ -1,4 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, ManyToMany, JoinTable } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  ManyToMany,
+  JoinTable,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Sprint } from './sprint.entity';
 import { Project } from './project.entity';
 import { TaskStatus } from './task-status.entity';
@@ -16,17 +26,23 @@ export class Task {
   @Column()
   description?: string;
 
-  @ManyToOne(() => TaskStatus, (taskStatus) => taskStatus.id, { eager: true })
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt?: Date;
+
+  @ManyToOne(() => TaskStatus, (taskStatus) => taskStatus.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'statusId' })
-  status?: TaskStatus;
+  status!: TaskStatus;
 
-  @ManyToOne(() => TaskType, (taskType) => taskType.id, { eager: true })
+  @ManyToOne(() => TaskType, (taskType) => taskType.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'typeId' })
-  type?: TaskType;
+  type!: TaskType;
 
-  @ManyToOne(() => Project, (project) => project.id, { eager: true })
+  @ManyToOne(() => Project, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
-  project?: Project;
+  project!: Project;
 
   @ManyToMany(() => User, (user) => user.tasks, { eager: true })
   @JoinTable()

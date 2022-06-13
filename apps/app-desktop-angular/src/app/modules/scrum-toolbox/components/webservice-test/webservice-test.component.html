@@ -1,8 +1,20 @@
-<p-button label="CREATE USER" (click)="createUser()"></p-button>
-<p-button label="UPDATE USER" (click)="updateUser()" *ngIf="currentUser"></p-button>
-<p-button label="DELETE USER" (click)="deleteUser()" *ngIf="currentUser"></p-button>
-<p-button label="GET ALL USER" (click)="retrieveAllUsers()"></p-button>
-<p-button label="GET USER" (click)="retrieveUser()" *ngIf="currentUser"></p-button>
-<p-button label="ACTIVATE USER" (click)="activateUser()" *ngIf="currentUser"></p-button>
-<p-button label="DESACTIVATE USER" (click)="deactivateUser()" *ngIf="currentUser"></p-button>
-<p-button label="LOGIN USER" (click)="login()"></p-button>
+<div>
+  <p-button label="INIT BD" (click)="initBD()"></p-button>
+</div>
+
+<div>
+  <p-button label="CREATE USER" (click)="createUser()"></p-button>
+  <p-button label="UPDATE USER" (click)="updateUser()" *ngIf="currentUser"></p-button>
+  <p-button label="DELETE USER" (click)="deleteUser()" *ngIf="currentUser"></p-button>
+  <p-button label="GET ALL USER" (click)="retrieveAllUsers()"></p-button>
+  <p-button label="GET USER" (click)="retrieveUser()" *ngIf="currentUser"></p-button>
+  <p-button label="ACTIVATE USER" (click)="activateUser()" *ngIf="currentUser"></p-button>
+  <p-button label="DESACTIVATE USER" (click)="deactivateUser()" *ngIf="currentUser"></p-button>
+  <p-button label="LOGIN USER" (click)="login()"></p-button>
+</div>
+<div>
+  <p-button label="create task" (click)="createTask()"></p-button>
+  <p-button label="retrieve all tasks" (click)="retrieveAllTasks()"></p-button>
+  <p-button label="assign task to user" (click)="assignTaskToUser()"></p-button>
+  <p-button label="assign task to sprint" (click)="assignTaskToSprint()"></p-button>
+</div>
