@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Project } from './project.entity';
 import { SprintStatus } from './sprint-status.entity';
 
@@ -16,11 +24,17 @@ export class Sprint {
   @Column({ type: 'date' })
   end_date?: string;
 
-  @ManyToOne(() => SprintStatus, (sprintStatus) => sprintStatus.id, { eager: true })
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt?: Date;
+
+  @ManyToOne(() => SprintStatus, (sprintStatus) => sprintStatus.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'statusId' })
   status?: SprintStatus;
 
-  @ManyToOne(() => Project, (project) => project.id, { eager: true })
+  @ManyToOne(() => Project, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
   project?: Project;
 }
