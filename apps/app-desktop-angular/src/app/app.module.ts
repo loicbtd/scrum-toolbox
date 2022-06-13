@@ -6,6 +6,7 @@ import { SharedModule } from './shared.module';
 import { Component } from '@angular/core';
 import { BlockUiService } from './global/services/block-ui.service';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
+import { LoginComponent } from './modules/login/login.component';
 
 @Component({
   selector: 'app-root',
@@ -35,7 +36,7 @@ export class AppComponent {
 }
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [AppComponent, LoginComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -48,6 +49,10 @@ export class AppComponent {
         {
           path: appRoutes.scrumToolbox.root,
           loadChildren: () => import('./modules/scrum-toolbox/scrum-toolbox.module').then((_) => _.ScrumToolboxModule),
+        },
+        {
+          path: appRoutes.login,
+          component: LoginComponent,
         },
         {
           path: '**',

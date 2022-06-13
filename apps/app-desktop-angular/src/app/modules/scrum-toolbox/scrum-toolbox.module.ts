@@ -17,11 +17,12 @@ import { appIpcs, appRoutes } from '@libraries/lib-scrum-toolbox';
       username="Firstname LASTNAME"
     >
       <ng-container navigationBarContent>Navigation bar content </ng-container>
-      Application content <p-button label="Test IPC" (click)="testIpc()"></p-button>
+      <p-button label="Test IPC" (click)="testIpc()"></p-button>
       <p-button label="CREATE USER" (click)="createUser()"></p-button>
       <p-button label="UPDATE USER" (click)="updateUser()"></p-button>
       <p-button label="DELETE USER" (click)="deleteUser()"></p-button>
       <p-button label="GET ALL USER" (click)="retrieveAllUsers()"></p-button>
+      <router-outlet></router-outlet>
     </app-navigation-container>
   `,
 })
@@ -106,6 +107,10 @@ export class ScrumToolboxComponent {
             path: appRoutes.scrumToolbox.all,
             component: ProjectsComponent,
           },
+          /* {
+            path: appRoutes.scrumToolbox.login,
+            component: LoginComponent,
+          }, */
           {
             path: '**',
             redirectTo: appRoutes.scrumToolbox.all,

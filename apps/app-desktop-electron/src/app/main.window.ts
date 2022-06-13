@@ -3,7 +3,7 @@ import { appRoutes } from '@libraries/lib-scrum-toolbox';
 
 export class MainWindow extends BaseWindow {
   constructor() {
-    super(appRoutes.scrumToolbox.root, {
+    super(appRoutes.login, {
       title: 'Scrum Toolbox',
       frame: true,
       resizable: true,
