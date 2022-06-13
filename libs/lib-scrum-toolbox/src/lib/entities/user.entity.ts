@@ -11,6 +11,9 @@ export class User {
   username?: string;
 
   @Column()
+  password?: string;
+
+  @Column()
   firstname?: string;
 
   @Column()
@@ -18,6 +21,9 @@ export class User {
 
   @CreateDateColumn()
   createdAt?: Date;
+
+  @Column({ default: true })
+  isActivated?: boolean;
 
   @ManyToMany(() => Task, (task) => task.users)
   tasks?: Task[];

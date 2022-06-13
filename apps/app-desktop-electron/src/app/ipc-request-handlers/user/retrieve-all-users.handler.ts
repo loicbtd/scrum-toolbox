@@ -5,8 +5,8 @@ import { appIpcs, User } from '@libraries/lib-scrum-toolbox';
 export class RetrieveAllUsersHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.retrieveAllUsers;
 
-  async handle() {
-    return await Application.getInstance()
+  async handle(): Promise<User[]> {
+    return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getDataSource('main')
       .getRepository<User>(User)
