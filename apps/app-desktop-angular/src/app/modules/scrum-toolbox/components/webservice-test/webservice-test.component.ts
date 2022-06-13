@@ -16,7 +16,7 @@ export class WebserviceTestComponent {
     u.username = 'titi';
     u.firstname = 'Toto';
     u.lastname = 'TITI';
-    u.password = 'MYPASSWORD';
+    u.password = 'Eligible-Clump0-Mothproof';
     this.currentUser = await this._ipcService.query(appIpcs.createUser, u);
   }
 
@@ -51,7 +51,7 @@ export class WebserviceTestComponent {
   async login() {
     await this._ipcService.query(appIpcs.login, {
       login: 'titi',
-      password: 'MYPASSWORD',
+      password: 'Eligible-Clump0-Mothproof',
     });
   }
 }
