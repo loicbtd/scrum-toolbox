@@ -3,16 +3,15 @@ import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
 import { appIpcs, User } from '@libraries/lib-scrum-toolbox';
 import * as bcrypt from 'bcrypt';
 
-export class CreateUserHandler implements IpcRequestHandlerInterface {
-  channel = appIpcs.createUser;
+export class LoginHandler implements IpcRequestHandlerInterface {
+  channel = appIpcs.login;
 
-  async handle(user: User): Promise<User> {
-    user.password = await bcrypt.hash(user.password, 10);
-    await Application.getInstance()
+  async handle(data: { login: string; password: string }): Promise<boolean> {
+    const user = await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getDataSource('main')
       .getRepository<User>(User)
-      .insert(user);
-    return user;
+      .findOneByOrFail({ username: data.login });
+    return bcrypt.compare(data.password, user.password);
   }
 }

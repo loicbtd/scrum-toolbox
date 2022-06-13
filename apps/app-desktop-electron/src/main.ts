@@ -18,6 +18,9 @@ import { MainWindow } from './app/main.window';
 import { CreateUserHandler } from './app/ipc-request-handlers/user/create-user.handler';
 import { DeleteUserHandler } from './app/ipc-request-handlers/user/delete-user.handler';
 import { UpdateUserHandler } from './app/ipc-request-handlers/user/update-user.handler';
+import { RetrieveUserHandler } from './app/ipc-request-handlers/user/retrieve-user.handler';
+import { UpdateStatusUserHandler } from './app/ipc-request-handlers/user/update-status-user.handler';
+import { LoginHandler } from './app/ipc-request-handlers/identities/login.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -41,7 +44,15 @@ import { UpdateUserHandler } from './app/ipc-request-handlers/user/update-user.h
         ],
       },
     ],
-    ipcRequestHandlers: [CreateUserHandler, DeleteUserHandler, RetrieveAllUsersHandler, UpdateUserHandler],
+    ipcRequestHandlers: [
+      CreateUserHandler,
+      DeleteUserHandler,
+      RetrieveAllUsersHandler,
+      UpdateUserHandler,
+      RetrieveUserHandler,
+      UpdateStatusUserHandler,
+      LoginHandler,
+    ],
     settingsDirectoryPath: [homedir(), '.scrum-toolbox'],
   });
 
