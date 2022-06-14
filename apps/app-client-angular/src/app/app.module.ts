@@ -8,6 +8,7 @@ import { BlockUiService } from './global/services/block-ui.service';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { LoginComponent } from './modules/login/login.component';
 import { MyProfileService, MyProfileStateModule, VisitedRoutesStateModule } from '@libraries/lib-angular';
+import { SignUpComponent } from './modules/signup/signup.component';
 
 @Component({
   selector: 'app-root',
@@ -58,6 +59,10 @@ export class AppComponent {
         {
           path: appRoutes.login,
           component: LoginComponent,
+        },
+        {
+          path: appRoutes.signup,
+          component: SignUpComponent,
         },
         {
           path: '**',
