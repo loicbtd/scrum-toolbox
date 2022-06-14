@@ -118,6 +118,38 @@ export class WebserviceTestComponent {
     await this._myProfileSystem.refresh<MyProfileModel>({ id: 'test', firstname: 'falut', lastname: 'dqfewewgrgrwggrwwrggrwewgewg' });
   }
 
+  async createProject() {
+    const p = new Project();
+    p.label = 'test';
+    p.description = 'test';
+    await this._ipcService.query(appIpcs.createProject, p);
+  }
+
+  async retrieveAllProjects(): Promise<Project[]> {
+    const p: Project[] = await this._ipcService.query(appIpcs.retrieveAllProjects);
+    console.log(p);
+    return p;
+  }
+  
+  async updateProject() {
+    await this._ipcService.query(appIpcs.updateProject, {
+      id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+      label: 'test',
+    });
+  }
+
+  async deleteProject() {
+    await this._ipcService.query(appIpcs.deleteProject, {
+      id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+    });
+  }
+
+  async retrieveProject(): Promise<Project> {
+    const p: Project = await this._ipcService.query(appIpcs.retrieveProject, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' });
+    console.log(p);
+    return p;
+  }
+
   async createSprintStatus() {
     const sprintStatus = new SprintStatus();
     sprintStatus.label = 'CREATED';
@@ -149,7 +181,7 @@ export class WebserviceTestComponent {
     sprint.start_date = new Date().toString();
     sprint.end_date = new Date().toString();
     sprint.project = new Project();
-    sprint.project.id = '5b93ebb9-ee28-4ac3-af7b-8141178762f9';
+    sprint.project = (await this.retrieveAllProjects())[0];
     sprint.status = (await this.retrieveAllSprintStatus())[0];
 
     await this._ipcService.query(appIpcs.createSprint, sprint);

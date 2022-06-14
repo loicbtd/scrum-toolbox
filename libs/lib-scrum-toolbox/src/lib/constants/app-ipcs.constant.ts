@@ -35,4 +35,9 @@ export const appIpcs = {
   deleteSprintStatus: 'deleteSprintStatus',
   retrieveSprintStatus: 'retrieveSprintStatus',
   retrieveAllSprintsStatus: 'retrieveAllSprintsStatus',
+  createProject: 'createProject',
+  updateProject: 'updateProject',
+  deleteProject: 'deleteProject',
+  retrieveAllProjects: 'retrieveAllProjects',
+  retrieveProject: 'retrieveProject',
 };

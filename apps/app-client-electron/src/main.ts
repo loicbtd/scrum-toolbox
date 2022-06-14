@@ -52,6 +52,11 @@ import { DeleteSprintStatusHandler } from './app/ipc-request-handlers/sprint-sta
 import { RetrieveSprintStatusHandler } from './app/ipc-request-handlers/sprint-status/retrieve-sprint-status.handler';
 import { UpdateSprintStatusHandler } from './app/ipc-request-handlers/sprint-status/update-sprint-status.handler';
 import { RetrieveAllSprintStatusHandler } from './app/ipc-request-handlers/sprint-status/retrieve-all-sprints-status.handler';
+import { CreateProjectHandler } from './app/ipc-request-handlers/project/create-project.handler';
+import { RetrieveProjectHandler } from './app/ipc-request-handlers/project/retrieve-project.handler';
+import { RetrieveAllProjectsHandler } from './app/ipc-request-handlers/project/retrieve-all-projects.handler';
+import { UpdateProjectHandler } from './app/ipc-request-handlers/project/update-project.handler';
+import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-project.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -118,6 +123,12 @@ import { RetrieveAllSprintStatusHandler } from './app/ipc-request-handlers/sprin
       RetrieveSprintStatusHandler,
       UpdateSprintStatusHandler,
       RetrieveAllSprintStatusHandler,
+
+      CreateProjectHandler,
+      DeleteProjectHandler,
+      RetrieveProjectHandler,
+      RetrieveAllProjectsHandler,
+      UpdateProjectHandler,
     ],
     settingsDirectoryPath: [homedir(), '.scrum-toolbox'],
   });

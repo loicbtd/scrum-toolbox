@@ -7,4 +7,5 @@ export class SprintStatus {
 
   @Column()
   label?: string;
+  static ACTIVE: SprintStatus | undefined;
 }
