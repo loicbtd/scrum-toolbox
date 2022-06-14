@@ -10,6 +10,7 @@ import { LoginComponent } from './modules/login/login.component';
 import {
   AuthenticationGuard,
   MyProfileService,
+  MyProfileState,
   MyProfileStateModule,
   VisitedRoutesStateModule,
 } from '@libraries/lib-angular';
@@ -83,7 +84,7 @@ export class AppComponent implements OnInit {
     ),
     SharedModule,
     NgxsModule.forRoot(),
-    NgxsStoragePluginModule.forRoot(),
+    NgxsStoragePluginModule.forRoot({ key: [MyProfileState] }),
     MyProfileStateModule,
     VisitedRoutesStateModule,
   ],
