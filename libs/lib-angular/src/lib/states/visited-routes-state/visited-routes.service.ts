@@ -5,12 +5,14 @@ import { Remember } from './visited-routes.actions';
 
 @Injectable({ providedIn: 'root' })
 export class VisitedRoutesService {
-  constructor(private readonly router: Router, private readonly store: Store) {
-    this.store.dispatch(new Remember(this.router.url));
+  constructor(router: Router, store: Store) {
+    store.dispatch(new Remember(router.url));
 
     router.events.subscribe((event) => {
+      console.log('router changes');
+
       if (event instanceof NavigationEnd) {
-        this.store.dispatch(new Remember(event.url));
+        store.dispatch(new Remember(event.url));
       }
     });
   }

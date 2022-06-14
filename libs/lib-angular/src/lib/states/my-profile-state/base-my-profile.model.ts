@@ -1,4 +1,4 @@
-export class MyProfileModel {
+export class BaseMyProfileModel {
   id: string;
 
   email?: string;

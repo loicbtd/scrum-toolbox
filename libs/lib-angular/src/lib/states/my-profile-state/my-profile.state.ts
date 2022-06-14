@@ -1,7 +1,7 @@
 import { Action, State, StateContext } from '@ngxs/store';
 import { Injectable } from '@angular/core';
 import { Refresh } from './my-profile.actions';
-import { MyProfileModel } from './my-profile.model';
+import { BaseMyProfileModel } from './base-my-profile.model';
 
 @State<string>({
   name: 'MyProfileState',
@@ -9,7 +9,7 @@ import { MyProfileModel } from './my-profile.model';
 @Injectable()
 export class MyProfileState {
   @Action(Refresh)
-  refresh(context: StateContext<MyProfileModel>, action: Refresh) {
+  refresh(context: StateContext<BaseMyProfileModel>, action: Refresh) {
     context.setState(action.profile);
   }
 }
