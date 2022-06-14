@@ -40,6 +40,7 @@ export class WebserviceTestComponent {
     u.username = 'titi';
     u.firstname = 'Toto';
     u.lastname = 'TITI';
+    u.password = 'toto';
     this.currentUser = await this._ipcService.query(appIpcs.createUser, u);
   }
 
@@ -60,7 +61,7 @@ export class WebserviceTestComponent {
   }
 
   async retrieveUser() {
-    console.log(await this._ipcService.query(appIpcs.retrieveUser, { id: this.currentUser.id }));
+    console.log(await this._ipcService.query(appIpcs.retrieveUser, { id: 'esfzefzefbkjzefhbuzen' }));
   }
 
   async activateUser() {
