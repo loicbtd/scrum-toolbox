@@ -29,27 +29,17 @@ export class LoginComponent {
       return;
     }
 
-    /* if (await this._ipcService.query(appIpcs.login, {
-      login: this.form.get('login')?.value,
-      password: this.form.get('password')?.value,
-    }
-    ) == true) {
-      //TODO redirect to proper page
-      console.log("youhou");
-
-    } else {
-      //TODO username or password not matching
-      console.log("Oupsi");
-
-    }; */
-
     try {
       const user = await this._ipcService.query(appIpcs.login, {
         login: this.form.get('login')?.value,
         password: this.form.get('password')?.value,
       });
       console.log(user);
+      //TODO redirect to proper page
+      this.router.navigate([appRoutes.scrumToolbox.root]);
+      
     } catch (error: any) {
+      //TODO username or password not matching
       switch (error.message) {
         case errorsName.incorrectUsername:
           console.log('INCORRECT USERNAME');
