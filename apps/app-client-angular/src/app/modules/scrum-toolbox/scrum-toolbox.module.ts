@@ -2,12 +2,13 @@ import { NgModule, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { ProjectsComponent } from './components/projects/projects.component';
-import { MyProfileState, NavigationItemModel } from '@libraries/lib-angular';
+import { MyProfileState, NavigationItemInterface } from '@libraries/lib-angular';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { MyProfileModel } from '../../global/models/my-profile.model';
+import { UsersCrudComponent } from './components/users-crud/users-crud.component';
 
 @Component({
   template: `
@@ -23,38 +24,37 @@ import { MyProfileModel } from '../../global/models/my-profile.model';
   `,
 })
 export class ScrumToolboxComponent {
-  navigationItems: NavigationItemModel[] = [
-    new NavigationItemModel({
+  navigationItems: NavigationItemInterface[] = [
+    {
       label: 'Product backlog',
       iconClass: 'fa-solid fa-clipboard-list',
       routerLink: ['#'],
-    }),
-    new NavigationItemModel({
+    },
+    {
       label: 'Sprint backlog',
       iconClass: 'fa-solid fa-list-check',
       routerLink: ['#'],
-    }),
-    new NavigationItemModel({ label: 'Team', iconClass: 'fa-solid fa-user', routerLink: ['#'] }),
-    new NavigationItemModel({ label: 'Metrics', iconClass: 'fa-solid fa-chart-line', routerLink: ['#'] }),
-
-    new NavigationItemModel({
+    },
+    { label: 'Team', iconClass: 'fa-solid fa-user', routerLink: ['#'] },
+    { label: 'Metrics', iconClass: 'fa-solid fa-chart-line', routerLink: ['#'] },
+    {
       label: 'TEST',
       iconClass: 'fa-solid fa-flask-vial',
       routerLink: [appRoutes.scrumToolbox.test],
-    }),
+    },
   ];
 
-  avatarNavigationItems: NavigationItemModel[] = [
-    new NavigationItemModel({
+  avatarNavigationItems: NavigationItemInterface[] = [
+    {
       label: 'Règlages',
       iconClass: 'fa-solid fa-gear',
       routerLink: ['profile'],
-    }),
-    new NavigationItemModel({
+    },
+    {
       label: 'Déconnexion',
       iconClass: 'fa-solid fa-clipboard-list',
       routerLink: ['logout'],
-    }),
+    },
   ];
 
   @Select(MyProfileState) myProfile$: Observable<MyProfileModel>;
@@ -73,7 +73,7 @@ export class ScrumToolboxComponent {
 }
 
 @NgModule({
-  declarations: [ScrumToolboxComponent, ProjectsComponent, WebserviceTestComponent],
+  declarations: [ScrumToolboxComponent, ProjectsComponent, WebserviceTestComponent, UsersCrudComponent],
   providers: [ScrumToolboxModule],
   imports: [
     SharedModule,
@@ -93,6 +93,10 @@ export class ScrumToolboxComponent {
           {
             path: appRoutes.scrumToolbox.test,
             component: WebserviceTestComponent,
+          },
+          {
+            path: appRoutes.scrumToolbox.usersCrud,
+            component: UsersCrudComponent,
           },
           {
             path: '**',

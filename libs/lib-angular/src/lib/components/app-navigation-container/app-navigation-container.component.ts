@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, NgModule, Output } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResponsiveService } from '../../services/responsive.service';
-import { NavigationItemModel } from '../../models/navigation-item.model';
+import { NavigationItemInterface } from '../../models/navigation-item.model';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -38,9 +38,9 @@ export class AppNavigationContainerComponent {
     return this._responsiveService.isMobile$;
   }
 
-  @Input() navigationItems: NavigationItemModel[] = [];
+  @Input() navigationItems: NavigationItemInterface[] = [];
 
-  @Input() avatarNavigationItems: NavigationItemModel[] = [];
+  @Input() avatarNavigationItems: NavigationItemInterface[] = [];
 
   @Input() logoImageSource = '';
 
@@ -60,6 +60,12 @@ export class AppNavigationContainerComponent {
   @Output() desktopNavigationExpandedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(private readonly _responsiveService: ResponsiveService) {}
+
+  async act(action?: () => void | Promise<void>) {
+    if (action) {
+      await action();
+    }
+  }
 }
 
 @Component({
@@ -81,7 +87,7 @@ export class AppNavigationContainerComponent {
   ],
 })
 export class AppNavigationContainerMobileComponent extends AppNavigationContainerComponent {
-  @Input() navigationItems: NavigationItemModel[];
+  @Input() navigationItems: NavigationItemInterface[];
 
   _navigationExpanded = false;
 
@@ -113,7 +119,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
           <img [src]="avatarImageSource" alt="user avatar" />
         </div>
         <div class="avatar-navigation">
-          <a [routerLink]="item.routerLink" *ngFor="let item of avatarNavigationItems" (click)="item.action()">
+          <a [routerLink]="item.routerLink" *ngFor="let item of avatarNavigationItems" (click)="act(item.action)">
             <div *ngIf="item.iconClass" class="icon-container">
               <i [class]="item.iconClass"></i>
             </div>
@@ -129,7 +135,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         collapsed: !desktopNavigationExpanded
       }"
     >
-      <a [routerLink]="item.routerLink" *ngFor="let item of navigationItems" (click)="item.action()">
+      <a [routerLink]="item.routerLink" *ngFor="let item of navigationItems" (click)="act()">
         <div *ngIf="item.iconClass" class="icon-container">
           <i [class]="item.iconClass"></i>
         </div>
