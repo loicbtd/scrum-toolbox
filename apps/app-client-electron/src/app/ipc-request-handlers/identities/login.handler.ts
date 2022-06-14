@@ -7,19 +7,20 @@ export class LoginHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.login;
 
   async handle(data: { login: string; password: string }): Promise<User> {
+    let user: User;
     try {
-      const user = await Application.getInstance()
+      user = await Application.getInstance()
         .dependencies.get<DatabasesService>(dependencies.databases)
         .getDataSource('main')
         .getRepository<User>(User)
         .findOneByOrFail({ username: data.login });
-      if (await bcrypt.compare(data.password, user.password)) {
-        return user;
-      } else {
-        throw new Error(errorsName.incorrectPassword);
-      }
     } catch (err) {
       throw new Error(errorsName.incorrectUsername);
+    }
+    if (await bcrypt.compare(data.password, user.password)) {
+      return user;
+    } else {
+      throw new Error(errorsName.incorrectPassword);
     }
   }
 }
