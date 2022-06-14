@@ -9,15 +9,15 @@ export class UserUserTypeProject {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
-  @ManyToOne(() => User, (user) => user.id, { eager: true })
+  @ManyToOne(() => User, (user) => user.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'userId' })
   user?: Sprint;
 
-  @ManyToOne(() => UserType, (userType) => userType.id, { eager: true })
+  @ManyToOne(() => UserType, (userType) => userType.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'userTypeId' })
   userType?: Sprint;
 
-  @ManyToOne(() => Project, (project) => project.id, { eager: true })
+  @ManyToOne(() => Project, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
   project?: Sprint;
 }

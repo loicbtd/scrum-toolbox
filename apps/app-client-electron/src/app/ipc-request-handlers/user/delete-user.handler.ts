@@ -5,11 +5,11 @@ import { appIpcs, User } from '@libraries/lib-scrum-toolbox';
 export class DeleteUserHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.deleteUser;
 
-  async handle(id: string) {
+  async handle(id: string): Promise<void> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getDataSource('main')
       .getRepository<User>(User)
-      .delete({ id: id });
+      .delete(id);
   }
 }

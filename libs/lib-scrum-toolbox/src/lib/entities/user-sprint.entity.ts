@@ -7,14 +7,14 @@ export class UserSprint {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
-  @ManyToOne(() => User, (user) => user.id)
+  @ManyToOne(() => User, (user) => user.id, { nullable: false })
   @JoinColumn({ name: 'userId' })
   user: User;
 
-  @ManyToOne(() => Sprint, (sprint) => sprint.id)
+  @ManyToOne(() => Sprint, (sprint) => sprint.id, { nullable: false })
   @JoinColumn({ name: 'sprintId' })
   sprint: Sprint;
 
-  @Column()
+  @Column({ nullable: false })
   capacity?: number;
 }

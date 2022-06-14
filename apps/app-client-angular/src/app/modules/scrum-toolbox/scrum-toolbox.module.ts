@@ -1,11 +1,11 @@
-import { NgModule } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
-import { Component } from '@angular/core';
 import { ProjectsComponent } from './components/projects/projects.component';
 import { NavigationItemModel } from '@libraries/lib-angular';
 import { IpcService } from '../../global/services/ipc.service';
-import { appIpcs, appRoutes } from '@libraries/lib-scrum-toolbox';
+import { appRoutes } from '@libraries/lib-scrum-toolbox';
+import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
 
 @Component({
   template: `
@@ -17,11 +17,7 @@ import { appIpcs, appRoutes } from '@libraries/lib-scrum-toolbox';
       username="Firstname LASTNAME"
     >
       <ng-container navigationBarContent>Navigation bar content </ng-container>
-      <p-button label="Test IPC" (click)="testIpc()"></p-button>
-      <p-button label="CREATE USER" (click)="createUser()"></p-button>
-      <p-button label="UPDATE USER" (click)="updateUser()"></p-button>
-      <p-button label="DELETE USER" (click)="deleteUser()"></p-button>
-      <p-button label="GET ALL USER" (click)="retrieveAllUsers()"></p-button>
+
       <router-outlet></router-outlet>
     </app-navigation-container>
   `,
@@ -40,6 +36,12 @@ export class ScrumToolboxComponent {
     }),
     new NavigationItemModel({ label: 'Team', iconClass: 'fa-solid fa-user', routerLink: ['#'] }),
     new NavigationItemModel({ label: 'Metrics', iconClass: 'fa-solid fa-chart-line', routerLink: ['#'] }),
+
+    new NavigationItemModel({
+      label: 'TEST',
+      iconClass: 'fa-solid fa-flask-vial',
+      routerLink: [appRoutes.scrumToolbox.test],
+    }),
   ];
 
   avatarNavigationItems: NavigationItemModel[] = [
@@ -60,37 +62,10 @@ export class ScrumToolboxComponent {
   testIpc() {
     this._ipcService.query('test');
   }
-  async createUser() {
-    const user = await this._ipcService.query(appIpcs.createUser, {
-      username: 'titi',
-      firstname: 'Toto',
-      lastname: 'TITI',
-    });
-    console.log(user);
-  }
-
-  updateUser() {
-    this._ipcService.query(appIpcs.updateUser, {
-      id: 'b053e43d-ca55-4ede-b16d-ad4b2d0ed971',
-      username: 'titi',
-      firstname: 'Tartenpion',
-      lastname: 'TITI',
-    });
-  }
-  deleteUser() {
-    this._ipcService.query(appIpcs.deleteUser, {
-      id: 'b053e43d-ca55-4ede-b16d-ad4b2d0ed971',
-    });
-  }
-
-  async retrieveAllUsers() {
-    const users = await this._ipcService.query(appIpcs.retrieveAllUsers);
-    console.log(users);
-  }
 }
 
 @NgModule({
-  declarations: [ScrumToolboxComponent, ProjectsComponent],
+  declarations: [ScrumToolboxComponent, ProjectsComponent, WebserviceTestComponent],
   providers: [ScrumToolboxModule],
   imports: [
     SharedModule,
@@ -106,6 +81,10 @@ export class ScrumToolboxComponent {
           {
             path: appRoutes.scrumToolbox.all,
             component: ProjectsComponent,
+          },
+          {
+            path: appRoutes.scrumToolbox.test,
+            component: WebserviceTestComponent,
           },
           {
             path: '**',
