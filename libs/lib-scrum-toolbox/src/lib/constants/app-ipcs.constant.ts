@@ -23,4 +23,5 @@ export const appIpcs = {
   deleteTaskStatus: 'deleteTaskStatus',
   retrieveTaskStatus: 'retrieveTaskStatus',
   retrieveAllTasksStatus: 'retrieveAllTasksStatus',
+  getAppVersion: 'getAppVersion',
 };

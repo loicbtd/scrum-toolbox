@@ -14,7 +14,7 @@ import {
   UserType,
   UserUserTypeProject,
 } from '@libraries/lib-scrum-toolbox';
-import { MainWindow } from './app/main.window';
+import { MainWindow } from './app/windows/main.window';
 import { CreateUserHandler } from './app/ipc-request-handlers/user/create-user.handler';
 import { DeleteUserHandler } from './app/ipc-request-handlers/user/delete-user.handler';
 import { UpdateUserHandler } from './app/ipc-request-handlers/user/update-user.handler';
@@ -38,11 +38,14 @@ import { DeleteTaskStatusHandler } from './app/ipc-request-handlers/task-status/
 import { RetrieveTaskStatusHandler } from './app/ipc-request-handlers/task-status/retrieve-task-status.handler';
 import { RetrieveAllTaskStatussHandler } from './app/ipc-request-handlers/task-status/retrieve-all-tasks-status.handler';
 import { UpdateTaskStatusHandler } from './app/ipc-request-handlers/task-status/update-task-status.handler';
+import { StartupWindow } from './app/windows/startup.window';
+import { GetAppVersionHandler } from './app/ipc-request-handlers/get-app-version.handler';
+import { environment } from './environments/environment';
 
 (async () => {
   const application = Application.getInstance();
 
-  await application.initialize('app-client-angular', 4200, {
+  await application.initialize('app-client-angular', 4200, environment.version, {
     databaseConfigurations: [
       {
         id: 'main',
@@ -89,11 +92,18 @@ import { UpdateTaskStatusHandler } from './app/ipc-request-handlers/task-status/
       RetrieveTaskStatusHandler,
       RetrieveAllTaskStatussHandler,
       UpdateTaskStatusHandler,
+
+      GetAppVersionHandler,
     ],
     settingsDirectoryPath: [homedir(), '.scrum-toolbox'],
   });
 
   application.loadTray(MainTray);
+
+  application.loadWindow(StartupWindow);
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  application.unloadAllWindows(StartupWindow);
 
   application.loadWindow(MainWindow);
 })();

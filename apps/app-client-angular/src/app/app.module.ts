@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, OnInit } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
@@ -7,7 +7,16 @@ import { Component } from '@angular/core';
 import { BlockUiService } from './global/services/block-ui.service';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { LoginComponent } from './modules/login/login.component';
-import { MyProfileService, MyProfileStateModule, VisitedRoutesStateModule } from '@libraries/lib-angular';
+import {
+  AuthenticationGuard,
+  MyProfileService,
+  MyProfileStateModule,
+  VisitedRoutesStateModule,
+} from '@libraries/lib-angular';
+import { MyProfileModel } from './global/models/my-profile.model';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
+import { NgxsModule } from '@ngxs/store';
+import { IpcService } from './global/services/ipc.service';
 
 @Component({
   selector: 'app-root',
@@ -28,15 +37,19 @@ import { MyProfileService, MyProfileStateModule, VisitedRoutesStateModule } from
   `,
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
-  constructor(private readonly _blockUiService: BlockUiService, private readonly _test: MyProfileService) {}
-
-  async ngOnInit() {
-    await this._test.refresh({ id: 'sweff', email: 'efwrf' });
-  }
+export class AppComponent implements OnInit {
+  constructor(
+    private readonly _blockUiService: BlockUiService,
+    private readonly _myProfileService: MyProfileService,
+    private readonly _ipcService: IpcService
+  ) {}
 
   get $uiBlocked() {
     return this._blockUiService.$uiBlocked;
+  }
+
+  async ngOnInit() {
+    await this._myProfileService.refresh<MyProfileModel>({ id: 'test', firstname: 'Loïc', lastname: 'Bertrand' });
   }
 }
 
@@ -54,6 +67,8 @@ export class AppComponent {
         {
           path: appRoutes.scrumToolbox.root,
           loadChildren: () => import('./modules/scrum-toolbox/scrum-toolbox.module').then((_) => _.ScrumToolboxModule),
+          canActivate: [AuthenticationGuard],
+          data: { notLoggedInRedirectionPath: [appRoutes.login] },
         },
         {
           path: appRoutes.login,
@@ -67,6 +82,8 @@ export class AppComponent {
       { initialNavigation: 'enabledBlocking', useHash: true }
     ),
     SharedModule,
+    NgxsModule.forRoot(),
+    NgxsStoragePluginModule.forRoot(),
     MyProfileStateModule,
     VisitedRoutesStateModule,
   ],
