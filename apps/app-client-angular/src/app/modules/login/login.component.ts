@@ -2,23 +2,28 @@ import { Component } from '@angular/core';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { appIpcs, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
+import { IpcService } from '../../global/services/ipc.service';
+
 
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+
   routes = appRoutes;
 
   form = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    login: ['', [Validators.required, Validators.minLength(4)]],
     password: ['', [Validators.required]],
   });
   
   constructor(
     // private readonly signinService: SigninService,
+    private readonly _ipcService: IpcService,
     private readonly fb: FormBuilder,
-    public readonly router: Router
+    public readonly router: Router,
   ) {}
 
 
@@ -26,14 +31,30 @@ export class LoginComponent {
     if (this.form.invalid) {
       return;
     }
+    
+    /* if (await this._ipcService.query(appIpcs.login, {
+      login: this.form.get('login')?.value,
+      password: this.form.get('password')?.value,
+    }
+    ) == true) {
+      //TODO redirect to proper page
+      console.log("youhou");
+      
+    } else {
+      //TODO username or password not matching
+      console.log("Oupsi");
+      
+    }; */
 
-    /* try {
-      await this.signinService.signin({
-        email: this.form.get('email')?.value,
+    try {
+      await this._ipcService.query(appIpcs.login, {
+        login: this.form.get('login')?.value,
         password: this.form.get('password')?.value,
-      });
-    } catch (error) {
-      throw new ImpossibleToSigninError();
-    }*/
+      })
+    } catch(error) {
+      console.log(error);
+      
+    }
+
   } 
 }
