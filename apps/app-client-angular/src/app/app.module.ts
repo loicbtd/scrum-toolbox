@@ -42,7 +42,7 @@ export class AppComponent {
 }
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent],
+  declarations: [AppComponent, LoginComponent, SignUpComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

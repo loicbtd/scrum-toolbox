@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastMessageService } from '@libraries/lib-angular';
 
-import { appRoutes, errorsName } from '@libraries/lib-scrum-toolbox';
+import { appRoutes, errorsName, User } from '@libraries/lib-scrum-toolbox';
 import { appIpcs } from '@libraries/lib-scrum-toolbox';
 
 import { MessageService } from 'primeng/api';
@@ -14,48 +15,67 @@ import { IpcService } from '../../global/services/ipc.service';
   styleUrls: ['./signup.component.scss'],
 })
 export class SignUpComponent {
-  routes = appRoutes;
-
-  form = this.fb.group({
-    login: ['', [Validators.required, Validators.minLength(4)]],
-    password: ['', [Validators.required]],
-  });
-
   constructor(
-    // private readonly signinService: SigninService,
     private readonly _ipcService: IpcService,
     private readonly fb: FormBuilder,
     public readonly router: Router,
-    private messageService: MessageService
+    private messageService: ToastMessageService,
+    private messageService_: MessageService
   ) {}
 
-  showError(summary_: string, detail_: string) {
-    this.messageService.add({severity:'error', summary: summary_, detail: detail_});
+  formUp = this.fb.group({
+    login: ['', [Validators.required, Validators.minLength(4)]],
+    password: [
+      '',
+      [
+        Validators.required,
+        Validators.pattern(/(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&].{6,}/),
+        Validators.minLength(6),
+      ],
+    ],
+    firstname: ['', Validators.required],
+    lastname: ['', Validators.required],
+  });
+
+  redirectToSigin() {
+    this.router.navigate([appRoutes.login]);
   }
 
   async submitForm() {
-    if (this.form.invalid) {
+    if (this.formUp.invalid) {
       return;
     }
 
     try {
-      const user = await this._ipcService.query(appIpcs.login, {
-        login: this.form.get('login')?.value,
-        password: this.form.get('password')?.value,
-      });
-      console.log(user);
-      //TODO le truc dans app.module pour refresh local storage
-      //TODO redirect to proper page
-      this.router.navigate([appRoutes.scrumToolbox.root]);
-      
+      const user = new User();
+      user.username = this.formUp.get('login')?.value;
+      user.firstname = this.formUp.get('firstname')?.value;
+      user.lastname = this.formUp.get('lastname')?.value;
+      user.password = this.formUp.get('password')?.value;
+      user.createdAt = new Date();
+
+      await this._ipcService.query(appIpcs.createUser, user);
+
+      this.messageService.showSuccess('You can now log you in.', 'Account created');
+
+      this.router.navigate([appRoutes.login]);
+
     } catch (error: any) {
       switch (error.message) {
-        case errorsName.incorrectUsername:
-          this.showError('Wrong Username', 'Username cannot be found, please create an account.');
+        case errorsName.usernameAlreadyExists:
+          this.messageService_.add({
+            severity: 'error',
+            summary: 'Username already taken',
+            detail: 'Please change your username.',
+          });
           break;
-        case errorsName.incorrectPassword:
-          this.showError('Wrong Password', 'Please check your passsword and username.');
-          break;
+        default:
+          console.log(error.message);
+          this.messageService_.add({
+            severity: 'error',
+            summary: 'Account not created',
+            detail: 'Please contact an admin.',
+          });
       }
     }
   }
