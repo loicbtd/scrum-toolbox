@@ -22,7 +22,7 @@ import { UpdateUserHandler } from './app/ipc-request-handlers/user/update-user.h
 (async () => {
   const application = Application.getInstance();
 
-  await application.initialize('app-desktop-angular', 4200, {
+  await application.initialize('app-client-angular', 4200, {
     databaseConfigurations: [
       {
         id: 'main',

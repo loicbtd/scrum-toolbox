@@ -1,4 +1,4 @@
-name: Deploy desktop app installers
+name: Deploy desktop installers
 
 on:
   push:
@@ -6,8 +6,8 @@ on:
       - master
     paths:
       - .github/workflows/deploy-installers.yml
-      - apps/app-desktop-angular/**
-      - apps/app-desktop-electron/**
+      - apps/app-client-angular/**
+      - apps/app-client-electron/**
       - libs/**
 
 concurrency:

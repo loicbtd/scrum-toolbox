@@ -27,10 +27,10 @@
     ]
   },
   "projects": {
-    "app-desktop-angular": {
+    "app-client-angular": {
       "tags": []
     },
-    "app-desktop-electron": {
+    "app-client-electron": {
       "tags": []
     },
     "lib-angular": {

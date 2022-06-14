@@ -4,18 +4,18 @@
   "appId": "fr.utbm.scrum-toolbox",
   "artifactName": "app.${ext}",
   "win": {
-    "icon": "libs/lib-common/src/assets/images/icon.ico",
+    "icon": "apps/app-client-electron/src/assets/images/icon.ico",
     "publisherName": "UTBM",
     "target": "nsis"
   },
   "linux": {
-    "icon": "libs/lib-common/src/assets/images/icon.png",
-    "category": "AudioVideo",
+    "icon": "apps/app-client-electron/src/assets/images/icon.png",
+    "category": "Utility",
     "target": "AppImage"
   },
   "mac": {
-    "icon": "libs/lib-common/src/assets/images/icon512x512.png",
-    "category": "public.app-category.developer-tools",
+    "icon": "apps/app-client-electron/src/assets/images/icon512x512.png",
+    "category": "public.app-category.utilities",
     "target": "dmg"
   }
 }

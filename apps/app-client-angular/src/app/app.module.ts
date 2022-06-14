@@ -7,6 +7,7 @@ import { Component } from '@angular/core';
 import { BlockUiService } from './global/services/block-ui.service';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { LoginComponent } from './modules/login/login.component';
+import { MyProfileService, MyProfileStateModule, VisitedRoutesStateModule } from '@libraries/lib-angular';
 
 @Component({
   selector: 'app-root',
@@ -28,7 +29,11 @@ import { LoginComponent } from './modules/login/login.component';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  constructor(private readonly _blockUiService: BlockUiService) {}
+  constructor(private readonly _blockUiService: BlockUiService, private readonly _test: MyProfileService) {}
+
+  async ngOnInit() {
+    await this._test.refresh({ id: 'sweff', email: 'efwrf' });
+  }
 
   get $uiBlocked() {
     return this._blockUiService.$uiBlocked;
@@ -62,6 +67,8 @@ export class AppComponent {
       { initialNavigation: 'enabledBlocking', useHash: true }
     ),
     SharedModule,
+    MyProfileStateModule,
+    VisitedRoutesStateModule,
   ],
   bootstrap: [AppComponent],
 })

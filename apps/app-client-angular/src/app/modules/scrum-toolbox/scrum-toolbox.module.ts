@@ -107,10 +107,6 @@ export class ScrumToolboxComponent {
             path: appRoutes.scrumToolbox.all,
             component: ProjectsComponent,
           },
-          /* {
-            path: appRoutes.scrumToolbox.login,
-            component: LoginComponent,
-          }, */
           {
             path: '**',
             redirectTo: appRoutes.scrumToolbox.all,

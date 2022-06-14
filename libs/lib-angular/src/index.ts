@@ -11,3 +11,14 @@ export * from './lib/pipes/duration.pipe';
 export * from './lib/services/responsive.service';
 export * from './lib/services/theme.service';
 export * from './lib/services/toast-message.service';
+
+export * from './lib/states/my-profile-state/my-profile-configuration.interface';
+export * from './lib/states/my-profile-state/my-profile-state.module';
+export * from './lib/states/my-profile-state/my-profile.actions';
+export * from './lib/states/my-profile-state/my-profile.model';
+export * from './lib/states/my-profile-state/my-profile.service';
+export * from './lib/states/my-profile-state/my-profile.state';
+export * from './lib/states/visited-routes-state/visited-routes-state.module';
+export * from './lib/states/visited-routes-state/visited-routes.actions';
+export * from './lib/states/visited-routes-state/visited-routes.service';
+export * from './lib/states/visited-routes-state/visited-routes.state';

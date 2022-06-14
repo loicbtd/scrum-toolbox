@@ -29,8 +29,8 @@ La solution est organisée par un espace de travail Nx tel que l'arborescence pr
 ```
 /
 |--/apps
-   |--/app-desktop-angular
-   |--/app-desktop-electron
+   |--/app-client-angular
+   |--/app-client-electron
 |--/libs
    |--/lib-angular
    |--/lib-electron
@@ -42,11 +42,11 @@ La solution est organisée par un espace de travail Nx tel que l'arborescence pr
 
 Les applications sont contenues dans le dossier `/apps`
 
-**app-desktop-angular**
+**app-client-angular**
 
 Ce projet d'application Angular contient le code source de l'application de bureau des différentes interfaces web encapsulées dans l'application bureau.
 
-**app-desktop-electron**
+**app-client-electron**
 
 Ce projet d'application Electron contient le code source de l'application de bureau qui permet d'encapsuler l'application web dans une fenêtre du système d'exploitation.
 
