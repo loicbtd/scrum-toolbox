@@ -2,6 +2,7 @@ import { Application, DatabasesService, dependencies } from '@libraries/lib-elec
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
 import { appIpcs, errorsName, User } from '@libraries/lib-scrum-toolbox';
 import * as bcrypt from 'bcrypt';
+import { EntityNotFoundError } from 'typeorm';
 
 export class LoginHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.login;
@@ -14,8 +15,12 @@ export class LoginHandler implements IpcRequestHandlerInterface {
         .getDataSource('main')
         .getRepository<User>(User)
         .findOneByOrFail({ username: data.login });
-    } catch (err) {
-      throw new Error(errorsName.incorrectUsername);
+    } catch (error: any) {
+      if (error instanceof EntityNotFoundError) {
+        throw new Error(errorsName.incorrectUsername);
+      } else {
+        throw error;
+      }
     }
     if (await bcrypt.compare(data.password, user.password)) {
       return user;

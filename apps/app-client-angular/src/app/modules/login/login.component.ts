@@ -14,15 +14,12 @@ import { IpcService } from '../../global/services/ipc.service';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-  routes = appRoutes;
-
   form = this.fb.group({
     login: ['', [Validators.required, Validators.minLength(4)]],
     password: ['', [Validators.required]],
   });
 
   constructor(
-    // private readonly signinService: SigninService,
     private readonly _ipcService: IpcService,
     private readonly fb: FormBuilder,
     public readonly router: Router,
@@ -30,7 +27,11 @@ export class LoginComponent {
   ) {}
 
   showError(summary_: string, detail_: string) {
-    this.messageService.add({severity:'error', summary: summary_, detail: detail_});
+    this.messageService.add({ severity: 'error', summary: summary_, detail: detail_ });
+  }
+
+  redirectToSignup() {
+    this.router.navigate([appRoutes.signup]);
   }
 
   async submitForm() {
@@ -47,7 +48,6 @@ export class LoginComponent {
       //TODO le truc dans app.module pour refresh local storage
       //TODO redirect to proper page
       this.router.navigate([appRoutes.scrumToolbox.root]);
-      
     } catch (error: any) {
       switch (error.message) {
         case errorsName.incorrectUsername:

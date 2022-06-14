@@ -3,6 +3,7 @@ export const appRoutes = {
     root: 'startup',
   },
   login: 'login',
+  signup: 'signup',
   scrumToolbox: {
     root: 'scrumToolbox',
     mainMenu: 'mainMenu',

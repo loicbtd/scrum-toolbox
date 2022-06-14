@@ -4,7 +4,7 @@
         <img src="assets/images/icon.png" alt="Image" height="50" class="mb-3">
         <div class="text-900 text-3xl font-medium mb-3">Welcome Back</div>
         <span class="text-600 font-medium line-height-3">Don't have an account?</span>
-        <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
+        <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer" (click)="redirectToSignup()">Create today!</a>
     </div>
 
     <div>
@@ -74,10 +74,6 @@
 
             <div class="form-element">
                 <div class="flex align-items-center justify-content-between mb-6">
-                    <div class="flex align-items-center">
-                        <p-checkbox id="rememberme" [binary]="true" styleClass="mr-2"></p-checkbox>
-                        <label for="rememberme" class="text-900">Remember me</label>
-                    </div>
                     <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
                 </div>
             </div>
