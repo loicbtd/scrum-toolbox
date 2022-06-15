@@ -2,13 +2,15 @@ import { NgModule, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { ProjectsComponent } from './components/projects/projects.component';
-import { MyProfileService, MyProfileState, NavigationItemInterface } from '@libraries/lib-angular';
+import { AuthenticationService, MyProfileState, NavigationItemInterface } from '@libraries/lib-angular';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { MyProfileModel } from '../../global/models/my-profile.model';
-import { UsersCrudComponent } from './components/users-crud/users-crud.component';
+import { CrudUsersComponent } from './components/crud-users/crud-users.component';
+import { AdministrationComponent } from './components/administration/administration.component';
+import { CrudProjectsComponent } from './components/crud-projects/crud-projects.component';
 
 @Component({
   template: `
@@ -17,7 +19,7 @@ import { UsersCrudComponent } from './components/users-crud/users-crud.component
       [avatarNavigationItems]="avatarNavigationItems"
       logoImageSource="assets/images/icon.png"
       avatarImageSource="assets/images/avatar.png"
-      [username]="getFormattedUsername((myProfile$ | async)?.firstname, (myProfile$ | async)?.lastname)"
+      [username]="getFormattedUsername((myProfile$ | async)?.user?.firstname, (myProfile$ | async)?.user?.lastname)"
     >
       <router-outlet></router-outlet>
     </app-navigation-container>
@@ -46,17 +48,15 @@ export class ScrumToolboxComponent {
 
   avatarNavigationItems: NavigationItemInterface[] = [
     {
-      label: 'Users management',
-      iconClass: 'fa-solid fa-user',
-      routerLink: [appRoutes.scrumToolbox.usersCrud],
+      label: 'Administration',
+      iconClass: 'fa-solid fa-gear',
+      routerLink: [appRoutes.scrumToolbox.administration.root],
     },
     {
       label: 'Déconnexion',
       iconClass: 'fa-solid fa-clipboard-list',
       separatorAbove: true,
-      action: async () => {
-        await this._myProfileService.refresh({ isLoggedIn: false });
-      },
+      action: async () => await this._authenticationService.logout([appRoutes.login]),
     },
   ];
 
@@ -74,11 +74,18 @@ export class ScrumToolboxComponent {
     return `${formattedFirstname} ${formattedLastname}`;
   }
 
-  constructor(private readonly _myProfileService: MyProfileService) {}
+  constructor(private readonly _authenticationService: AuthenticationService) {}
 }
 
 @NgModule({
-  declarations: [ScrumToolboxComponent, ProjectsComponent, WebserviceTestComponent, UsersCrudComponent],
+  declarations: [
+    ScrumToolboxComponent,
+    ProjectsComponent,
+    WebserviceTestComponent,
+    CrudUsersComponent,
+    CrudProjectsComponent,
+    AdministrationComponent,
+  ],
   providers: [ScrumToolboxModule],
   imports: [
     SharedModule,
@@ -100,8 +107,22 @@ export class ScrumToolboxComponent {
             component: WebserviceTestComponent,
           },
           {
-            path: appRoutes.scrumToolbox.usersCrud,
-            component: UsersCrudComponent,
+            path: appRoutes.scrumToolbox.administration.root,
+            component: AdministrationComponent,
+            children: [
+              {
+                component: CrudUsersComponent,
+                path: appRoutes.scrumToolbox.administration.crudUsers,
+              },
+              {
+                component: CrudProjectsComponent,
+                path: appRoutes.scrumToolbox.administration.crudProjects,
+              },
+              {
+                path: '**',
+                redirectTo: appRoutes.scrumToolbox.administration.crudUsers,
+              },
+            ],
           },
           {
             path: '**',

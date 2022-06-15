@@ -69,7 +69,7 @@
       </tr>
     </ng-template>
     <ng-template pTemplate="summary">
-      <div class="flex p-ai-center p-jc-between">In total there are {{ items ? items.length : 0 }} products.</div>
+      <div class="flex p-ai-center p-jc-between">Items count : {{ items ? items.length : 0 }}</div>
     </ng-template>
   </p-table>
 </div>
@@ -78,19 +78,24 @@
   <ng-template pTemplate="content">
     <div class="field">
       <label for="username">Username</label>
-      <input type="text" pInputText id="username" [(ngModel)]="item.username" required />
-      <small class="p-invalid" *ngIf="submitted && !item.username">Username is required.</small>
+      <input type="text" pInputText id="username" [(ngModel)]="item.username" required autofocus />
+      <small class="p-invalid" *ngIf="submitted && !item.username">Required field</small>
     </div>
-    <!-- <div class="field">
+    <div *ngIf="isCreationMode" class="field">
+      <label for="password">Password</label>
+      <input type="password" pPassword id="password" [(ngModel)]="item.password" required />
+      <small class="p-invalid" *ngIf="submitted && !item.password">Required field</small>
+    </div>
+    <div class="field">
       <label for="firstname">Firstname</label>
       <input type="text" pInputText id="firstname" [(ngModel)]="item.firstname" required />
-      <small class="p-invalid" *ngIf="submitted && !item.username">Firstname is required.</small>
+      <small class="p-invalid" *ngIf="submitted && !item.username">Required field</small>
     </div>
     <div class="field">
       <label for="lastname">Lastname</label>
       <input type="text" pInputText id="lastname" [(ngModel)]="item.lastname" required />
-      <small class="p-invalid" *ngIf="submitted && !item.lastname">Lastname is required.</small>
-    </div> -->
+      <small class="p-invalid" *ngIf="submitted && !item.lastname">Required field</small>
+    </div>
     <div class="field flex flex-column">
       <label for="isActivated">Activation</label>
       <p-inputSwitch inputId="isActivated" [(ngModel)]="item.isActivated"></p-inputSwitch>

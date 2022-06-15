@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MyProfileService } from '@libraries/lib-angular';
+import { AuthenticationService } from '@libraries/lib-angular';
 import { appIpcs, Project, Sprint, SprintStatus, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
 import { MyProfileModel } from '../../../../global/models/my-profile.model';
 import { IpcService } from '../../../../global/services/ipc.service';
@@ -11,7 +11,7 @@ import { IpcService } from '../../../../global/services/ipc.service';
 export class WebserviceTestComponent {
   currentUser!: User;
 
-  constructor(private readonly _ipcService: IpcService, private readonly _myProfileSystem: MyProfileService) {}
+  constructor(private readonly _ipcService: IpcService, private readonly _myProfileSystem: AuthenticationService) {}
 
   async initBD() {
     let taskType, type, color;
@@ -42,7 +42,7 @@ export class WebserviceTestComponent {
     u.username = 'titi';
     u.firstname = 'Toto';
     u.lastname = 'TITI';
-    u.password = 'password'
+    u.password = 'password';
     this.currentUser = await this._ipcService.query(appIpcs.createUser, u);
   }
 
@@ -63,7 +63,7 @@ export class WebserviceTestComponent {
   }
 
   async retrieveUser() {
-    console.log(await this._ipcService.query(appIpcs.retrieveUser, { id: this.currentUser.id }));
+    console.log(await this._ipcService.query(appIpcs.retrieveUser, { id: 'esfzefzefbkjzefhbuzen' }));
   }
 
   async activateUser() {
@@ -115,10 +115,6 @@ export class WebserviceTestComponent {
     });
   }
 
-  async changeUsername() {
-    await this._myProfileSystem.refresh<MyProfileModel>({ id: 'test', firstname: 'falut', lastname: 'dqfewewgrgrwggrwwrggrwewgewg' });
-  }
-
   async createProject() {
     const p = new Project();
     p.label = 'test';
@@ -131,7 +127,7 @@ export class WebserviceTestComponent {
     console.log(p);
     return p;
   }
-  
+
   async updateProject() {
     await this._ipcService.query(appIpcs.updateProject, {
       id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
@@ -146,7 +142,9 @@ export class WebserviceTestComponent {
   }
 
   async retrieveProject(): Promise<Project> {
-    const p: Project = await this._ipcService.query(appIpcs.retrieveProject, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' });
+    const p: Project = await this._ipcService.query(appIpcs.retrieveProject, {
+      id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+    });
     console.log(p);
     return p;
   }
@@ -169,13 +167,15 @@ export class WebserviceTestComponent {
   }
 
   async retrieveAllSprintStatus(): Promise<SprintStatus[]> {
-    return await this._ipcService.query(appIpcs.retrieveAllSprintsStatus)
+    return await this._ipcService.query(appIpcs.retrieveAllSprintsStatus);
   }
 
   async retrieveSprintStatus() {
-    console.log(await this._ipcService.query(appIpcs.retrieveSprintStatus, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' }));
+    console.log(
+      await this._ipcService.query(appIpcs.retrieveSprintStatus, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' })
+    );
   }
-  
+
   async createSprint() {
     const sprint = new Sprint();
     sprint.label = 'Sprint 1';
@@ -195,9 +195,13 @@ export class WebserviceTestComponent {
   async retrieveAllSprints() {
     console.log(await this._ipcService.query(appIpcs.retrieveAllSprints));
   }
-  
+
   async retrieveAllSprintsByProject() {
-    console.log(await this._ipcService.query(appIpcs.retrieveAllSprintsByProject, { projectId: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' }));
+    console.log(
+      await this._ipcService.query(appIpcs.retrieveAllSprintsByProject, {
+        projectId: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+      })
+    );
   }
 
   async deleteSprint() {

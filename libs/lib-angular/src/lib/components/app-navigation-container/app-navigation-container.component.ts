@@ -380,6 +380,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         color: #000;
         height: 30px;
         align-items: center;
+        cursor: pointer;
       }
 
       .avatar-navigation a:hover {
