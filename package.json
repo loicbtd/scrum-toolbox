@@ -56,9 +56,9 @@
     "fs-extra": "^10.0.0",
     "iconv-lite": "^0.6.3",
     "inversify": "^6.0.1",
-    "primeflex": "^3.1.0",
-    "primeicons": "^4.1.0",
-    "primeng": "^12.2.3",
+    "primeflex": "^3.2.1",
+    "primeicons": "^5.0.0",
+    "primeng": "^13.4.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.5",
     "toad-scheduler": "^1.6.0",
@@ -68,7 +68,9 @@
     "zone.js": "0.11.5"
   },
   "devDependencies": {
+    "@angular-devkit/architect": "^0.1400.2",
     "@angular-devkit/build-angular": "14.0.1",
+    "@angular-devkit/core": "^14.0.2",
     "@angular-eslint/eslint-plugin": "13.2.1",
     "@angular-eslint/eslint-plugin-template": "13.2.1",
     "@angular-eslint/schematics": "^12.7.0",
