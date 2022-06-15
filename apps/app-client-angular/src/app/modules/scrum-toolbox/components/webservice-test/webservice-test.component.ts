@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MyProfileService } from '@libraries/lib-angular';
+import { AuthenticationService } from '@libraries/lib-angular';
 import { appIpcs, Project, Sprint, SprintStatus, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
 import { MyProfileModel } from '../../../../global/models/my-profile.model';
 import { IpcService } from '../../../../global/services/ipc.service';
@@ -11,7 +11,7 @@ import { IpcService } from '../../../../global/services/ipc.service';
 export class WebserviceTestComponent {
   currentUser!: User;
 
-  constructor(private readonly _ipcService: IpcService, private readonly _myProfileSystem: MyProfileService) {}
+  constructor(private readonly _ipcService: IpcService, private readonly _myProfileSystem: AuthenticationService) {}
 
   async initBD() {
     let taskType, type, color;
@@ -112,14 +112,6 @@ export class WebserviceTestComponent {
     await this._ipcService.query(appIpcs.assignTaskToSprint, {
       taskId: 'c365e2e8-ac9f-4239-85d6-2b60e0e2ca36',
       sprintId: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
-    });
-  }
-
-  async changeUsername() {
-    await this._myProfileSystem.refresh<MyProfileModel>({
-      id: 'test',
-      firstname: 'falut',
-      lastname: 'dqfewewgrgrwggrwwrggrwewgewg',
     });
   }
 

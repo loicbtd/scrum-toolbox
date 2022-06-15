@@ -10,7 +10,7 @@ import { LoginComponent } from './modules/login/login.component';
 import {
   IsAuthenticatedGuard,
   IsNotAuthenticatedGuard,
-  MyProfileService,
+  AuthenticationService,
   MyProfileState,
   MyProfileStateModule,
   VisitedRoutesStateModule,
@@ -72,6 +72,7 @@ export class AppComponent {
         {
           path: appRoutes.signup,
           component: SignUpComponent,
+          canActivate: [IsNotAuthenticatedGuard],
         },
         {
           path: '**',

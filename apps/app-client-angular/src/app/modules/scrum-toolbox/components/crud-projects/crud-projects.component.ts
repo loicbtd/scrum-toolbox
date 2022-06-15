@@ -1,14 +1,16 @@
 import { Component } from '@angular/core';
-import { ToastMessageService } from '@libraries/lib-angular';
+import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
 import { appIpcs, User } from '@libraries/lib-scrum-toolbox';
-import { IpcService } from '../../../../../app/global/services/ipc.service';
+import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
+import { Store } from '@ngxs/store';
+import { MyProfileModel } from '../../../../global/models/my-profile.model';
 
 @Component({
-  templateUrl: './users-crud.component.html',
-  styleUrls: ['./users-crud.component.scss'],
+  templateUrl: './crud-projects.component.html',
+  styleUrls: ['./crud-projects.component.scss'],
 })
-export class UsersCrudComponent {
+export class CrudProjectsComponent {
   dialog: boolean;
 
   items: User[];
@@ -19,10 +21,15 @@ export class UsersCrudComponent {
 
   submitted: boolean;
 
+  get isCreationMode() {
+    return !this.item.id;
+  }
+
   constructor(
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
-    private readonly _ipcService: IpcService
+    private readonly _ipcService: IpcService,
+    private readonly _store: Store
   ) {}
 
   async ngOnInit() {
@@ -43,11 +50,18 @@ export class UsersCrudComponent {
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         for (const item of this.selectedItems) {
+          const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
+
+          if (myProfile.user.id == item.id) {
+            this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
+            continue;
+          }
+
           try {
             await this._ipcService.query(appIpcs.deleteUser, item.id);
             this.items = this.items.filter((_) => _.id !== item.id);
           } catch (error) {
-            this._toastMessageService.showError(`Error while deleting item`);
+            this._toastMessageService.showError('Error while deleting item');
           }
         }
         this.selectedItems = [];
@@ -63,6 +77,13 @@ export class UsersCrudComponent {
   }
 
   async deleteItem(item: User) {
+    const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
+
+    if (myProfile.user.id == item.id) {
+      this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
+      return;
+    }
+
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
       header: 'Confirm',
@@ -93,16 +114,16 @@ export class UsersCrudComponent {
         await this._ipcService.query(appIpcs.updateUser, this.item);
         this.items[this.findIndexById(this.item.id)] = this.item;
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
-      } catch (error) {
-        this._toastMessageService.showError(`Error while updating item`);
+      } catch (error: any) {
+        this._toastMessageService.showError(error.message, `Error while updating item`);
       }
     } else {
       try {
         this.item = await this._ipcService.query<User>(appIpcs.createUser, this.item);
         this.items.push(this.item);
         this._toastMessageService.showSuccess('Item Created', 'Successful');
-      } catch (error) {
-        this._toastMessageService.showError(`Error while updating item`);
+      } catch (error: any) {
+        this._toastMessageService.showError(error.message, `Error while creating item`);
       }
     }
 
