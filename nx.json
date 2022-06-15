@@ -12,9 +12,10 @@
   },
   "tasksRunnerOptions": {
     "default": {
-      "runner": "@nrwl/workspace/tasks-runners/default",
+      "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build", "lint", "test", "e2e", "build-storybook"]
+        "cacheableOperations": ["build", "lint", "test", "e2e", "build-storybook"],
+        "parallel": 1
       }
     }
   },
@@ -26,29 +27,6 @@
       }
     ]
   },
-  "projects": {
-    "app-client-angular": {
-      "tags": []
-    },
-    "app-client-electron": {
-      "tags": []
-    },
-    "lib-angular": {
-      "tags": []
-    },
-    "lib-electron": {
-      "tags": []
-    },
-    "lib-electron-web": {
-      "tags": []
-    },
-    "lib-scrum-toolbox": {
-      "tags": []
-    }
-  },
-  "cli": {
-    "defaultCollection": "@nrwl/angular"
-  },
   "generators": {
     "@nrwl/angular:application": {
       "style": "scss",
@@ -57,12 +35,12 @@
       "e2eTestRunner": "none"
     },
     "@nrwl/angular:library": {
-      "style": "scss",
       "linter": "eslint",
       "unitTestRunner": "none"
     },
     "@nrwl/angular:component": {
       "style": "scss"
     }
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/nx-schema.json"
 }

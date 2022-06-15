@@ -2,6 +2,7 @@
   "version": 2,
   "projects": {
     "app-client-angular": {
+      "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
       "projectType": "application",
       "root": "apps/app-client-angular",
       "sourceRoot": "apps/app-client-angular/src",
@@ -67,9 +68,11 @@
             "lintFilePatterns": ["apps/app-client-angular/src/**/*.ts", "apps/app-client-angular/src/**/*.html"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "app-client-electron": {
+      "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
       "root": "apps/app-client-electron",
       "sourceRoot": "apps/app-client-electron/src",
       "projectType": "application",
@@ -106,6 +109,9 @@
           "configurations": {
             "development": {
               "buildTarget": "app-client-electron:build:development"
+            },
+            "production": {
+              "buildTarget": "app-client-electron:build:production"
             }
           }
         },
@@ -113,6 +119,7 @@
           "executor": "nx-electron:package",
           "options": {},
           "configurations": {
+            "development": {},
             "production": {
               "name": "app-client-electron",
               "frontendProject": "app-client-angular",
@@ -126,6 +133,7 @@
           "executor": "nx-electron:make",
           "options": {},
           "configurations": {
+            "development": {},
             "production": {
               "name": "app-client-electron",
               "frontendProject": "app-client-angular",
@@ -140,9 +148,11 @@
             "lintFilePatterns": ["apps/app-client-electron/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "lib-angular": {
+      "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
       "projectType": "library",
       "root": "libs/lib-angular",
       "sourceRoot": "libs/lib-angular/src",
@@ -170,14 +180,12 @@
           }
         },
         "storybook": {
-          "executor": "@nrwl/storybook:storybook",
+          "executor": "@storybook/angular:start-storybook",
           "options": {
-            "uiFramework": "@storybook/angular",
             "port": 4400,
-            "config": {
-              "configFolder": "libs/lib-angular/.storybook"
-            },
-            "projectBuildConfig": "lib-angular:build-storybook"
+            "configDir": "libs/lib-angular/.storybook",
+            "browserTarget": "lib-angular:build-storybook",
+            "compodoc": false
           },
           "configurations": {
             "ci": {
@@ -186,16 +194,14 @@
           }
         },
         "build-storybook": {
-          "executor": "@nrwl/storybook:build",
+          "executor": "@storybook/angular:build-storybook",
           "outputs": ["{options.outputPath}"],
           "options": {
-            "uiFramework": "@storybook/angular",
-            "outputPath": "dist/storybook/lib-angular",
-            "config": {
-              "configFolder": "libs/lib-angular/.storybook"
-            },
-            "projectBuildConfig": "lib-angular:build-storybook",
-            "styles": ["@fortawesome/fontawesome-free/css/all.css"]
+            "styles": ["@fortawesome/fontawesome-free/css/all.css"],
+            "outputDir": "dist/storybook/lib-angular",
+            "configDir": "libs/lib-angular/.storybook",
+            "browserTarget": "lib-angular:build-storybook",
+            "compodoc": false
           },
           "configurations": {
             "ci": {
@@ -203,15 +209,17 @@
             }
           }
         }
-      }
+      },
+      "tags": []
     },
     "lib-electron": {
+      "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
       "root": "libs/lib-electron",
       "sourceRoot": "libs/lib-electron/src",
       "projectType": "library",
       "targets": {
         "build": {
-          "executor": "@nrwl/node:package",
+          "executor": "@nrwl/js:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/lib-electron",
@@ -219,7 +227,12 @@
             "packageJson": "libs/lib-electron/package.json",
             "main": "libs/lib-electron/src/index.ts",
             "assets": ["libs/lib-electron/*.md"]
-          }
+          },
+          "configurations": {
+            "development": {},
+            "production": {}
+          },
+          "defaultConfiguration": "production"
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
@@ -228,22 +241,25 @@
             "lintFilePatterns": ["libs/lib-electron/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "lib-electron-web": {
+      "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
       "root": "libs/lib-electron-web",
       "sourceRoot": "libs/lib-electron-web/src",
       "projectType": "library",
       "targets": {
         "build": {
-          "executor": "@nrwl/workspace:tsc",
+          "executor": "@nrwl/js:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/lib-electron-web",
             "main": "libs/lib-electron-web/src/index.ts",
             "tsConfig": "libs/lib-electron-web/tsconfig.lib.json",
             "assets": ["libs/lib-electron-web/*.md"]
-          }
+          },
+          "configurations": { "development": {}, "production": {} }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
@@ -252,22 +268,25 @@
             "lintFilePatterns": ["libs/lib-electron-web/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     },
     "lib-scrum-toolbox": {
+      "$schema": "..\\..\\node_modules\\nx\\schemas\\project-schema.json",
       "root": "libs/lib-scrum-toolbox",
       "sourceRoot": "libs/lib-scrum-toolbox/src",
       "projectType": "library",
       "targets": {
         "build": {
-          "executor": "@nrwl/workspace:tsc",
+          "executor": "@nrwl/js:tsc",
           "outputs": ["{options.outputPath}"],
           "options": {
             "outputPath": "dist/libs/lib-scrum-toolbox",
             "main": "libs/lib-scrum-toolbox/src/index.ts",
             "tsConfig": "libs/lib-scrum-toolbox/tsconfig.lib.json",
             "assets": ["libs/lib-scrum-toolbox/*.md"]
-          }
+          },
+          "configurations": { "development": {}, "production": {} }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
@@ -276,7 +295,9 @@
             "lintFilePatterns": ["libs/lib-scrum-toolbox/**/*.ts"]
           }
         }
-      }
+      },
+      "tags": []
     }
-  }
+  },
+  "$schema": "./node_modules/nx/schemas/workspace-schema.json"
 }
