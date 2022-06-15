@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MyProfileService } from '@libraries/lib-angular';
 
-import { appRoutes, errorsName } from '@libraries/lib-scrum-toolbox';
+import { appRoutes, errorsName, User } from '@libraries/lib-scrum-toolbox';
 import { appIpcs } from '@libraries/lib-scrum-toolbox';
 
 import { MessageService } from 'primeng/api';
+import { MyProfileModel } from '../../global/models/my-profile.model';
 
 import { IpcService } from '../../global/services/ipc.service';
 
@@ -23,7 +25,8 @@ export class LoginComponent {
     private readonly _ipcService: IpcService,
     private readonly fb: FormBuilder,
     public readonly router: Router,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private readonly _myProfileService: MyProfileService,
   ) {}
 
   showError(summary_: string, detail_: string) {
@@ -40,14 +43,16 @@ export class LoginComponent {
     }
 
     try {
-      const user = await this._ipcService.query(appIpcs.login, {
+      const user = await this._ipcService.query<User>(appIpcs.login, {
         login: this.form.get('login')?.value,
         password: this.form.get('password')?.value,
       });
       console.log(user);
-      //TODO le truc dans app.module pour refresh local storage
+      
+      await this._myProfileService.refresh<MyProfileModel>({ id: user.id, firstname: user.firstname, lastname: user.lastname });
       //TODO redirect to proper page
       this.router.navigate([appRoutes.scrumToolbox.root]);
+      
     } catch (error: any) {
       switch (error.message) {
         case errorsName.incorrectUsername:
