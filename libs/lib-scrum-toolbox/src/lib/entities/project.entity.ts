@@ -9,7 +9,7 @@ export class Project {
   label?: string;
 
   @Column()
-  description?: Date;
+  description?: string;
 
   @CreateDateColumn()
   createdAt?: Date;

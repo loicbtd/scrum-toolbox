@@ -1,15 +1,15 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
-import { appIpcs, TaskStatus } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, SprintStatus } from '@libraries/lib-scrum-toolbox';
 
-export class RetrieveAllTaskStatusHandler implements IpcRequestHandlerInterface {
-  channel = appIpcs.retrieveAllTasksStatus;
+export class RetrieveAllSprintStatusHandler implements IpcRequestHandlerInterface {
+  channel = appIpcs.retrieveAllSprintsStatus;
 
-  async handle(): Promise<TaskStatus[]> {
+  async handle(): Promise<SprintStatus[]> {
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getDataSource('main')
-      .getRepository<TaskStatus>(TaskStatus)
+      .getRepository<SprintStatus>(SprintStatus)
       .find();
   }
 }
