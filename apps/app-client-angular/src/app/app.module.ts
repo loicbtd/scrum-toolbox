@@ -18,7 +18,6 @@ import { MyProfileModel } from './global/models/my-profile.model';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { IpcService } from './global/services/ipc.service';
-import { MyProfileService, MyProfileStateModule, VisitedRoutesStateModule } from '@libraries/lib-angular';
 import { SignUpComponent } from './modules/signup/signup.component';
 
 @Component({
