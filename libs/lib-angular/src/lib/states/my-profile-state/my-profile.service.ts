@@ -10,7 +10,7 @@ import { BaseMyProfileModel } from './base-my-profile.model';
 export class MyProfileService {
   constructor(private readonly store: Store) {}
 
-  async refresh(myProfile: BaseMyProfileModel): Promise<void> {
+  async refresh<T extends BaseMyProfileModel>(myProfile: T): Promise<void> {
     await lastValueFrom(this.store.dispatch(new Refresh(myProfile)));
   }
 }

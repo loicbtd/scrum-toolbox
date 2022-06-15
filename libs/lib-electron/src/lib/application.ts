@@ -10,6 +10,8 @@ import { Container } from 'inversify';
 import { dependencies } from './constants/dependencies.contant';
 import { DatabaseConfiguration } from './interfaces/database-configuration.interface';
 import { LoggerService } from './services/logger.service';
+import SquirrelEventsHelper from './helpers/squirrel-events.helper';
+import UpdateEventsHelper from './helpers/update-events.helper';
 
 export class Application {
   private static _instance: Application;
@@ -75,19 +77,27 @@ export class Application {
   public async initialize(
     rendererApplicationName: string,
     rendererApplicationPort: number,
+    version: string,
     options?: {
       backgroundTasks?: (new (...args: any[]) => BaseBackgroundTask)[];
       databaseConfigurations?: DatabaseConfiguration[];
       ipcRequestHandlers?: (new (...args: any[]) => IpcRequestHandlerInterface)[];
       settingsDirectoryPath?: string[];
+      updateServerUrl?: string;
     }
   ): Promise<void> {
     this._rendererApplicationName = rendererApplicationName;
     this._rendererApplicationPort = rendererApplicationPort;
-    
+
     await new Promise<void>((resolve) => {
       this._electronApplication.on('ready', () => resolve());
     });
+
+    SquirrelEventsHelper.initialize(version);
+
+    if (options.updateServerUrl) {
+      UpdateEventsHelper.initialize(options.updateServerUrl);
+    }
 
     this._dependencies.bind<LoggerService>(dependencies.logger).to(LoggerService);
 
@@ -121,8 +131,6 @@ export class Application {
         this._dependencies.get<IpcMainService>(dependencies.ipcMain).addRequestHandlers(options.ipcRequestHandlers);
       }
     }
-
-    
 
     this._dependencies.get<LoggerService>(dependencies.logger).debug('Application started');
   }

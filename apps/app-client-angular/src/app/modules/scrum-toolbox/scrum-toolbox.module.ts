@@ -2,22 +2,22 @@ import { NgModule, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { ProjectsComponent } from './components/projects/projects.component';
-import { NavigationItemModel } from '@libraries/lib-angular';
-import { IpcService } from '../../global/services/ipc.service';
+import { MyProfileState, NavigationItemModel } from '@libraries/lib-angular';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
+import { Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
+import { MyProfileModel } from '../../global/models/my-profile.model';
 
 @Component({
   template: `
     <app-navigation-container
       [navigationItems]="navigationItems"
       [avatarNavigationItems]="avatarNavigationItems"
-      logoImageSource="https://bibliotheque.utbm.fr/wp-content/uploads/2015/04/logo_utbm_seul.png"
-      avatarImageSource="https://cdn.pixabay.com/photo/2016/04/01/10/11/avatar-1299805_960_720.png"
-      username="Firstname LASTNAME"
+      logoImageSource="assets/images/icon.png"
+      avatarImageSource="assets/images/avatar.png"
+      [username]="getFormattedUsername((myProfile$ | async)?.firstname, (myProfile$ | async)?.lastname)"
     >
-      <ng-container navigationBarContent>Navigation bar content </ng-container>
-
       <router-outlet></router-outlet>
     </app-navigation-container>
   `,
@@ -57,10 +57,18 @@ export class ScrumToolboxComponent {
     }),
   ];
 
-  constructor(private readonly _ipcService: IpcService) {}
+  @Select(MyProfileState) myProfile$: Observable<MyProfileModel>;
 
-  testIpc() {
-    this._ipcService.query('test');
+  getFormattedUsername(firstname?: string, lastname?: string): string {
+    const formattedFirstname = firstname ? firstname.charAt(0).toUpperCase() + firstname.slice(1) : '';
+
+    let formattedLastname = lastname ? lastname.toUpperCase() : '';
+
+    if (formattedLastname.length > 15) {
+      formattedLastname = `${formattedLastname.charAt(0)}.`;
+    }
+
+    return `${formattedFirstname} ${formattedLastname}`;
   }
 }
 

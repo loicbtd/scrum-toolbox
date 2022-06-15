@@ -1,5 +1,5 @@
 import { Application, BaseTray } from '@libraries/lib-electron';
-import { MainWindow } from './main.window';
+import { MainWindow } from './windows/main.window';
 
 export class MainTray extends BaseTray {
   constructor() {

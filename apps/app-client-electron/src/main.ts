@@ -14,7 +14,7 @@ import {
   UserType,
   UserUserTypeProject,
 } from '@libraries/lib-scrum-toolbox';
-import { MainWindow } from './app/main.window';
+import { MainWindow } from './app/windows/main.window';
 import { CreateUserHandler } from './app/ipc-request-handlers/user/create-user.handler';
 import { DeleteUserHandler } from './app/ipc-request-handlers/user/delete-user.handler';
 import { UpdateUserHandler } from './app/ipc-request-handlers/user/update-user.handler';
@@ -36,13 +36,32 @@ import { UpdateTaskTypeHandler } from './app/ipc-request-handlers/task-type/upda
 import { CreateTaskStatusHandler } from './app/ipc-request-handlers/task-status/create-task-status.handler';
 import { DeleteTaskStatusHandler } from './app/ipc-request-handlers/task-status/delete-task-status.handler';
 import { RetrieveTaskStatusHandler } from './app/ipc-request-handlers/task-status/retrieve-task-status.handler';
-import { RetrieveAllTaskStatussHandler } from './app/ipc-request-handlers/task-status/retrieve-all-tasks-status.handler';
+import { RetrieveAllTaskStatusHandler } from './app/ipc-request-handlers/task-status/retrieve-all-tasks-status.handler';
 import { UpdateTaskStatusHandler } from './app/ipc-request-handlers/task-status/update-task-status.handler';
+import { StartupWindow } from './app/windows/startup.window';
+import { GetAppVersionHandler } from './app/ipc-request-handlers/get-app-version.handler';
+import { environment } from './environments/environment';
+import { CreateSprintHandler } from './app/ipc-request-handlers/sprint/create-sprint.handler';
+import { RetrieveSprintHandler } from './app/ipc-request-handlers/sprint/retrieve-sprint.handler';
+import { RetrieveAllSprintsHandler } from './app/ipc-request-handlers/sprint/retrieve-all-sprints.handler';
+import { UpdateSprintHandler } from './app/ipc-request-handlers/sprint/update-sprint.handler';
+import { DeleteSprintHandler } from './app/ipc-request-handlers/sprint/delete-sprint.handler';
+import { RetrieveAllSprintsByProjectHandler } from './app/ipc-request-handlers/sprint/retrieve-all-sprints-by-project.handler';
+import { CreateSprintStatusHandler } from './app/ipc-request-handlers/sprint-status/create-sprint-status.handler';
+import { DeleteSprintStatusHandler } from './app/ipc-request-handlers/sprint-status/delete-sprint-status.handler';
+import { RetrieveSprintStatusHandler } from './app/ipc-request-handlers/sprint-status/retrieve-sprint-status.handler';
+import { UpdateSprintStatusHandler } from './app/ipc-request-handlers/sprint-status/update-sprint-status.handler';
+import { RetrieveAllSprintStatusHandler } from './app/ipc-request-handlers/sprint-status/retrieve-all-sprints-status.handler';
+import { CreateProjectHandler } from './app/ipc-request-handlers/project/create-project.handler';
+import { RetrieveProjectHandler } from './app/ipc-request-handlers/project/retrieve-project.handler';
+import { RetrieveAllProjectsHandler } from './app/ipc-request-handlers/project/retrieve-all-projects.handler';
+import { UpdateProjectHandler } from './app/ipc-request-handlers/project/update-project.handler';
+import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-project.handler';
 
 (async () => {
   const application = Application.getInstance();
 
-  await application.initialize('app-client-angular', 4200, {
+  await application.initialize('app-client-angular', 4200, environment.version, {
     databaseConfigurations: [
       {
         id: 'main',
@@ -87,13 +106,39 @@ import { UpdateTaskStatusHandler } from './app/ipc-request-handlers/task-status/
       CreateTaskStatusHandler,
       DeleteTaskStatusHandler,
       RetrieveTaskStatusHandler,
-      RetrieveAllTaskStatussHandler,
+      RetrieveAllTaskStatusHandler,
       UpdateTaskStatusHandler,
+
+      GetAppVersionHandler,
+
+      CreateSprintHandler,
+      DeleteSprintHandler,
+      RetrieveSprintHandler,
+      UpdateSprintHandler,
+      RetrieveAllSprintsHandler,
+      RetrieveAllSprintsByProjectHandler,
+
+      CreateSprintStatusHandler,
+      DeleteSprintStatusHandler,
+      RetrieveSprintStatusHandler,
+      UpdateSprintStatusHandler,
+      RetrieveAllSprintStatusHandler,
+
+      CreateProjectHandler,
+      DeleteProjectHandler,
+      RetrieveProjectHandler,
+      RetrieveAllProjectsHandler,
+      UpdateProjectHandler,
     ],
     settingsDirectoryPath: [homedir(), '.scrum-toolbox'],
   });
 
   application.loadTray(MainTray);
+
+  application.loadWindow(StartupWindow);
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  application.unloadAllWindows(StartupWindow);
 
   application.loadWindow(MainWindow);
 })();

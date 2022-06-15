@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
-import { appIpcs, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
+import { MyProfileService } from '@libraries/lib-angular';
+import { appIpcs, Project, Sprint, SprintStatus, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
+import { MyProfileModel } from '../../../../global/models/my-profile.model';
 import { IpcService } from '../../../../global/services/ipc.service';
 
 @Component({
@@ -9,7 +11,7 @@ import { IpcService } from '../../../../global/services/ipc.service';
 export class WebserviceTestComponent {
   currentUser!: User;
 
-  constructor(private readonly _ipcService: IpcService) {}
+  constructor(private readonly _ipcService: IpcService, private readonly _myProfileSystem: MyProfileService) {}
 
   async initBD() {
     let taskType, type, color;
@@ -110,6 +112,104 @@ export class WebserviceTestComponent {
     await this._ipcService.query(appIpcs.assignTaskToSprint, {
       taskId: 'c365e2e8-ac9f-4239-85d6-2b60e0e2ca36',
       sprintId: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+    });
+  }
+
+  async changeUsername() {
+    await this._myProfileSystem.refresh<MyProfileModel>({ id: 'test', firstname: 'falut', lastname: 'dqfewewgrgrwggrwwrggrwewgewg' });
+  }
+
+  async createProject() {
+    const p = new Project();
+    p.label = 'test';
+    p.description = 'test';
+    await this._ipcService.query(appIpcs.createProject, p);
+  }
+
+  async retrieveAllProjects(): Promise<Project[]> {
+    const p: Project[] = await this._ipcService.query(appIpcs.retrieveAllProjects);
+    console.log(p);
+    return p;
+  }
+  
+  async updateProject() {
+    await this._ipcService.query(appIpcs.updateProject, {
+      id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+      label: 'test',
+    });
+  }
+
+  async deleteProject() {
+    await this._ipcService.query(appIpcs.deleteProject, {
+      id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+    });
+  }
+
+  async retrieveProject(): Promise<Project> {
+    const p: Project = await this._ipcService.query(appIpcs.retrieveProject, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' });
+    console.log(p);
+    return p;
+  }
+
+  async createSprintStatus() {
+    const sprintStatus = new SprintStatus();
+    sprintStatus.label = 'CREATED';
+    await this._ipcService.query(appIpcs.createSprintStatus, sprintStatus);
+  }
+
+  async deleteSprintStatus() {
+    await this._ipcService.query(appIpcs.deleteSprintStatus, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' });
+  }
+
+  async updateSprintStatus() {
+    await this._ipcService.query(appIpcs.updateSprintStatus, {
+      id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+      label: 'DONE',
+    });
+  }
+
+  async retrieveAllSprintStatus(): Promise<SprintStatus[]> {
+    return await this._ipcService.query(appIpcs.retrieveAllSprintsStatus)
+  }
+
+  async retrieveSprintStatus() {
+    console.log(await this._ipcService.query(appIpcs.retrieveSprintStatus, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' }));
+  }
+  
+  async createSprint() {
+    const sprint = new Sprint();
+    sprint.label = 'Sprint 1';
+    sprint.start_date = new Date().toString();
+    sprint.end_date = new Date().toString();
+    sprint.project = new Project();
+    sprint.project = (await this.retrieveAllProjects())[0];
+    sprint.status = (await this.retrieveAllSprintStatus())[0];
+
+    await this._ipcService.query(appIpcs.createSprint, sprint);
+  }
+
+  async retrieveSprint() {
+    console.log(await this._ipcService.query(appIpcs.retrieveSprint));
+  }
+
+  async retrieveAllSprints() {
+    console.log(await this._ipcService.query(appIpcs.retrieveAllSprints));
+  }
+  
+  async retrieveAllSprintsByProject() {
+    console.log(await this._ipcService.query(appIpcs.retrieveAllSprintsByProject, { projectId: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' }));
+  }
+
+  async deleteSprint() {
+    await this._ipcService.query(appIpcs.deleteSprint, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' });
+  }
+
+  async updateSprint() {
+    await this._ipcService.query(appIpcs.updateSprint, {
+      id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+      label: 'sprint 1',
+      startDate: new Date(),
+      endDate: new Date(),
     });
   }
 }

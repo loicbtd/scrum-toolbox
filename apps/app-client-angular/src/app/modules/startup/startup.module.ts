@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { Component } from '@angular/core';
 import { IpcService } from '../../global/services/ipc.service';
+import { appIpcs } from '@libraries/lib-scrum-toolbox';
 
 @Component({
   template: `
@@ -18,12 +19,12 @@ import { IpcService } from '../../global/services/ipc.service';
 export class StartupComponent implements OnInit {
   version = '';
 
-  appTitle = 'Scrum toolbox';
+  appTitle = 'Scrum Toolbox';
 
   constructor(private readonly _ipcService: IpcService) {}
 
   async ngOnInit() {
-    this.version = await this._ipcService.query<string>('test', null);
+    this.version = await this._ipcService.query<string>(appIpcs.getAppVersion);
   }
 }
 

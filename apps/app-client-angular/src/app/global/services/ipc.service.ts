@@ -1,7 +1,6 @@
 import { DOCUMENT } from '@angular/common';
 import { Inject, Injectable } from '@angular/core';
 import { IpcRendererService } from '@libraries/lib-electron-web';
-import { TestHandler } from '../ipc-request-handlers/test.handler';
 
 @Injectable({
   providedIn: 'root',
@@ -9,6 +8,5 @@ import { TestHandler } from '../ipc-request-handlers/test.handler';
 export class IpcService extends IpcRendererService {
   constructor(@Inject(DOCUMENT) document: Document) {
     super(document);
-    super.addRequestHandlers([TestHandler]);
   }
 }

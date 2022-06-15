@@ -9,8 +9,6 @@ export class VisitedRoutesService {
     store.dispatch(new Remember(router.url));
 
     router.events.subscribe((event) => {
-      console.log('router changes');
-
       if (event instanceof NavigationEnd) {
         store.dispatch(new Remember(event.url));
       }
