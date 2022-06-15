@@ -27,6 +27,7 @@ export class UsersCrudComponent {
 
   async ngOnInit() {
     this.items = await this._ipcService.query<User[]>(appIpcs.retrieveAllUsers);
+    this.item = this.items[0];
   }
 
   openNew() {

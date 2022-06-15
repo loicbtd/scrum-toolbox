@@ -26,8 +26,8 @@
     [showCurrentPageReport]="true"
   >
     <ng-template pTemplate="caption">
-      <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Manage items</h5>
+      <div class="flex p-ai-center p-jc-between">
+        <h5 class="m-0">Manage items</h5>
       </div>
     </ng-template>
     <ng-template pTemplate="header">
@@ -76,63 +76,24 @@
 
 <p-dialog [(visible)]="dialog" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">
   <ng-template pTemplate="content">
-    <div class="p-field">
-      <label for="name">Name</label>
-      <input type="text" pInputText id="name" [(ngModel)]="item.firstname" required autofocus />
-      <small class="p-invalid" *ngIf="submitted && !item.firstname">Name is required.</small>
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" pInputText id="username" [(ngModel)]="item.username" required autofocus />
+      <small class="p-invalid" *ngIf="submitted && !item.username">Username is required.</small>
     </div>
-    <div class="p-field">
-      <label for="description">Description</label>
-      <textarea id="description" pInputTextarea [(ngModel)]="item.firstname" required rows="3" cols="20"></textarea>
+    <!-- <div class="field">
+      <label for="firstname">Firstname</label>
+      <input type="text" pInputText id="firstname" [(ngModel)]="item.firstname" required />
+      <small class="p-invalid" *ngIf="submitted && !item.username">Firstname is required.</small>
     </div>
-
-    <div class="p-field">
-      <label class="p-mb-3">Firstname</label>
-      <div class="p-formgrid p-grid">
-        <div class="p-field-radiobutton p-col-6">
-          <p-radioButton
-            id="category1"
-            name="category"
-            value="Accessories"
-            [(ngModel)]="item.firstname"
-          ></p-radioButton>
-          <label for="category1">Accessories</label>
-        </div>
-        <div class="p-field-radiobutton p-col-6">
-          <p-radioButton id="category2" name="category" value="Clothing" [(ngModel)]="item.firstname"></p-radioButton>
-          <label for="category2">Clothing</label>
-        </div>
-        <div class="p-field-radiobutton p-col-6">
-          <p-radioButton
-            id="category3"
-            name="category"
-            value="Electronics"
-            [(ngModel)]="item.firstname"
-          ></p-radioButton>
-          <label for="category3">Electronics</label>
-        </div>
-        <div class="p-field-radiobutton p-col-6">
-          <p-radioButton id="category4" name="category" value="Fitness" [(ngModel)]="item.firstname"></p-radioButton>
-          <label for="category4">Fitness</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="p-formgrid p-grid">
-      <div class="p-field p-col">
-        <label for="price">Price</label>
-        <p-inputNumber
-          id="price"
-          [(ngModel)]="item.firstname"
-          mode="currency"
-          currency="USD"
-          locale="en-US"
-        ></p-inputNumber>
-      </div>
-      <div class="p-field p-col">
-        <label for="quantity">Quantity</label>
-        <p-inputNumber id="quantity" [(ngModel)]="item.firstname"></p-inputNumber>
-      </div>
+    <div class="field">
+      <label for="lastname">Lastname</label>
+      <input type="text" pInputText id="lastname" [(ngModel)]="item.lastname" required />
+      <small class="p-invalid" *ngIf="submitted && !item.lastname">Lastname is required.</small>
+    </div> -->
+    <div class="field flex flex-column">
+      <label for="isActivated">Activation</label>
+      <p-inputSwitch inputId="isActivated" [(ngModel)]="item.isActivated"></p-inputSwitch>
     </div>
   </ng-template>
 
