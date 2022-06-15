@@ -1,0 +1,152 @@
+<p-toast></p-toast>
+<div class="surface-card p-6 shadow-2 border-round w-full lg:w-6 card-placement">
+  <div class="text-center mb-5">
+    <img src="assets/images/icon.png" alt="Image" height="50" class="mb-3">
+    <div class="text-900 text-3xl font-medium mb-3">Welcome</div>
+    <span class="text-600 font-medium line-height-3">Already have an account?</span>
+    <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer" (click)="redirectToSigin()">Sign in!</a>
+  </div>
+
+  <div>
+    <form [formGroup]="formUp" novalidate class="form-group">
+        <div class="form-element">
+            <label for="login" class="block text-900 font-medium mb-2">
+                Username*
+            </label>
+            <input 
+                id="login" 
+                type="text" 
+                pInputText class="w-full mb-3" 
+                formControlName="login"
+                [ngClass]="{
+                    'ng-invalid ng-dirty':
+                    formUp.controls.login.touched &&
+                    formUp.controls.login.invalid
+                }"
+            >
+
+            <small
+                class="p-error"
+                *ngIf="
+                  formUp.controls.login.touched &&
+                  formUp.controls.login.errors?.required
+                "
+            >
+                Username is required
+            </small>
+            <small
+                class="p-error"
+                *ngIf="
+                  formUp.controls.login.errors?.minlength
+                "
+            >
+                Username is a minimum of 4 characters
+            </small>
+        </div>
+
+        <div class="form-element">
+            <label for="firstname" class="block text-900 font-medium mb-2">
+                Firstname*
+            </label>
+            <input 
+                id="firstname" 
+                type="text" 
+                pInputText class="w-full mb-3" 
+                formControlName="firstname"
+                [ngClass]="{
+                    'ng-invalid ng-dirty':
+                    formUp.controls.firstname.touched &&
+                    formUp.controls.firstname.invalid
+                }"
+            >
+
+            <small
+                class="p-error"
+                *ngIf="
+                  formUp.controls.firstname.touched &&
+                  formUp.controls.firstname.errors?.required
+                "
+            >
+                Firstname is required
+            </small>
+        </div>
+
+        <div class="form-element">
+            <label for="lastname" class="block text-900 font-medium mb-2">
+                Lastname*
+            </label>
+            <input 
+                id="lastname" 
+                type="text" 
+                pInputText class="w-full mb-3" 
+                formControlName="lastname"
+                [ngClass]="{
+                    'ng-invalid ng-dirty':
+                    formUp.controls.lastname.touched &&
+                    formUp.controls.lastname.invalid
+                }"
+            >
+
+            <small
+                class="p-error"
+                *ngIf="
+                  formUp.controls.lastname.touched &&
+                  formUp.controls.lastname.errors?.required
+                "
+            >
+                Lastname is required
+            </small>
+        </div>
+
+        <div class="form-element">
+            <label for="password" class="block text-900 font-medium mb-2">
+                Password*
+            </label>
+            <input 
+                id="password" 
+                type="password" 
+                pInputText 
+                class="w-full mb-3" 
+                formControlName="password"
+                [ngClass]="{
+                    'ng-invalid ng-dirty':
+                    formUp.controls.password.touched &&
+                    formUp.controls.password.invalid
+                }"
+            >
+
+            <small
+                class="p-error"
+                *ngIf="
+                  formUp.controls.password.touched &&
+                  formUp.controls.password.errors?.required
+                "
+            >
+                Password is required
+            </small>
+            <small
+                    class="p-error"
+                    *ngIf="
+                        formUp.controls.password.errors?.minlength
+                    "
+                >
+                    Password must be at least 6 characters long <br>
+                </small>
+                <small
+                    class="p-error"
+                    *ngIf="
+                        formUp.controls.password.errors?.pattern
+                    "
+                >
+                    Your password must contain at least one uppercase, one lowercase, one number, one of the following characters $@$!%*?&
+                </small>
+        </div>
+
+        <div class="form-element">
+            <button pButton pRipple label="Register" icon="pi pi-user" class="w-full" (click)="submitForm()"></button>
+        </div>
+
+    </form>
+</div>
+
+</div>

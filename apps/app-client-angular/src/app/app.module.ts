@@ -18,6 +18,7 @@ import {
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { IpcService } from './global/services/ipc.service';
+import { SignUpComponent } from './modules/signup/signup.component';
 
 @Component({
   selector: 'app-root',
@@ -47,7 +48,7 @@ export class AppComponent {
 }
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent],
+  declarations: [AppComponent, LoginComponent, SignUpComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -67,6 +68,10 @@ export class AppComponent {
           path: appRoutes.login,
           component: LoginComponent,
           canActivate: [IsNotAuthenticatedGuard],
+        },
+        {
+          path: appRoutes.signup,
+          component: SignUpComponent,
         },
         {
           path: '**',

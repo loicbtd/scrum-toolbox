@@ -42,7 +42,7 @@ export class WebserviceTestComponent {
     u.username = 'titi';
     u.firstname = 'Toto';
     u.lastname = 'TITI';
-    u.password = 'password'
+    u.password = 'password';
     this.currentUser = await this._ipcService.query(appIpcs.createUser, u);
   }
 
@@ -63,7 +63,7 @@ export class WebserviceTestComponent {
   }
 
   async retrieveUser() {
-    console.log(await this._ipcService.query(appIpcs.retrieveUser, { id: this.currentUser.id }));
+    console.log(await this._ipcService.query(appIpcs.retrieveUser, { id: 'esfzefzefbkjzefhbuzen' }));
   }
 
   async activateUser() {
@@ -116,7 +116,11 @@ export class WebserviceTestComponent {
   }
 
   async changeUsername() {
-    await this._myProfileSystem.refresh<MyProfileModel>({ id: 'test', firstname: 'falut', lastname: 'dqfewewgrgrwggrwwrggrwewgewg' });
+    await this._myProfileSystem.refresh<MyProfileModel>({
+      id: 'test',
+      firstname: 'falut',
+      lastname: 'dqfewewgrgrwggrwwrggrwewgewg',
+    });
   }
 
   async createProject() {
@@ -131,7 +135,7 @@ export class WebserviceTestComponent {
     console.log(p);
     return p;
   }
-  
+
   async updateProject() {
     await this._ipcService.query(appIpcs.updateProject, {
       id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
@@ -146,7 +150,9 @@ export class WebserviceTestComponent {
   }
 
   async retrieveProject(): Promise<Project> {
-    const p: Project = await this._ipcService.query(appIpcs.retrieveProject, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' });
+    const p: Project = await this._ipcService.query(appIpcs.retrieveProject, {
+      id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+    });
     console.log(p);
     return p;
   }
@@ -169,13 +175,15 @@ export class WebserviceTestComponent {
   }
 
   async retrieveAllSprintStatus(): Promise<SprintStatus[]> {
-    return await this._ipcService.query(appIpcs.retrieveAllSprintsStatus)
+    return await this._ipcService.query(appIpcs.retrieveAllSprintsStatus);
   }
 
   async retrieveSprintStatus() {
-    console.log(await this._ipcService.query(appIpcs.retrieveSprintStatus, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' }));
+    console.log(
+      await this._ipcService.query(appIpcs.retrieveSprintStatus, { id: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' })
+    );
   }
-  
+
   async createSprint() {
     const sprint = new Sprint();
     sprint.label = 'Sprint 1';
@@ -195,9 +203,13 @@ export class WebserviceTestComponent {
   async retrieveAllSprints() {
     console.log(await this._ipcService.query(appIpcs.retrieveAllSprints));
   }
-  
+
   async retrieveAllSprintsByProject() {
-    console.log(await this._ipcService.query(appIpcs.retrieveAllSprintsByProject, { projectId: '5b93ebb9-ee28-4ac3-af7b-8141178762f9' }));
+    console.log(
+      await this._ipcService.query(appIpcs.retrieveAllSprintsByProject, {
+        projectId: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+      })
+    );
   }
 
   async deleteSprint() {
