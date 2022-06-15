@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -17,7 +17,7 @@ export class LoginComponent {
   
   constructor(
     // private readonly signinService: SigninService,
-    private readonly fb: FormBuilder,
+    private readonly fb: UntypedFormBuilder,
     public readonly router: Router
   ) {}
 

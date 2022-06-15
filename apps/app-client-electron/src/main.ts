@@ -1,6 +1,5 @@
 import { Application } from '@libraries/lib-electron';
 import { homedir } from 'os';
-import { RetrieveAllUsersHandler } from './app/ipc-request-handlers/user/retrieve-all-users.handler';
 import { MainTray } from './app/main.tray';
 import {
   Project,
@@ -15,6 +14,7 @@ import {
   UserUserTypeProject,
 } from '@libraries/lib-scrum-toolbox';
 import { MainWindow } from './app/windows/main.window';
+import { RetrieveAllUsersHandler } from './app/ipc-request-handlers/user/retrieve-all-users.handler';
 import { CreateUserHandler } from './app/ipc-request-handlers/user/create-user.handler';
 import { DeleteUserHandler } from './app/ipc-request-handlers/user/delete-user.handler';
 import { UpdateUserHandler } from './app/ipc-request-handlers/user/update-user.handler';
@@ -38,7 +38,6 @@ import { DeleteTaskStatusHandler } from './app/ipc-request-handlers/task-status/
 import { RetrieveTaskStatusHandler } from './app/ipc-request-handlers/task-status/retrieve-task-status.handler';
 import { RetrieveAllTaskStatussHandler } from './app/ipc-request-handlers/task-status/retrieve-all-tasks-status.handler';
 import { UpdateTaskStatusHandler } from './app/ipc-request-handlers/task-status/update-task-status.handler';
-import { StartupWindow } from './app/windows/startup.window';
 import { GetAppVersionHandler } from './app/ipc-request-handlers/get-app-version.handler';
 import { environment } from './environments/environment';
 
@@ -100,23 +99,10 @@ import { environment } from './environments/environment';
 
   application.loadTray(MainTray);
 
-  application.loadWindow(StartupWindow);
-  await new Promise((resolve) => setTimeout(resolve, 5000));
+  // application.loadWindow(StartupWindow);
+  // await new Promise((resolve) => setTimeout(resolve, 5000));
 
-  application.unloadAllWindows(StartupWindow);
+  // application.unloadAllWindows(StartupWindow);
 
   application.loadWindow(MainWindow);
 })();
-
-// TODO : restore and adapt squirrel update logic
-// if (SquirrelEvents.handleEvents()) {
-//   app.quit();
-// }
-
-// App.launch(app);
-
-// CommonIpc.bootstrap();
-
-// if (!AppHelper.isDevelopmentMode()) {
-//   UpdateEvents.initAutoUpdateService();
-// }
