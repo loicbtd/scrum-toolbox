@@ -8,7 +8,7 @@ import { MyProfileState } from '../states/my-profile-state/my-profile.state';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthenticationGuard implements CanActivate {
+export class IsNotAuthenticatedGuard implements CanActivate {
   constructor(private readonly store: Store, private readonly router: Router) {}
 
   canActivate(
@@ -17,11 +17,7 @@ export class AuthenticationGuard implements CanActivate {
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const myProfile = this.store.selectSnapshot<BaseMyProfileModel>(MyProfileState);
 
-    if (!myProfile) {
-      return this.redirect(route);
-    }
-
-    if (!myProfile.isLoggedIn) {
+    if (myProfile.isLoggedIn) {
       return this.redirect(route);
     }
 
@@ -29,11 +25,6 @@ export class AuthenticationGuard implements CanActivate {
   }
 
   redirect(route: ActivatedRouteSnapshot) {
-    const notLoggedInRedirectionPath = route.data.notLoggedInRedirectionPath as Array<string>;
-    if (notLoggedInRedirectionPath) {
-      return this.router.createUrlTree(notLoggedInRedirectionPath);
-    } else {
-      return this.router.createUrlTree(['']);
-    }
+    return this.router.createUrlTree((route.data.redirectionPath as Array<string>) || ['']);
   }
 }

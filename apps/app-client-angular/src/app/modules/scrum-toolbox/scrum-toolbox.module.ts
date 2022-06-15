@@ -54,9 +54,7 @@ export class ScrumToolboxComponent {
       label: 'Déconnexion',
       iconClass: 'fa-solid fa-clipboard-list',
       separatorAbove: true,
-      action: async () => {
-        await this._myProfileService.refresh({ isLoggedIn: false });
-      },
+      action: async () => await this._myProfileService.logout(),
     },
   ];
 

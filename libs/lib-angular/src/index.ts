@@ -3,8 +3,9 @@ export * from './lib/components/blockablediv/blockablediv.module';
 
 export * from './lib/errors/application.error';
 
-export * from './lib/guards/authentication.guard';
-export * from './lib/guards/authorization.guard';
+export * from './lib/guards/is-authenticated.guard';
+export * from './lib/guards/is-authorized.guard';
+export * from './lib/guards/is-not-authenticated.guard';
 
 export * from './lib/models/navigation-item.model';
 export * from './lib/models/theme.model';
