@@ -2,7 +2,7 @@ import { NgModule, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { ProjectsComponent } from './components/projects/projects.component';
-import { MyProfileState, NavigationItemInterface } from '@libraries/lib-angular';
+import { MyProfileService, MyProfileState, NavigationItemInterface } from '@libraries/lib-angular';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
 import { Select } from '@ngxs/store';
@@ -46,14 +46,17 @@ export class ScrumToolboxComponent {
 
   avatarNavigationItems: NavigationItemInterface[] = [
     {
-      label: 'Règlages',
-      iconClass: 'fa-solid fa-gear',
-      routerLink: ['profile'],
+      label: 'Users management',
+      iconClass: 'fa-solid fa-user',
+      routerLink: [appRoutes.scrumToolbox.usersCrud],
     },
     {
       label: 'Déconnexion',
       iconClass: 'fa-solid fa-clipboard-list',
-      routerLink: ['logout'],
+      separatorAbove: true,
+      action: async () => {
+        await this._myProfileService.refresh({ isLoggedIn: false });
+      },
     },
   ];
 
@@ -70,6 +73,8 @@ export class ScrumToolboxComponent {
 
     return `${formattedFirstname} ${formattedLastname}`;
   }
+
+  constructor(private readonly _myProfileService: MyProfileService) {}
 }
 
 @NgModule({

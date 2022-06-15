@@ -1,3 +1,4 @@
 export class BaseMyProfileModel {
-  roles?: Array<any>;
+  isLoggedIn?: boolean;
+  rights?: Array<any>;
 }

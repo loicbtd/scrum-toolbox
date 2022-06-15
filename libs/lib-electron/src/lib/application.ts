@@ -1,6 +1,5 @@
 import { app } from 'electron';
 import { BackgroundTasksService } from './services/background-tasks.service';
-import { DatabasesService } from './services/databases.service';
 import { BaseTray } from './trays/base.tray';
 import { BaseWindow } from './windows/base.window';
 import { BaseBackgroundTask } from './background-tasks/base.background-task';
@@ -10,8 +9,9 @@ import { Container } from 'inversify';
 import { dependencies } from './constants/dependencies.contant';
 import { DatabaseConfiguration } from './interfaces/database-configuration.interface';
 import { LoggerService } from './services/logger.service';
-import SquirrelEventsHelper from './helpers/squirrel-events.helper';
-import UpdateEventsHelper from './helpers/update-events.helper';
+import { SquirrelEventsHelper } from './helpers/squirrel-events.helper';
+import { UpdateEventsHelper } from './helpers/update-events.helper';
+import { DatabasesService } from './services/databases.service';
 
 export class Application {
   private static _instance: Application;

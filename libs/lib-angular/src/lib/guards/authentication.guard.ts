@@ -18,14 +18,22 @@ export class AuthenticationGuard implements CanActivate {
     const myProfile = this.store.selectSnapshot<BaseMyProfileModel>(MyProfileState);
 
     if (!myProfile) {
-      const notLoggedInRedirectionPath = route.data.notLoggedInRedirectionPath as Array<string>;
-      if (notLoggedInRedirectionPath) {
-        return this.router.createUrlTree(notLoggedInRedirectionPath);
-      } else {
-        return this.router.createUrlTree(['']);
-      }
+      return this.redirect(route);
+    }
+
+    if (!myProfile.isLoggedIn) {
+      return this.redirect(route);
     }
 
     return true;
+  }
+
+  redirect(route: ActivatedRouteSnapshot) {
+    const notLoggedInRedirectionPath = route.data.notLoggedInRedirectionPath as Array<string>;
+    if (notLoggedInRedirectionPath) {
+      return this.router.createUrlTree(notLoggedInRedirectionPath);
+    } else {
+      return this.router.createUrlTree(['']);
+    }
   }
 }

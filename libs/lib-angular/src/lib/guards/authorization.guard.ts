@@ -20,17 +20,21 @@ export class AuthorizationGuard implements CanActivate {
       return this.redirection(route);
     }
 
-    const userRoles = myProfile.roles;
-    if (!userRoles) {
+    if (!myProfile.isLoggedIn) {
       return this.redirection(route);
     }
 
-    const requiredRoles = route.data.roles as Array<any>;
-    if (!requiredRoles) {
+    const userRights = myProfile.rights;
+    if (!userRights) {
       return this.redirection(route);
     }
 
-    if (!requiredRoles.every((requiredRole) => userRoles.includes(requiredRole))) {
+    const requiredRights = route.data.rights as Array<any>;
+    if (!requiredRights) {
+      return this.redirection(route);
+    }
+
+    if (!requiredRights.every((requiredRight) => userRights.includes(requiredRight))) {
       return this.redirection(route);
     }
 

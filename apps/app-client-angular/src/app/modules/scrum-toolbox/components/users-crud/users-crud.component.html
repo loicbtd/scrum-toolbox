@@ -1,37 +1,15 @@
-<p-toast></p-toast>
-
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <button
-        pButton
-        pRipple
-        label="New"
-        icon="pi pi-plus"
-        class="p-button-success p-mr-2"
-        (click)="openNew()"
-      ></button>
-      <button
-        pButton
+      <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+      <p-button
         pRipple
         label="Delete"
         icon="pi pi-trash"
-        class="p-button-danger"
+        class="p-button-danger ml-2"
         (click)="deleteSelectedItems()"
         [disabled]="!selectedItems || !selectedItems.length"
-      ></button>
-    </ng-template>
-
-    <ng-template pTemplate="right">
-      <p-fileUpload
-        mode="basic"
-        accept="image/*"
-        [maxFileSize]="1000000"
-        label="Import"
-        chooseLabel="Import"
-        class="p-mr-2 p-d-inline-block"
-      ></p-fileUpload>
-      <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help"></button>
+      ></p-button>
     </ng-template>
   </p-toolbar>
 
@@ -40,7 +18,7 @@
     [value]="items"
     [rows]="10"
     [paginator]="true"
-    [globalFilterFields]="['name', 'country.name', 'representative.name', 'status']"
+    [globalFilterFields]="['firstname', 'lastname']"
     [(selection)]="selectedItems"
     [rowHover]="true"
     dataKey="id"
@@ -49,16 +27,7 @@
   >
     <ng-template pTemplate="caption">
       <div class="p-d-flex p-ai-center p-jc-between">
-        <h5 class="p-m-0">Manage Products</h5>
-        <span class="p-input-icon-left">
-          <i class="pi pi-search"></i>
-          <input
-            pInputText
-            type="text"
-            placeholder="Search..."
-            />
-        </span>
-        <!-- (input)="dt.filterGlobal($event.target.value, 'contains')" -->
+        <h5 class="p-m-0">Manage items</h5>
       </div>
     </ng-template>
     <ng-template pTemplate="header">
@@ -66,59 +35,46 @@
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="name">Name <p-sortIcon field="name"></p-sortIcon></th>
-        <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
-        <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
-        <th pSortableColumn="rating">Reviews <p-sortIcon field="rating"></p-sortIcon></th>
-        <th pSortableColumn="inventoryStatus">Status <p-sortIcon field="inventoryStatus"></p-sortIcon></th>
+        <th pSortableColumn="username">Username <p-sortIcon field="username"></p-sortIcon></th>
+        <th>Firstname</th>
+        <th>Lastname</th>
+        <th>Creation date</th>
+        <th>Activation</th>
         <th></th>
       </tr>
     </ng-template>
-    <ng-template pTemplate="body" let-product>
+    <ng-template pTemplate="body" let-item>
       <tr>
         <td>
-          <p-tableCheckbox [value]="product"></p-tableCheckbox>
+          <p-tableCheckbox [value]="item"></p-tableCheckbox>
         </td>
-        <td>{{ product.name }}</td>
-        <td>{{ product.price | currency: 'USD' }}</td>
-        <td>{{ product.category }}</td>
-        <td><p-rating [ngModel]="product.rating" [readonly]="true" [cancel]="false"></p-rating></td>
+        <td>{{ item.username }}</td>
+        <td>{{ item.firstname }}</td>
+        <td>{{ item.lastname }}</td>
+        <td>{{ item.createdAt | date: 'd/MM/yyyy' }}</td>
         <td>
-          <span [class]="'product-badge status-' + product.inventoryStatus.toLowerCase()">{{
-            product.inventoryStatus
-          }}</span>
+          <p-tag *ngIf="item.isActivated" severity="success" value="Activated"></p-tag>
+          <p-tag *ngIf="!item.isActivated" severity="danger" value="Disabled"></p-tag>
         </td>
+
         <td>
-          <button
-            pButton
-            pRipple
-            icon="pi pi-pencil"
-            class="p-button-rounded p-button-success p-mr-2"
-            (click)="editItem(product)"
-          ></button>
-          <button
-            pButton
+          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded" (click)="editItem(item)"></p-button>
+          <p-button
             pRipple
             icon="pi pi-trash"
-            class="p-button-rounded p-button-warning"
-            (click)="deleteItem(product)"
-          ></button>
+            styleClass="p-button-rounded p-button-outlined ml-2"
+            (click)="deleteItem(item)"
+          ></p-button>
         </td>
       </tr>
     </ng-template>
     <ng-template pTemplate="summary">
-      <div class="p-d-flex p-ai-center p-jc-between">In total there are {{ items ? items.length : 0 }} products.</div>
+      <div class="flex p-ai-center p-jc-between">In total there are {{ items ? items.length : 0 }} products.</div>
     </ng-template>
   </p-table>
 </div>
 
-<p-dialog
-  [(visible)]="dialog"
-  [style]="{ width: '450px' }"
-  header="Product Details"
-  [modal]="true"
-  styleClass="p-fluid"
->
+<p-dialog [(visible)]="dialog" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">
   <ng-template pTemplate="content">
     <div class="p-field">
       <label for="name">Name</label>

@@ -34,6 +34,8 @@ import { CommonModule } from '@angular/common';
 export class AppNavigationContainerComponent {
   private _desktopNavigationExpanded = false;
 
+  private _avatarNavigationExpanded = false;
+
   get isMobile$(): Observable<boolean> {
     return this._responsiveService.isMobile$;
   }
@@ -58,6 +60,17 @@ export class AppNavigationContainerComponent {
   }
 
   @Output() desktopNavigationExpandedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  @Input() set avatarNavigationExpanded(value: boolean) {
+    this._avatarNavigationExpanded = value;
+    this.avatarNavigationExpandedChange.emit(value);
+  }
+
+  get avatarNavigationExpanded(): boolean {
+    return this._avatarNavigationExpanded;
+  }
+
+  @Output() avatarNavigationExpandedChange: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   constructor(private readonly _responsiveService: ResponsiveService) {}
 
@@ -113,18 +126,27 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
       <div class="navigation-bar-content">
         <ng-content select="[navigationBarContent]"></ng-content>
       </div>
-      <div class="avatar-container">
+      <div class="avatar-container" (click)="avatarNavigationExpanded = !avatarNavigationExpanded">
         <div class="username">{{ username | slice: 0:43 }}</div>
         <div class="avatar">
           <img [src]="avatarImageSource" alt="user avatar" />
         </div>
-        <div class="avatar-navigation">
-          <a [routerLink]="item.routerLink" *ngFor="let item of avatarNavigationItems" (click)="act(item.action)">
-            <div *ngIf="item.iconClass" class="icon-container">
-              <i [class]="item.iconClass"></i>
-            </div>
-            <div *ngIf="item.label" class="label">{{ item.label | slice: 0:20 }}</div>
-          </a>
+        <div
+          [ngClass]="{
+            'avatar-navigation': true,
+            expanded: avatarNavigationExpanded,
+            collapsed: !avatarNavigationExpanded
+          }"
+        >
+          <ng-container *ngFor="let item of avatarNavigationItems">
+            <hr *ngIf="item.separatorAbove" class="separator" />
+            <a [routerLink]="item.routerLink" (click)="act(item.action)">
+              <div *ngIf="item.iconClass" class="icon-container">
+                <i [class]="item.iconClass"></i>
+              </div>
+              <div *ngIf="item.label" class="label">{{ item.label | slice: 0:20 }}</div>
+            </a>
+          </ng-container>
         </div>
       </div>
     </nav>
@@ -304,7 +326,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         width: calc(100% - var(--navigation-expanded-width));
       }
 
-      .separator {
+      .navigation .separator {
         margin-top: auto;
         border: 1px solid #fff;
         background: #fff;
@@ -348,6 +370,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
 
       .avatar-navigation.expanded {
         display: flex;
+        z-index: 9999;
       }
 
       .avatar-navigation a {
@@ -362,6 +385,11 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
       .avatar-navigation a:hover {
         background-color: #007bc0;
         color: #fff;
+      }
+
+      .avatar-navigation .separator {
+        border: 1px solid gray;
+        width: 90%;
       }
     `,
   ],

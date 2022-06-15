@@ -50,7 +50,7 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this._myProfileService.refresh<MyProfileModel>({ id: 'test', firstname: 'Loïc', lastname: 'Bertrand' });
+    await this._myProfileService.login();
   }
 }
 

@@ -1,7 +1,7 @@
 import { app, autoUpdater, dialog } from 'electron';
 import { platform, arch } from 'os';
 
-export default class UpdateEventsHelper {
+export class UpdateEventsHelper {
   static initialize(updateServerUrl: string) {
     if (process.env.SOLUTION_ENVIRONMENT == 'development') {
       return;
