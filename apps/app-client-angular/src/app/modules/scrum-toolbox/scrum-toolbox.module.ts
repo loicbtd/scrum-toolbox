@@ -21,7 +21,6 @@ import { CrudProjectsComponent } from './components/crud-projects/crud-projects.
       avatarImageSource="assets/images/avatar.png"
       [username]="getFormattedUsername((myProfile$ | async)?.user?.firstname, (myProfile$ | async)?.user?.lastname)"
     >
-      <ng-container navigationBarContent>Navigation bar content </ng-container>
       <router-outlet></router-outlet>
     </app-navigation-container>
   `,

@@ -12,7 +12,6 @@ export const appRoutes = {
       crudProjects: 'crudProjects',
     },
     mainMenu: 'mainMenu',
-    projectManager: 'projectManager',
     all: 'all',
     test: 'test',
   },
