@@ -11,6 +11,7 @@ import { MyProfileModel } from '../../global/models/my-profile.model';
 import { CrudUsersComponent } from './components/crud-users/crud-users.component';
 import { AdministrationComponent } from './components/administration/administration.component';
 import { CrudProjectsComponent } from './components/crud-projects/crud-projects.component';
+import { CreateSprintComponent } from './components/create-sprint/create-sprint.component';
 
 @Component({
   template: `
@@ -85,6 +86,7 @@ export class ScrumToolboxComponent {
     CrudUsersComponent,
     CrudProjectsComponent,
     AdministrationComponent,
+    CreateSprintComponent,
   ],
   providers: [ScrumToolboxModule],
   imports: [
@@ -117,6 +119,10 @@ export class ScrumToolboxComponent {
               {
                 component: CrudProjectsComponent,
                 path: appRoutes.scrumToolbox.administration.crudProjects,
+              },
+              {
+                component: CreateSprintComponent,
+                path: appRoutes.scrumToolbox.administration.createSprint,
               },
               {
                 path: '**',

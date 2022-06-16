@@ -16,5 +16,10 @@ export class AdministrationComponent {
       icon: 'fa-solid fa-briefcase',
       routerLink: [appRoutes.scrumToolbox.administration.crudProjects],
     },
+    {
+      label: 'Create sprint',
+      icon: 'fa-solid fa-forward',
+      routerLink: [appRoutes.scrumToolbox.administration.createSprint],
+    },
   ];
 }

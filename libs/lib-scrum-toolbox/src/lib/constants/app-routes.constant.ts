@@ -10,6 +10,7 @@ export const appRoutes = {
       root: 'administration',
       crudUsers: 'crudUsers',
       crudProjects: 'crudProjects',
+      createSprint: 'createSprint',
     },
     mainMenu: 'mainMenu',
     all: 'all',
