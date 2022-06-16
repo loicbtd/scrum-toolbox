@@ -8,6 +8,8 @@ import { WebserviceTestComponent } from './components/webservice-test/webservice
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { MyProfileModel } from '../../global/models/my-profile.model';
+import { IpcService } from '../../global/services/ipc.service';
+import { ProjectManagerComponent } from './components/project-manager/project-manager.component';
 
 @Component({
   template: `
@@ -18,6 +20,7 @@ import { MyProfileModel } from '../../global/models/my-profile.model';
       avatarImageSource="assets/images/avatar.png"
       [username]="getFormattedUsername((myProfile$ | async)?.firstname, (myProfile$ | async)?.lastname)"
     >
+      <ng-container navigationBarContent>Navigation bar content </ng-container>
       <router-outlet></router-outlet>
     </app-navigation-container>
   `,
@@ -42,6 +45,7 @@ export class ScrumToolboxComponent {
       iconClass: 'fa-solid fa-flask-vial',
       routerLink: [appRoutes.scrumToolbox.test],
     }),
+    new NavigationItemModel({ label: 'Project Manager', iconClass: 'fa-solid fa-table-list', routerLink: [appRoutes.scrumToolbox.projectManager] }),
   ];
 
   avatarNavigationItems: NavigationItemModel[] = [
@@ -73,7 +77,7 @@ export class ScrumToolboxComponent {
 }
 
 @NgModule({
-  declarations: [ScrumToolboxComponent, ProjectsComponent, WebserviceTestComponent],
+  declarations: [ScrumToolboxComponent, ProjectsComponent, WebserviceTestComponent, ProjectManagerComponent],
   providers: [ScrumToolboxModule],
   imports: [
     SharedModule,
@@ -93,6 +97,10 @@ export class ScrumToolboxComponent {
           {
             path: appRoutes.scrumToolbox.test,
             component: WebserviceTestComponent,
+          },
+          {
+            path: appRoutes.scrumToolbox.projectManager,
+            component: ProjectManagerComponent,
           },
           {
             path: '**',

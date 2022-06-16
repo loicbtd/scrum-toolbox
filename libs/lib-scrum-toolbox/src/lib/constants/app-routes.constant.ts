@@ -6,6 +6,7 @@ export const appRoutes = {
   scrumToolbox: {
     root: 'scrumToolbox',
     mainMenu: 'mainMenu',
+    projectManager: 'projectManager',
     all: 'all',
     test: 'test'
   },
