@@ -41,6 +41,7 @@ import { BlockableDivModule, DurationPipeModule } from '@libraries/lib-angular';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AppNavigationContainerModule } from '@libraries/lib-angular';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import {CalendarModule} from 'primeng/calendar';
 
 const importedAndExportedModules = [
   CommonModule,
@@ -88,6 +89,7 @@ const importedAndExportedModules = [
   InputSwitchModule,
   AppNavigationContainerModule,
   ConfirmDialogModule,
+  CalendarModule,
 ];
 
 @NgModule({
