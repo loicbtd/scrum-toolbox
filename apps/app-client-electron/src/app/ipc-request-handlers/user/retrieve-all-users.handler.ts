@@ -6,7 +6,7 @@ export class RetrieveAllUsersHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.retrieveAllUsers;
 
   async handle(): Promise<User[]> {
-    return Application.getInstance()
+    return await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getDataSource('main')
       .getRepository<User>(User)

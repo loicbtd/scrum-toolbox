@@ -2,14 +2,15 @@ import { NgModule, Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { ProjectsComponent } from './components/projects/projects.component';
-import { MyProfileState, NavigationItemModel } from '@libraries/lib-angular';
+import { AuthenticationService, MyProfileState, NavigationItemInterface } from '@libraries/lib-angular';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { MyProfileModel } from '../../global/models/my-profile.model';
-import { IpcService } from '../../global/services/ipc.service';
-import { ProjectManagerComponent } from './components/project-manager/project-manager.component';
+import { CrudUsersComponent } from './components/crud-users/crud-users.component';
+import { AdministrationComponent } from './components/administration/administration.component';
+import { CrudProjectsComponent } from './components/crud-projects/crud-projects.component';
 
 @Component({
   template: `
@@ -18,7 +19,7 @@ import { ProjectManagerComponent } from './components/project-manager/project-ma
       [avatarNavigationItems]="avatarNavigationItems"
       logoImageSource="assets/images/icon.png"
       avatarImageSource="assets/images/avatar.png"
-      [username]="getFormattedUsername((myProfile$ | async)?.firstname, (myProfile$ | async)?.lastname)"
+      [username]="getFormattedUsername((myProfile$ | async)?.user?.firstname, (myProfile$ | async)?.user?.lastname)"
     >
       <ng-container navigationBarContent>Navigation bar content </ng-container>
       <router-outlet></router-outlet>
@@ -26,39 +27,38 @@ import { ProjectManagerComponent } from './components/project-manager/project-ma
   `,
 })
 export class ScrumToolboxComponent {
-  navigationItems: NavigationItemModel[] = [
-    new NavigationItemModel({
+  navigationItems: NavigationItemInterface[] = [
+    {
       label: 'Product backlog',
       iconClass: 'fa-solid fa-clipboard-list',
       routerLink: ['#'],
-    }),
-    new NavigationItemModel({
+    },
+    {
       label: 'Sprint backlog',
       iconClass: 'fa-solid fa-list-check',
       routerLink: ['#'],
-    }),
-    new NavigationItemModel({ label: 'Team', iconClass: 'fa-solid fa-user', routerLink: ['#'] }),
-    new NavigationItemModel({ label: 'Metrics', iconClass: 'fa-solid fa-chart-line', routerLink: ['#'] }),
-
-    new NavigationItemModel({
+    },
+    { label: 'Team', iconClass: 'fa-solid fa-user', routerLink: ['#'] },
+    { label: 'Metrics', iconClass: 'fa-solid fa-chart-line', routerLink: ['#'] },
+    {
       label: 'TEST',
       iconClass: 'fa-solid fa-flask-vial',
       routerLink: [appRoutes.scrumToolbox.test],
-    }),
-    new NavigationItemModel({ label: 'Project Manager', iconClass: 'fa-solid fa-table-list', routerLink: [appRoutes.scrumToolbox.projectManager] }),
+    },
   ];
 
-  avatarNavigationItems: NavigationItemModel[] = [
-    new NavigationItemModel({
-      label: 'Règlages',
+  avatarNavigationItems: NavigationItemInterface[] = [
+    {
+      label: 'Administration',
       iconClass: 'fa-solid fa-gear',
-      routerLink: ['profile'],
-    }),
-    new NavigationItemModel({
+      routerLink: [appRoutes.scrumToolbox.administration.root],
+    },
+    {
       label: 'Déconnexion',
       iconClass: 'fa-solid fa-clipboard-list',
-      routerLink: ['logout'],
-    }),
+      separatorAbove: true,
+      action: async () => await this._authenticationService.logout([appRoutes.login]),
+    },
   ];
 
   @Select(MyProfileState) myProfile$: Observable<MyProfileModel>;
@@ -74,10 +74,19 @@ export class ScrumToolboxComponent {
 
     return `${formattedFirstname} ${formattedLastname}`;
   }
+
+  constructor(private readonly _authenticationService: AuthenticationService) {}
 }
 
 @NgModule({
-  declarations: [ScrumToolboxComponent, ProjectsComponent, WebserviceTestComponent, ProjectManagerComponent],
+  declarations: [
+    ScrumToolboxComponent,
+    ProjectsComponent,
+    WebserviceTestComponent,
+    CrudUsersComponent,
+    CrudProjectsComponent,
+    AdministrationComponent,
+  ],
   providers: [ScrumToolboxModule],
   imports: [
     SharedModule,
@@ -99,8 +108,22 @@ export class ScrumToolboxComponent {
             component: WebserviceTestComponent,
           },
           {
-            path: appRoutes.scrumToolbox.projectManager,
-            component: ProjectManagerComponent,
+            path: appRoutes.scrumToolbox.administration.root,
+            component: AdministrationComponent,
+            children: [
+              {
+                component: CrudUsersComponent,
+                path: appRoutes.scrumToolbox.administration.crudUsers,
+              },
+              {
+                component: CrudProjectsComponent,
+                path: appRoutes.scrumToolbox.administration.crudProjects,
+              },
+              {
+                path: '**',
+                redirectTo: appRoutes.scrumToolbox.administration.crudUsers,
+              },
+            ],
           },
           {
             path: '**',

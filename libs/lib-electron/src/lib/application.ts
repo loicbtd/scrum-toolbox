@@ -1,6 +1,5 @@
 import { app } from 'electron';
 import { BackgroundTasksService } from './services/background-tasks.service';
-import { DatabasesService } from './services/databases.service';
 import { BaseTray } from './trays/base.tray';
 import { BaseWindow } from './windows/base.window';
 import { BaseBackgroundTask } from './background-tasks/base.background-task';
@@ -9,9 +8,9 @@ import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
 import { Container } from 'inversify';
 import { dependencies } from './constants/dependencies.contant';
 import { DatabaseConfiguration } from './interfaces/database-configuration.interface';
-import { LoggerService } from './services/logger.service';
-import SquirrelEventsHelper from './helpers/squirrel-events.helper';
-import UpdateEventsHelper from './helpers/update-events.helper';
+import { DatabasesService } from './services/databases.service';
+import { SquirrelEventsHelper } from './helpers/squirrel-events.helper';
+import { UpdateEventsHelper } from './helpers/update-events.helper';
 
 export class Application {
   private static _instance: Application;
@@ -99,8 +98,6 @@ export class Application {
       UpdateEventsHelper.initialize(options.updateServerUrl);
     }
 
-    this._dependencies.bind<LoggerService>(dependencies.logger).to(LoggerService);
-
     if (options) {
       if (options.settingsDirectoryPath) {
         this._settingsDirectoryPath = options.settingsDirectoryPath;
@@ -131,8 +128,6 @@ export class Application {
         this._dependencies.get<IpcMainService>(dependencies.ipcMain).addRequestHandlers(options.ipcRequestHandlers);
       }
     }
-
-    this._dependencies.get<LoggerService>(dependencies.logger).debug('Application started');
   }
 
   public loadTray(trayType: new (...args: any[]) => BaseTray) {
@@ -140,6 +135,7 @@ export class Application {
   }
 
   public unloadTray() {
+    this._tray.destroy();
     this._tray = null;
   }
 

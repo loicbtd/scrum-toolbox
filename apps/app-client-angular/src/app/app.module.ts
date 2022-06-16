@@ -8,16 +8,17 @@ import { BlockUiService } from './global/services/block-ui.service';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { LoginComponent } from './modules/login/login.component';
 import {
-  AuthenticationGuard,
-  MyProfileService,
+  IsAuthenticatedGuard,
+  IsNotAuthenticatedGuard,
+  AuthenticationService,
   MyProfileState,
   MyProfileStateModule,
   VisitedRoutesStateModule,
 } from '@libraries/lib-angular';
-import { MyProfileModel } from './global/models/my-profile.model';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { IpcService } from './global/services/ipc.service';
+import { SignUpComponent } from './modules/signup/signup.component';
 
 @Component({
   selector: 'app-root',
@@ -38,24 +39,16 @@ import { IpcService } from './global/services/ipc.service';
   `,
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
-  constructor(
-    private readonly _blockUiService: BlockUiService,
-    private readonly _myProfileService: MyProfileService,
-    private readonly _ipcService: IpcService
-  ) {}
+export class AppComponent {
+  constructor(private readonly _blockUiService: BlockUiService, _ipcService: IpcService) {}
 
   get $uiBlocked() {
     return this._blockUiService.$uiBlocked;
   }
-
-  async ngOnInit() {
-    await this._myProfileService.refresh<MyProfileModel>({ id: 'test', firstname: 'Loïc', lastname: 'Bertrand' });
-  }
 }
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent],
+  declarations: [AppComponent, LoginComponent, SignUpComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -68,12 +61,18 @@ export class AppComponent implements OnInit {
         {
           path: appRoutes.scrumToolbox.root,
           loadChildren: () => import('./modules/scrum-toolbox/scrum-toolbox.module').then((_) => _.ScrumToolboxModule),
-          canActivate: [AuthenticationGuard],
-          data: { notLoggedInRedirectionPath: [appRoutes.login] },
+          canActivate: [IsAuthenticatedGuard],
+          data: { redirectionPath: [appRoutes.login] },
         },
         {
           path: appRoutes.login,
           component: LoginComponent,
+          canActivate: [IsNotAuthenticatedGuard],
+        },
+        {
+          path: appRoutes.signup,
+          component: SignUpComponent,
+          canActivate: [IsNotAuthenticatedGuard],
         },
         {
           path: '**',

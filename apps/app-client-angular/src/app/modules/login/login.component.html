@@ -1,28 +1,87 @@
+<p-toast></p-toast>
 <div class="surface-card p-6 shadow-2 border-round w-full lg:w-6 card-placement">
     <div class="text-center mb-5">
         <img src="assets/images/icon.png" alt="Image" height="50" class="mb-3">
         <div class="text-900 text-3xl font-medium mb-3">Welcome Back</div>
         <span class="text-600 font-medium line-height-3">Don't have an account?</span>
-        <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer">Create today!</a>
+        <a class="font-medium no-underline ml-2 text-blue-500 cursor-pointer" (click)="redirectToSignup()">Create today!</a>
     </div>
 
     <div>
         <form [formGroup]="form" novalidate class="form-group">
-            <label for="email" class="block text-900 font-medium mb-2">Email</label>
-            <input id="email" type="text" pInputText class="w-full mb-3" formControlName="email">
+            <div class="form-element">
+                <label for="login" class="block text-900 font-medium mb-2">
+                    Username
+                </label>
+                <input 
+                    id="login" 
+                    type="text" 
+                    pInputText class="w-full mb-3" 
+                    formControlName="login"
+                    [ngClass]="{
+                        'ng-invalid ng-dirty':
+                        form.controls.login.touched &&
+                        form.controls.login.invalid
+                    }"
+                >
 
-            <label for="password" class="block text-900 font-medium mb-2">Password</label>
-            <input id="password" type="password" pInputText class="w-full mb-3" formControlName="password">
-
-            <div class="flex align-items-center justify-content-between mb-6">
-                <div class="flex align-items-center">
-                    <p-checkbox id="rememberme" [binary]="true" styleClass="mr-2"></p-checkbox>
-                    <label for="rememberme" class="text-900">Remember me</label>
-                </div>
-                <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
+                <small
+                    class="p-error"
+                    *ngIf="
+                        form.controls.login.touched &&
+                        form.controls.login.errors?.required
+                    "
+                >
+                    Username is required
+                </small>
+                <small
+                    class="p-error"
+                    *ngIf="
+                        form.controls.login.errors?.minlength
+                    "
+                >
+                    Username is a minimum of 4 characters
+                </small>
             </div>
 
-            <button pButton pRipple label="Sign In" icon="pi pi-user" class="w-full" (click)="submitForm()"></button>
+            <div class="form-element">
+                <label for="password" class="block text-900 font-medium mb-2">
+                    Password
+                </label>
+                <input 
+                    id="password" 
+                    type="password" 
+                    pInputText 
+                    class="w-full mb-3" 
+                    formControlName="password"
+                    [ngClass]="{
+                        'ng-invalid ng-dirty':
+                        form.controls.password.touched &&
+                        form.controls.password.invalid
+                    }"
+                >
+
+                <small
+                    class="p-error"
+                    *ngIf="
+                        form.controls.password.touched &&
+                        form.controls.password.errors?.required
+                    "
+                >
+                    Password is required
+                </small>
+            </div>
+
+            <div class="form-element">
+                <div class="flex align-items-center justify-content-between mb-6">
+                    <a class="font-medium no-underline ml-2 text-blue-500 text-right cursor-pointer">Forgot password?</a>
+                </div>
+            </div>
+
+            <div class="form-element">
+                <button pButton pRipple label="Sign In" icon="pi pi-user" class="w-full" (click)="submitForm()"></button>
+            </div>
+
         </form>
     </div>
 </div>

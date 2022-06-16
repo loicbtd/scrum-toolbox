@@ -2,7 +2,7 @@ import { app } from 'electron';
 import { spawn } from 'child_process';
 import { resolve, join, basename } from 'path';
 
-export default class SquirrelEventsHelper {
+export class SquirrelEventsHelper {
   private static isAppFirstRun = false;
 
   private static appFolder = resolve(process.execPath, '..');

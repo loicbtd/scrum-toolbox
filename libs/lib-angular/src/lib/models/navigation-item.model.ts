@@ -1,15 +1,11 @@
-export class NavigationItemModel {
+export interface NavigationItemInterface {
   label?: string;
 
   iconClass?: string;
 
-  routerLink?: string[] = ['#'];
+  routerLink?: string[];
 
-  separatorAbove? = false;
+  separatorAbove?: boolean;
 
-  action: () => void = () => null;
-
-  public constructor(attributes?: Partial<NavigationItemModel>) {
-    Object.assign(this, attributes);
-  }
+  action?: () => void | Promise<void>;
 }

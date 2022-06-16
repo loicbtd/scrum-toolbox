@@ -1,0 +1,90 @@
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+      <p-button
+        pRipple
+        label="Delete"
+        icon="pi pi-trash"
+        class="p-button-danger ml-2"
+        (click)="deleteSelectedItems()"
+        [disabled]="!selectedItems || !selectedItems.length"
+      ></p-button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    #dt
+    [value]="items"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['firstname', 'lastname']"
+    [(selection)]="selectedItems"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex p-ai-center p-jc-between">
+        <h5 class="m-0">Manage items</h5>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="label">Label<p-sortIcon field="username"></p-sortIcon></th>
+        <th>Description</th>
+        <th>Created at</th>
+        <th>Updated at</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="item"></p-tableCheckbox>
+        </td>
+        <td>{{ item.label }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.createdAt | date: 'd/MM/yyyy' }}</td>
+        <td>{{ item.updatedAt | date: 'd/MM/yyyy' }}</td>
+
+        <td>
+          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded" (click)="editItem(item)"></p-button>
+          <p-button
+            pRipple
+            icon="pi pi-trash"
+            styleClass="p-button-rounded p-button-outlined ml-2"
+            (click)="deleteItem(item)"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex p-ai-center p-jc-between">Items count : {{ items ? items.length : 0 }}</div>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="dialog" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="field">
+      <label for="username">Label</label>
+      <input type="text" pInputText id="username" [(ngModel)]="item.label" required autofocus />
+      <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
+    </div>
+    <div class="field">
+      <label for="password">Description</label>
+      <textarea rows="5" cols="30" type="text" pInputTextarea [autoResize]="true" id="description" [(ngModel)]="item.description"></textarea>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
