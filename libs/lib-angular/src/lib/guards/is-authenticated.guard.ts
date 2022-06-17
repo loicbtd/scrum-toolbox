@@ -8,7 +8,7 @@ import { MyProfileState } from '../states/my-profile-state/my-profile.state';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthenticationGuard implements CanActivate {
+export class IsAuthenticatedGuard implements CanActivate {
   constructor(private readonly store: Store, private readonly router: Router) {}
 
   canActivate(
@@ -18,14 +18,17 @@ export class AuthenticationGuard implements CanActivate {
     const myProfile = this.store.selectSnapshot<BaseMyProfileModel>(MyProfileState);
 
     if (!myProfile) {
-      const notLoggedInRedirectionPath = route.data.notLoggedInRedirectionPath as Array<string>;
-      if (notLoggedInRedirectionPath) {
-        return this.router.createUrlTree(notLoggedInRedirectionPath);
-      } else {
-        return this.router.createUrlTree(['']);
-      }
+      return this.redirect(route);
+    }
+
+    if (!myProfile.isLoggedIn) {
+      return this.redirect(route);
     }
 
     return true;
+  }
+
+  redirect(route: ActivatedRouteSnapshot) {
+    return this.router.createUrlTree((route.data.redirectionPath as Array<string>) || ['']);
   }
 }

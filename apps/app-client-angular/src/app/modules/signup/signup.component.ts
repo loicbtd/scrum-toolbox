@@ -1,13 +1,9 @@
 import { Component } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastMessageService } from '@libraries/lib-angular';
-
 import { appRoutes, errorsName, User } from '@libraries/lib-scrum-toolbox';
 import { appIpcs } from '@libraries/lib-scrum-toolbox';
-
-import { MessageService } from 'primeng/api';
-
 import { IpcService } from '../../global/services/ipc.service';
 
 @Component({
@@ -17,13 +13,12 @@ import { IpcService } from '../../global/services/ipc.service';
 export class SignUpComponent {
   constructor(
     private readonly _ipcService: IpcService,
-    private readonly fb: FormBuilder,
-    public readonly router: Router,
-    private messageService: ToastMessageService,
-    private messageService_: MessageService
+    private readonly _fb: UntypedFormBuilder,
+    private readonly _router: Router,
+    private readonly _messageService: ToastMessageService
   ) {}
 
-  formUp = this.fb.group({
+  formUp = this._fb.group({
     login: ['', [Validators.required, Validators.minLength(4)]],
     password: [
       '',
@@ -38,7 +33,7 @@ export class SignUpComponent {
   });
 
   redirectToSigin() {
-    this.router.navigate([appRoutes.login]);
+    this._router.navigate([appRoutes.login]);
   }
 
   async submitForm() {
@@ -56,26 +51,16 @@ export class SignUpComponent {
 
       await this._ipcService.query(appIpcs.createUser, user);
 
-      this.messageService.showSuccess('You can now log you in.', 'Account created');
+      this._messageService.showSuccess('You can now log you in.', 'Account created');
 
-      this.router.navigate([appRoutes.login]);
-
+      this._router.navigate([appRoutes.login]);
     } catch (error: any) {
       switch (error.message) {
         case errorsName.usernameAlreadyExists:
-          this.messageService_.add({
-            severity: 'error',
-            summary: 'Username already taken',
-            detail: 'Please change your username.',
-          });
+          this._messageService.showError('Username already taken', 'Please change your username.');
           break;
         default:
-          console.log(error.message);
-          this.messageService_.add({
-            severity: 'error',
-            summary: 'Account not created',
-            detail: 'Please contact an admin.',
-          });
+          this._messageService.showError('Account not created', 'Please contact an admin.');
       }
     }
   }

@@ -1,15 +1,13 @@
 import { ToadScheduler, AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
 import { BaseBackgroundTask } from '../background-tasks/base.background-task';
 import { ElectronApplicationError } from '../errors/electron-application.error';
-import { inject, injectable } from 'inversify';
-import { dependencies } from '../constants/dependencies.contant';
-import { LoggerService } from './logger.service';
+import { injectable } from 'inversify';
 
 @injectable()
 export class BackgroundTasksService {
   private readonly _scheduler: ToadScheduler;
 
-  constructor(@inject(dependencies.logger) private readonly _loggerService: LoggerService) {
+  constructor() {
     this._scheduler = new ToadScheduler();
   }
 
@@ -33,7 +31,6 @@ export class BackgroundTasksService {
             }
           },
           (error: Error) => {
-            this._loggerService.error(error.stack);
             task.handleError(error);
           }
         )

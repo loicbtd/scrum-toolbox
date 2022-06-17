@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MenubarModule } from 'primeng/menubar';
 import { InputTextModule } from 'primeng/inputtext';
-import { MessageService, SharedModule as PrimengSharedModule } from 'primeng/api';
+import { ConfirmationService, MessageService, SharedModule as PrimengSharedModule } from 'primeng/api';
 import { TerminalModule } from 'primeng/terminal';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { ButtonModule } from 'primeng/button';
@@ -40,6 +40,7 @@ import { InputNumberModule } from 'primeng/inputnumber';
 import { BlockableDivModule, DurationPipeModule } from '@libraries/lib-angular';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AppNavigationContainerModule } from '@libraries/lib-angular';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 const importedAndExportedModules = [
   CommonModule,
@@ -86,6 +87,7 @@ const importedAndExportedModules = [
   DurationPipeModule,
   InputSwitchModule,
   AppNavigationContainerModule,
+  ConfirmDialogModule,
 ];
 
 @NgModule({
@@ -98,6 +100,7 @@ const importedAndExportedModules = [
       useValue: window,
     },
     MessageService,
+    ConfirmationService,
   ],
 })
 export class SharedModule {}

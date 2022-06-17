@@ -8,7 +8,7 @@ import { MyProfileState } from '../states/my-profile-state/my-profile.state';
 @Injectable({
   providedIn: 'root',
 })
-export class AuthorizationGuard implements CanActivate {
+export class IsNotAuthenticatedGuard implements CanActivate {
   constructor(private readonly store: Store, private readonly router: Router) {}
 
   canActivate(
@@ -16,33 +16,15 @@ export class AuthorizationGuard implements CanActivate {
     _state: RouterStateSnapshot
   ): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     const myProfile = this.store.selectSnapshot<BaseMyProfileModel>(MyProfileState);
-    if (!myProfile) {
-      return this.redirection(route);
-    }
 
-    const userRoles = myProfile.roles;
-    if (!userRoles) {
-      return this.redirection(route);
-    }
-
-    const requiredRoles = route.data.roles as Array<any>;
-    if (!requiredRoles) {
-      return this.redirection(route);
-    }
-
-    if (!requiredRoles.every((requiredRole) => userRoles.includes(requiredRole))) {
-      return this.redirection(route);
+    if (myProfile.isLoggedIn) {
+      return this.redirect(route);
     }
 
     return true;
   }
 
-  redirection(route: ActivatedRouteSnapshot) {
-    const notLoggedInRedirectionPath = route.data.notLoggedInRedirectionPath as Array<string>;
-    if (notLoggedInRedirectionPath) {
-      return this.router.createUrlTree(notLoggedInRedirectionPath);
-    } else {
-      return this.router.createUrlTree(['']);
-    }
+  redirect(route: ActivatedRouteSnapshot) {
+    return this.router.createUrlTree((route.data.redirectionPath as Array<string>) || ['']);
   }
 }
