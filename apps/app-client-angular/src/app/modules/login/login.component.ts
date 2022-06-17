@@ -43,6 +43,7 @@ export class LoginComponent {
       await this._authenticationService.login<MyProfileModel>({ isLoggedIn: true, user: user }, [
         appRoutes.scrumToolbox.root,
       ]);
+      
     } catch (error: any) {
       switch (error.message) {
         case errorsName.incorrectUsername:
