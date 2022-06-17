@@ -50,7 +50,7 @@ export class LoginComponent {
       console.log(user);
       
       await this._myProfileService.refresh<MyProfileModel>({ id: user.id, firstname: user.firstname, lastname: user.lastname });
-      //TODO redirect to proper page
+      
       this.router.navigate([appRoutes.scrumToolbox.root]);
       
     } catch (error: any) {
