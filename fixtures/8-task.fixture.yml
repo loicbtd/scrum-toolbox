@@ -1,0 +1,18 @@
+entity: task
+items:
+  task{1..20}:
+    label: '{{lorem.words}}'
+    description: '{{lorem.paragraph}}'
+    status: '@task_status*'
+    type: '@task_type*'
+    project: '@project*'
+    sprint: '@sprint*'
+    users:
+      - '@users*'
+      - '@users*'
+  task{20..40}:
+    label: '{{lorem.words}}'
+    description: '{{lorem.paragraph}}'
+    status: '@task_status*'
+    type: '@task_type*'
+    project: '@project*'

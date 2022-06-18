@@ -1,0 +1,8 @@
+entity: sprint_status
+items:
+  sprint_status1:
+    label: 'SCHEDULED'
+  sprint_status2:
+    label: 'IN PROGRESS'
+  sprint_status3:
+    label: 'DONE'
