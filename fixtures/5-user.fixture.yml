@@ -1,0 +1,8 @@
+entity: user
+items:
+  user{1..10}:
+    firstname: '{{name.firstName}}'
+    lastname: '{{name.lastName}}'
+    username: '{{internet.userName}}'
+    password: '$2b$10$ddSQ./kMhAWhsLCXt7j6LedMHg/2cAh8L4sbuq691J.z/xVHYDueq' # Azertyuiop90?
+    isActivated: '{{datatype.boolean}}'

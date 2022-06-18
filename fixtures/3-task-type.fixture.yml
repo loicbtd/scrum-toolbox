@@ -1,0 +1,14 @@
+entity: task_type
+items:
+  task_type1:
+    label: 'Bug'
+    color: '#FF0000'
+  task_type2:
+    label: 'Feature'
+    color: '#CCA9DD'
+  task_type3:
+    label: 'Documentation'
+    color: '#ADD8E6'
+  task_type4:
+    label: 'User Story'
+    color: '#072F5F'

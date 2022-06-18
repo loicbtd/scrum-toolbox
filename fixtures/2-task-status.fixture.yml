@@ -1,0 +1,11 @@
+entity: task_status
+items:
+  task_status1:
+    label: TO DO
+    color: '#D09DFE'
+  task_status2:
+    label: IN PROGRESS
+    color: '#FBCA04'
+  task_status3:
+    label: DONE
+    color: '#90EE90'
