@@ -1,24 +1,48 @@
 <div class="p-fluid flex align-items-center justify-content-center mt-5">
   <p-card class="w-5" header="Create a sprint">
-    <div class="flex align-items-center justify-content-center flex-column">
-      <div class="field w-6">
-        <label for="label" class="block">Label</label>
-        <input id="label" type="username" aria-describedby="label-help" pInputText required autofocus [(ngModel)]="sprint.label"/>
-        <small class="p-invalid" *ngIf="submitted && !sprint.label">Required field</small>
+    <form [formGroup]="form" novalidate class="form-group">
+      <div class="flex align-items-center justify-content-center flex-column">
+        <div class="field w-6">
+          <label for="label" class="block">Label</label>
+          <input id="label" [ngClass]="{
+                        'ng-invalid ng-dirty':
+                        form.controls.label.touched &&
+                        form.controls.label.invalid
+                    }" type="username" aria-describedby="label-help" pInputText formControlName="label"/>
+          <small>Required field</small>
+        </div>
+        <div class="field w-6">
+          <label for="startDate">Start date</label>
+          <p-calendar [ngClass]="{
+                'ng-invalid ng-dirty':
+                form.controls.startDate.touched &&
+                form.controls.startDate.invalid
+            }" inputId="startDate" [(ngModel)]="minEndDate" formControlName="startDate" [minDate]="minStartDate"></p-calendar>
+          <small>Required field</small><br/>
+          <small class="p-invalid" *ngIf="startWrong">The date must be from today</small>
+        </div>
+        <div class="field w-6">
+          <label for="endDate">End date</label>
+          <p-calendar [ngClass]="{
+            'ng-invalid ng-dirty':
+            (form.controls.endDate.touched &&
+            form.controls.endDate.invalid)||
+            endWrong
+        }" inputId="endDate" formControlName="endDate" [minDate]="minEndDate"></p-calendar>
+          <small>Required field</small><br/>
+          <small class="p-invalid" *ngIf="endWrong">The date must be from the start date</small>
+        </div>
+        <div class="field w-6">
+          <label for="project">Select a project</label>
+          <p-dropdown [ngClass]="{
+            'ng-invalid ng-dirty':
+            submitted &&
+            form.controls.selectedProject.invalid
+        }" inputId="project" [options]="projects" formControlName="selectedProject" placeholder="Select a project" optionLabel="label" [showClear]="true"></p-dropdown>
+        <small>Required field</small>
       </div>
-      <div class="field w-6">
-        <label for="startDate">Start date</label>
-        <p-calendar inputId="startDate" [(ngModel)]="startDate"></p-calendar>
+        <button pButton pRipple type="button" label="Primary" class="p-button-raised w-3 h-3rem mt-3" (click)="saveSprint()"></button>
       </div>
-      <div class="field w-6">
-        <label for="endDate">End date</label>
-        <p-calendar inputId="endDate" [(ngModel)]="endDate"></p-calendar>
-      </div>
-      <div class="field w-6">
-        <label for="project">Select a project</label>
-        <p-dropdown inputId="project" [options]="projects" [(ngModel)]="selectedProject" placeholder="Select a project" optionLabel="label" [showClear]="true"></p-dropdown>
-      </div>
-      <button pButton pRipple type="button" label="Primary" class="p-button-raised w-3 h-3rem mt-3" (click)="saveSprint()"></button>
-    </div>
+    </form>
   </p-card>
 </div>

@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastMessageService } from '@libraries/lib-angular';
 import { appIpcs, appRoutes, Project, Sprint, SprintStatus } from '@libraries/lib-scrum-toolbox';
@@ -11,17 +12,27 @@ import { IpcService } from 'apps/app-client-angular/src/app/global/services/ipc.
 })
 export class CreateSprintComponent implements OnInit {
 
+  form = this.fb.group({
+    label: ['', [Validators.required]],
+    startDate: ['', [Validators.required]],
+    endDate: ['', [Validators.required]],
+    selectedProject: ['', [Validators.required]],
+  });
+
   sprint: Sprint;
   projects: Project[];
   selectedProject : Project;
-  startDate: Date;
-  endDate: Date;
   submitted : boolean;
+  startWrong : boolean;
+  endWrong : boolean;
+  minStartDate : Date;
+  minEndDate : Date;
 
   constructor(
     private readonly _toastMessageService: ToastMessageService,
     private readonly _ipcService: IpcService,
     public readonly _router: Router,
+    private readonly fb: UntypedFormBuilder,
     ) { }
 
   async ngOnInit() {
@@ -29,29 +40,38 @@ export class CreateSprintComponent implements OnInit {
     this.sprint = {};
     this.sprint.status = await this._ipcService.query<SprintStatus>(appIpcs.retrieveSprintStatus, {label: 'CREATED'})
     this.submitted = false;
-  }
-
-  test() : void{
-    if(this.submitted){
-      this.submitted = false;
-    }
-    else{
-      this.submitted = true;
-    }
+    this.endWrong = false;
+    this.startWrong = false;
+    this.minStartDate = new Date();
   }
 
   async saveSprint() { //TODO: controle date (invalid if < new Date())
     this.submitted = true;
+    this.startWrong = false;
+    this.endWrong = false;
+    this.sprint.label = this.form.get('label')?.value
+
+    if (this.form.invalid) {
+      return;
+    }
+
+    if(this.form.get('startDate')?.value < new Date('dd/MM/yyyy')){
+        this.startWrong = true;
+        return;
+    }
+    if(this.form.get('endDate')?.value < this.form.get('startDate')?.value){
+      this.endWrong = true;
+      return;
+    }
 
     try {
-      this.sprint.start_date = this.startDate.toString();
-      this.sprint.end_date = this.endDate.toString();
-      this.sprint.project = new Project;
-      this.sprint.project = this.selectedProject;
+      this.sprint.start_date = this.form.get('startDate')?.value;
+      this.sprint.end_date = this.form.get('endDate')?.value;
+      this.sprint.project = new Project();
+      this.sprint.project = this.form.get('selectedProject')?.value;
 
       await this._ipcService.query<Sprint>(appIpcs.createSprint, this.sprint);
       this._toastMessageService.showSuccess('Sprint Created', 'Successful');
-      await this._router.navigate([appRoutes.scrumToolbox.administration.root]); //TODO: redirect to sprint backlog
 
     } catch (error: any) {
       this._toastMessageService.showError(error.message, `Error while creating Sprint`);
