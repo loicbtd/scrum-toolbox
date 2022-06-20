@@ -11,6 +11,7 @@ import { MyProfileModel } from '../../global/models/my-profile.model';
 import { CrudUsersComponent } from './components/crud-users/crud-users.component';
 import { AdministrationComponent } from './components/administration/administration.component';
 import { CrudProjectsComponent } from './components/crud-projects/crud-projects.component';
+import { CrudBacklogSprintComponent } from './components/crud-backlog-sprint/crud-backlog-sprint.component';
 
 @Component({
   template: `
@@ -35,7 +36,7 @@ export class ScrumToolboxComponent {
     {
       label: 'Sprint backlog',
       iconClass: 'fa-solid fa-list-check',
-      routerLink: ['#'],
+      routerLink: [appRoutes.scrumToolbox.sprintBacklog],
     },
     { label: 'Team', iconClass: 'fa-solid fa-user', routerLink: ['#'] },
     { label: 'Metrics', iconClass: 'fa-solid fa-chart-line', routerLink: ['#'] },
@@ -85,6 +86,7 @@ export class ScrumToolboxComponent {
     CrudUsersComponent,
     CrudProjectsComponent,
     AdministrationComponent,
+    CrudBacklogSprintComponent,
   ],
   providers: [ScrumToolboxModule],
   imports: [
@@ -105,6 +107,10 @@ export class ScrumToolboxComponent {
           {
             path: appRoutes.scrumToolbox.test,
             component: WebserviceTestComponent,
+          },
+          {
+            path: appRoutes.scrumToolbox.sprintBacklog,
+            component: CrudBacklogSprintComponent,
           },
           {
             path: appRoutes.scrumToolbox.administration.root,
