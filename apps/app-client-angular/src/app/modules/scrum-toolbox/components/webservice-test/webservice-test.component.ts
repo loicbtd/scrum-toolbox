@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
-import { AuthenticationService } from '@libraries/lib-angular';
+import { ToastMessageService } from '@libraries/lib-angular';
 import { appIpcs, Project, Sprint, SprintStatus, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
-import { MyProfileModel } from '../../../../global/models/my-profile.model';
 import { IpcService } from '../../../../global/services/ipc.service';
 
 @Component({
@@ -11,31 +10,7 @@ import { IpcService } from '../../../../global/services/ipc.service';
 export class WebserviceTestComponent {
   currentUser!: User;
 
-  constructor(private readonly _ipcService: IpcService, private readonly _myProfileSystem: AuthenticationService) {}
-
-  async initBD() {
-    let taskType, type, color;
-    const types = ['BUG', 'ISSUE'];
-    const colors = ['#FF0000', '#0000FF'];
-    for (let i = 0; i < types.length; i++) {
-      type = types[i];
-      color = colors[i];
-      taskType = new TaskType();
-      taskType.label = type;
-      taskType.color = color;
-      await this._ipcService.query(appIpcs.createTaskType, taskType);
-    }
-    let taskStatus;
-    const status = ['CREATED', 'IN PROGRESS', 'DONE'];
-    for (let i = 0; i < status.length; i++) {
-      type = status[i];
-      color = colors[i];
-      taskStatus = new TaskStatus();
-      taskStatus.label = type;
-      taskStatus.color = color;
-      await this._ipcService.query(appIpcs.createTaskStatus, taskStatus);
-    }
-  }
+  constructor(private readonly _ipcService: IpcService, private readonly toastMessageService: ToastMessageService) {}
 
   async createUser() {
     const u = new User();
@@ -215,5 +190,25 @@ export class WebserviceTestComponent {
       startDate: new Date(),
       endDate: new Date(),
     });
+  }
+
+  async loadFixtures() {
+    try {
+      await this._ipcService.query(appIpcs.loadFixtures);
+      this.toastMessageService.showSuccess('Fixtures loaded successfully', 'Load Fixtures');
+    } catch (error: any) {
+      this.toastMessageService.showError(error.message, 'Load Fixtures Failed');
+      throw error;
+    }
+  }
+
+  async truncateDatabase() {
+    try {
+      await this._ipcService.query(appIpcs.truncateDatabase);
+      this.toastMessageService.showSuccess('Database truncated successfully', 'Truncate Database');
+    } catch (error: any) {
+      this.toastMessageService.showError(error.message, 'Truncate Database failed');
+      throw error;
+    }
   }
 }

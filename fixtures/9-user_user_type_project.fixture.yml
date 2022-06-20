@@ -1,0 +1,6 @@
+entity: user_user_type_project
+items:
+  user_user_type_project{1..20}:
+    user: '@user*'
+    userType: '@user_type*'
+    project: '@project*'

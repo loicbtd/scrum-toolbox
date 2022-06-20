@@ -56,6 +56,9 @@ import { RetrieveProjectHandler } from './app/ipc-request-handlers/project/retri
 import { RetrieveAllProjectsHandler } from './app/ipc-request-handlers/project/retrieve-all-projects.handler';
 import { UpdateProjectHandler } from './app/ipc-request-handlers/project/update-project.handler';
 import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-project.handler';
+import { LoadFixturesHandler } from './app/ipc-request-handlers/fixtures/load-fixtures.handler';
+import { TruncateDatabaseHandler } from './app/ipc-request-handlers/truncate-database.handler';
+import { RetrieveAllUsersInProject } from './app/ipc-request-handlers/project/retrieve-users-in-project.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -128,6 +131,10 @@ import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-
       RetrieveProjectHandler,
       RetrieveAllProjectsHandler,
       UpdateProjectHandler,
+      RetrieveAllUsersInProject,
+
+      LoadFixturesHandler,
+      TruncateDatabaseHandler,
     ],
     settingsDirectoryPath: [homedir(), '.scrum-toolbox'],
   });

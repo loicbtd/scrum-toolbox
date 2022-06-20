@@ -40,4 +40,7 @@ export const appIpcs = {
   deleteProject: 'deleteProject',
   retrieveAllProjects: 'retrieveAllProjects',
   retrieveProject: 'retrieveProject',
+  loadFixtures: 'loadFixtures',
+  truncateDatabase: 'truncateDatabase',
+  retrieveAllUsersInProject: 'retrieveAllUsersInProject',
 };
