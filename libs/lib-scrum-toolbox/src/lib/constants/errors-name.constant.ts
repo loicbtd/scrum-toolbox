@@ -3,4 +3,5 @@ export const errorsName = {
   incorrectPassword: 'incorrectPassword',
   usernameAlreadyExists: 'usernameAlreadyExists',
   userNotFound: 'userNotFound',
+  userNotActivated: 'userNotActivated',
 };

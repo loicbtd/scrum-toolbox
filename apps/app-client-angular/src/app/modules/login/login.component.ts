@@ -43,7 +43,6 @@ export class LoginComponent {
       await this._authenticationService.login<MyProfileModel>({ isLoggedIn: true, user: user }, [
         appRoutes.scrumToolbox.root,
       ]);
-      
     } catch (error: any) {
       switch (error.message) {
         case errorsName.incorrectUsername:
@@ -51,6 +50,12 @@ export class LoginComponent {
           break;
         case errorsName.incorrectPassword:
           this._messageService.showError('Wrong Password', 'Please check your passsword and username.');
+          break;
+        case errorsName.userNotActivated:
+          this._messageService.showError(
+            'Your account is deactivated. Please contact an administrator.',
+            'Account deactivated'
+          );
           break;
       }
     }
