@@ -45,7 +45,7 @@ export class CreateSprintComponent implements OnInit {
     this.minStartDate = new Date();
   }
 
-  async saveSprint() { //TODO: controle date (invalid if < new Date())
+  async saveSprint() {
     this.submitted = true;
     this.startWrong = false;
     this.endWrong = false;
@@ -76,5 +76,11 @@ export class CreateSprintComponent implements OnInit {
     } catch (error: any) {
       this._toastMessageService.showError(error.message, `Error while creating Sprint`);
     }
+    this.sprint = new Sprint()
+    this.sprint.status = await this._ipcService.query<SprintStatus>(appIpcs.retrieveSprintStatus, {label: 'CREATED'})
+    this.form.reset()
+    this.submitted = false;
+    this.startWrong = false;
+    this.endWrong = false;
   }
 }
