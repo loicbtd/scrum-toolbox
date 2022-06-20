@@ -53,7 +53,7 @@ export class LoginComponent {
           break;
         case errorsName.userNotActivated:
           this._messageService.showError(
-            'Your account is deactivated. Please contact an administrator (contat@real-it.fr).',
+            'Your account is deactivated. Please contact an administrator.',
             'Account deactivated'
           );
           break;
