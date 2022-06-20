@@ -9,5 +9,5 @@ export class TaskStatus {
   label?: string;
 
   @Column({ length: '7' })
-  color: string;
+  color?: string;
 }

@@ -1,6 +1,7 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
+      <p-dropdown class="sprint-dropdown" [options]="sprints" [(ngModel)]="selectedSprint" optionLabel="label"></p-dropdown>
       <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
       <p-button
         pRipple
@@ -35,11 +36,12 @@
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="username">Username <p-sortIcon field="username"></p-sortIcon></th>
-        <th>Firstname</th>
-        <th>Lastname</th>
-        <th>Creation date</th>
-        <th>Activation</th>
+        <th pSortableColumn="label" [ngStyle]="{'width':'15rem'}">Label <p-sortIcon field="label"></p-sortIcon></th>
+        <th [ngStyle]="{'width':'40rem'}">Description</th>
+        <th>Creation Date</th>
+        <th>Last Update</th>
+        <th>Status</th>
+        <th>Type</th>
         <th></th>
       </tr>
     </ng-template>
@@ -48,13 +50,15 @@
         <td>
           <p-tableCheckbox [value]="item"></p-tableCheckbox>
         </td>
-        <td>{{ item.username }}</td>
-        <td>{{ item.firstname }}</td>
-        <td>{{ item.lastname }}</td>
+        <td>{{ item.label }}</td>
+        <td>{{ item.description }}</td>
         <td>{{ item.createdAt | date: 'd/MM/yyyy' }}</td>
+        <td>{{ item.updatedAt | date: 'd/MM/yyyy' }}</td>
         <td>
-          <p-tag *ngIf="item.isActivated" severity="success" value="Activated"></p-tag>
-          <p-tag *ngIf="!item.isActivated" severity="danger" value="Disabled"></p-tag>
+          <span class="custom-tag" [ngStyle]="selectColorStatus(item)">{{ item.status.label }}</span>
+        </td>
+        <td>
+          <span class="custom-tag" [ngStyle]="selectColorType(item)">{{ item.type.label }}</span>
         </td>
 
         <td>
@@ -77,29 +81,34 @@
 <p-dialog [(visible)]="dialog" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">
   <ng-template pTemplate="content">
     <div class="field">
-      <label for="username">Username</label>
-      <input type="text" pInputText id="username" [(ngModel)]="item.username" required autofocus />
-      <small class="p-invalid" *ngIf="submitted && !item.username">Required field</small>
-    </div>
-    <div *ngIf="isCreationMode" class="field">
-      <label for="password">Password</label>
-      <input type="password" pPassword id="password" [(ngModel)]="item.password" required />
-      <small class="p-invalid" *ngIf="submitted && !item.password">Required field</small>
+      <label for="label">Label</label>
+      <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
+      <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
     </div>
     <div class="field">
-      <label for="firstname">Firstname</label>
-      <input type="text" pInputText id="firstname" [(ngModel)]="item.firstname" required />
-      <small class="p-invalid" *ngIf="submitted && !item.username">Required field</small>
+      <label for="description">Description</label>
+      <input type="text" pInputText id="description" [(ngModel)]="item.description" required />
+      <small class="p-invalid" *ngIf="submitted && !item.description">Required field</small>
     </div>
     <div class="field">
-      <label for="lastname">Lastname</label>
-      <input type="text" pInputText id="lastname" [(ngModel)]="item.lastname" required />
-      <small class="p-invalid" *ngIf="submitted && !item.lastname">Required field</small>
+      <label for="createdAt">Creation Date</label>
+      <input type="text" pInputText id="createdAt" [(ngModel)]="item.createdAt" required />
+      <small class="p-invalid" *ngIf="submitted && !item.createdAt">Required field</small>
     </div>
-    <div class="field flex flex-column">
+    <div class="field">
+      <label for="createdAt">Creation Date</label>
+      <input type="text" pInputText id="createdAt" [(ngModel)]="item.createdAt" required />
+      <small class="p-invalid" *ngIf="submitted && !item.createdAt">Required field</small>
+    </div>
+    <div class="field">
+      <label for="createdAt">Creation Date</label>
+      <input type="text" pInputText id="createdAt" [(ngModel)]="item.createdAt" required />
+      <small class="p-invalid" *ngIf="submitted && !item.createdAt">Required field</small>
+    </div>
+    <!-- <div class="field flex flex-column">
       <label for="isActivated">Activation</label>
       <p-inputSwitch inputId="isActivated" [(ngModel)]="item.isActivated"></p-inputSwitch>
-    </div>
+    </div> -->
   </ng-template>
 
   <ng-template pTemplate="footer">

@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, User, Task } from '@libraries/lib-scrum-toolbox';
+import { ToastMessageService } from '@libraries/lib-angular';
+import { appIpcs, Sprint, Task, TaskStatus, TaskType } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
-import { Store } from '@ngxs/store';
-import { MyProfileModel } from '../../../../global/models/my-profile.model';
 
 @Component({
   templateUrl: './crud-backlog-sprint.component.html',
@@ -13,11 +11,15 @@ import { MyProfileModel } from '../../../../global/models/my-profile.model';
 export class CrudBacklogSprintComponent {
   dialog: boolean;
 
-  items: User[];
+  sprints: Sprint[];
 
-  item: User;
+  selectedSprint: Sprint;
 
-  selectedItems: User[];
+  items: Task[];
+
+  item: Task;
+
+  selectedItems: Task[];
 
   submitted: boolean;
 
@@ -28,17 +30,23 @@ export class CrudBacklogSprintComponent {
   constructor(
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
-    private readonly _ipcService: IpcService,
-    private readonly _store: Store
+    private readonly _ipcService: IpcService
   ) {}
 
   async ngOnInit() {
+    //TODO
+    // this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject);
+    this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprints);
+    this.selectedSprint = this.sprints[0];
+
     this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasks);
     this.item = this.items[0];
   }
 
   openNew() {
-    this.item = {};
+    const tempStatus = this.item.status as TaskStatus;
+    const tempType = this.item.type as TaskType;
+    this.item = {status: tempStatus, type: tempType};
     this.submitted = false;
     this.dialog = true;
   }
@@ -50,15 +58,8 @@ export class CrudBacklogSprintComponent {
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         for (const item of this.selectedItems) {
-          const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
-
-          if (myProfile.user.id == item.id) {
-            this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
-            continue;
-          }
-
           try {
-            await this._ipcService.query(appIpcs.deleteUser, item.id);
+            await this._ipcService.query(appIpcs.deleteTask, item.id);
             this.items = this.items.filter((_) => _.id !== item.id);
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
@@ -71,28 +72,23 @@ export class CrudBacklogSprintComponent {
     });
   }
 
-  editItem(item: User) {
+  editItem(item: Task) {
     this.item = { ...item };
     this.dialog = true;
   }
 
-  async deleteItem(item: User) {
-    const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
-
-    if (myProfile.user.id == item.id) {
-      this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
-      return;
-    }
-
+  async deleteItem(item: Task) {
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         try {
-          await this._ipcService.query(appIpcs.deleteUser, item.id);
+          await this._ipcService.query(appIpcs.deleteTask, item.id);
           this.items = this.items.filter((_) => _.id !== item.id);
-          this.item = {};
+          const tempStatus = this.item.status as TaskStatus;
+          const tempType = this.item.type as TaskType;
+          this.item = {status: tempStatus, type: tempType};
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
@@ -111,7 +107,7 @@ export class CrudBacklogSprintComponent {
 
     if (this.item.id) {
       try {
-        await this._ipcService.query(appIpcs.updateUser, this.item);
+        await this._ipcService.query(appIpcs.updateTask, this.item);
         this.items[this.findIndexById(this.item.id)] = this.item;
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
       } catch (error: any) {
@@ -119,7 +115,7 @@ export class CrudBacklogSprintComponent {
       }
     } else {
       try {
-        this.item = await this._ipcService.query<User>(appIpcs.createUser, this.item);
+        this.item = await this._ipcService.query<Task>(appIpcs.createTask, this.item);
         this.items.push(this.item);
         this._toastMessageService.showSuccess('Item Created', 'Successful');
       } catch (error: any) {
@@ -129,7 +125,9 @@ export class CrudBacklogSprintComponent {
 
     this.items = [...this.items];
     this.dialog = false;
-    this.item = {};
+    const tempStatus = this.item.status as TaskStatus;
+    const tempType = this.item.type as TaskType;
+    this.item = {status: tempStatus, type: tempType};
   }
 
   findIndexById(id: string): number {
@@ -143,4 +141,15 @@ export class CrudBacklogSprintComponent {
 
     return index;
   }
+
+  selectColorStatus(it: any): object {
+    return {"background-color": it.status.color};
+    // return {"background-color": it.status.color, "color": it.status.textColor};
+  }
+
+  selectColorType(it: any): object {
+    return {"background-color": it.type.color};
+    // return {"background-color": it.type.color, "color": it.type.textColor};
+  }
+
 }

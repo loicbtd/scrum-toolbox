@@ -11,5 +11,5 @@ export class TaskType {
   label?: string;
 
   @Column({ length: '7' })
-  color: string;
+  color?: string;
 }

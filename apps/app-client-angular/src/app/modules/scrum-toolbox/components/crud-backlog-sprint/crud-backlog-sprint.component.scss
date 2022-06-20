@@ -4,6 +4,15 @@
   display: block;
 }
 
+.custom-tag {
+  padding: .3rem;
+  border-radius: .4rem;
+}
+
+.sprint-dropdown {
+  margin-right: 1rem;
+}
+
 :host ::ng-deep {
   .p-paginator {
     .p-paginator-current {

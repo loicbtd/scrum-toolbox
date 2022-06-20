@@ -42,7 +42,9 @@ export class Task {
 
   @ManyToOne(() => Project, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
-  project!: Project;
+  project?: Project;
+  //TODO dropdown project
+  // project!: Project;
 
   @ManyToMany(() => User, (user) => user.tasks, { eager: true })
   @JoinTable()
