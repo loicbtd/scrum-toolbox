@@ -22,6 +22,9 @@ export class LoginHandler implements IpcRequestHandlerInterface {
         throw error;
       }
     }
+    if (!user.isActivated) {
+      throw new Error(errorsName.userNotActivated);
+    }
     if (await bcrypt.compare(data.password, user.password)) {
       return user;
     } else {
