@@ -43,3 +43,7 @@
   <p-button label="GET ALL SPRINT" (click)="retrieveAllSprints()"></p-button>
   <p-button label="GET SPRINT" (click)="retrieveSprint()"></p-button>
 </div>
+
+<h1 [textContent]="(currentProject$ | async)?.project?.label"></h1>
+<h1>OTHER</h1>
+<h2 [textContent]="title"></h2>

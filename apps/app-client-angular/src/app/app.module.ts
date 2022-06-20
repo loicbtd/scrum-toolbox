@@ -1,23 +1,22 @@
-import { NgModule, OnInit } from '@angular/core';
+import { NgModule, Component } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from './shared.module';
-import { Component } from '@angular/core';
 import { BlockUiService } from './global/services/block-ui.service';
 import { appRoutes } from '@libraries/lib-scrum-toolbox';
 import { LoginComponent } from './modules/login/login.component';
 import {
   IsAuthenticatedGuard,
   IsNotAuthenticatedGuard,
-  AuthenticationService,
   MyProfileState,
   MyProfileStateModule,
   VisitedRoutesStateModule,
+  CurrentProjectState,
+  CurrentProjectStateModule,
 } from '@libraries/lib-angular';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
-import { IpcService } from './global/services/ipc.service';
 import { SignUpComponent } from './modules/signup/signup.component';
 
 @Component({
@@ -40,7 +39,7 @@ import { SignUpComponent } from './modules/signup/signup.component';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  constructor(private readonly _blockUiService: BlockUiService, _ipcService: IpcService) {}
+  constructor(private readonly _blockUiService: BlockUiService) {}
 
   get $uiBlocked() {
     return this._blockUiService.$uiBlocked;
@@ -83,8 +82,9 @@ export class AppComponent {
     ),
     SharedModule,
     NgxsModule.forRoot(),
-    NgxsStoragePluginModule.forRoot({ key: [MyProfileState] }),
+    NgxsStoragePluginModule.forRoot({ key: [MyProfileState, CurrentProjectState] }),
     MyProfileStateModule,
+    CurrentProjectStateModule,
     VisitedRoutesStateModule,
   ],
   bootstrap: [AppComponent],
