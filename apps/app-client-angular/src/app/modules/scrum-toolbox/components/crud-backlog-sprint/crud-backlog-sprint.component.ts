@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, Sprint, Task, TaskStatus, TaskType } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, Sprint, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 
@@ -23,6 +23,15 @@ export class CrudBacklogSprintComponent {
 
   submitted: boolean;
 
+  taskStatus: TaskStatus[];
+  selectedStatus: TaskStatus;
+  
+  taskType: TaskType[];
+  selectedType: TaskType;
+
+  selectedUsers: User[];
+  filteredUsers: User[];
+
   get isCreationMode() {
     return !this.item.id;
   }
@@ -35,12 +44,23 @@ export class CrudBacklogSprintComponent {
 
   async ngOnInit() {
     //TODO
-    // this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject);
+    // this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
+      // projectId: projectFromDropdwon.id,
+    // });
     this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprints);
     this.selectedSprint = this.sprints[0];
 
+    //TODO retrieve all task from selectedSprint
     this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasks);
     this.item = this.items[0];
+
+    this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
+    console.log(this.taskStatus);
+    
+    this.selectedStatus = this.taskStatus[0];
+    this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
+    this.selectedType = this.taskType[0];
+
   }
 
   openNew() {
@@ -143,13 +163,66 @@ export class CrudBacklogSprintComponent {
   }
 
   selectColorStatus(it: any): object {
-    return {"background-color": it.status.color};
-    // return {"background-color": it.status.color, "color": it.status.textColor};
+    return {"background-color": it.status.backgroundColor, "color": it.status.textColor};
+  }
+  selectColorWithStatus(it: any): object {
+    return {"background-color": it.backgroundColor, "color": it.textColor};
   }
 
   selectColorType(it: any): object {
-    return {"background-color": it.type.color};
-    // return {"background-color": it.type.color, "color": it.type.textColor};
+    return {"background-color": it.type.backgroundColor, "color": it.type.textColor};
+  }
+  selectColorWithType(it: any): object {
+    return {"background-color": it.backgroundColor, "color": it.textColor};
+  }
+
+  getInitials(user: any): string {
+    console.log(user);
+    
+    console.log("" + user.firstname.charAt(0) + "" + user.lastname.charAt(0));
+    
+    return "" + user.firstname.charAt(0) + "" + user.lastname.charAt(0);
+  }
+
+  updateTasks() {
+    //TODO update tasks in sprint backlog view
+    // this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasks);
+    // this.item = this.items[0];
+  }
+
+  getStatus(blop: any): TaskStatus[] {
+    return this.taskStatus;
+  }
+
+  getTypes(blop: any): TaskType[] {
+    return this.taskType;
+  }
+
+  updateStatus() {
+    console.log("here");
+    
+    return;
+  }
+
+  updateType() {
+    console.log("here2");
+    
+    return;
+  }
+
+  filterUsers(event) {
+    let filtered : any[] = [];
+
+    
+
+    for(let i = 0; i < this.countries.length; i++) {
+        let country = this.countries[i];
+        if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+            filtered.push(country);
+        }
+    }
+
+    this.filteredUsers = filtered;
   }
 
 }

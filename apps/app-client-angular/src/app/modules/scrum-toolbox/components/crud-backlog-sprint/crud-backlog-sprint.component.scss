@@ -13,6 +13,12 @@
   margin-right: 1rem;
 }
 
+.user-initials {
+  padding: .3rem;
+  border-radius: .4rem;
+  background-color: #9fbecd;
+}
+
 :host ::ng-deep {
   .p-paginator {
     .p-paginator-current {
