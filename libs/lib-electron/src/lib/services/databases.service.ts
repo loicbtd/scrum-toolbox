@@ -43,6 +43,13 @@ export class DatabasesService {
 
       try {
         await connection.connect();
+
+        try {
+          await connection.runMigrations();
+        } catch (error: any) {
+          console.error('unable to run migrations');
+        }
+
         this._databases.push({ id: configuration.id, connection: connection });
       } catch (error: any) {
         throw new ElectronApplicationError(`unable to initialize connection ${error.message}`);
