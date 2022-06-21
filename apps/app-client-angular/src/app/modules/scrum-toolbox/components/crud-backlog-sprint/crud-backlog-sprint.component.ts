@@ -210,16 +210,19 @@ export class CrudBacklogSprintComponent {
     return;
   }
 
-  filterUsers(event) {
+  async filterUsers(event) {
     let filtered : any[] = [];
 
-    
+    //TODO retrieve projectId
+    const data: any[] = await this._ipcService.query(appIpcs.retrieveAllUsersInProject, '314674f2-947c-4c9f-9580-d4ce8ffa5632');
+    // console.log(data);
 
-    for(let i = 0; i < this.countries.length; i++) {
-        let country = this.countries[i];
-        if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-            filtered.push(country);
-        }
+    for(let i = 0; i < data.length; i++) {
+      
+      let country = this.countries[i];
+      if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+          filtered.push(country);
+      }
     }
 
     this.filteredUsers = filtered;

@@ -134,7 +134,7 @@
 
     <div class="field">
       <label for="users">Assigned to</label>
-      <p-autoComplete [(ngModel)]="selectedUsers" [suggestions]="filteredCountries" (completeMethod)="filterUsers($event)" field="name" [dropdown]="true" [multiple]="true">
+      <p-autoComplete [(ngModel)]="selectedUsers" [suggestions]="filteredUsers" (completeMethod)="filterUsers($event)" field="name" [dropdown]="true" [multiple]="true">
       </p-autoComplete>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
