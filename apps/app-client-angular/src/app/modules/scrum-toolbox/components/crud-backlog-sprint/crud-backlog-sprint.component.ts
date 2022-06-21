@@ -1,14 +1,20 @@
 import { Component } from '@angular/core';
 import { ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, Sprint, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, Project, Sprint, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
+import { Select } from '@ngxs/store';
+import { CurrentProjectModel } from '../../../../global/models/current-project.model';
+import { Observable } from 'rxjs';
 
 @Component({
   templateUrl: './crud-backlog-sprint.component.html',
   styleUrls: ['./crud-backlog-sprint.component.scss'],
 })
 export class CrudBacklogSprintComponent {
+  
+  @Select(CurrentProjectModel) currentProject$: Observable<CurrentProjectModel>;
+
   dialog: boolean;
 
   sprints: Sprint[];
@@ -32,6 +38,8 @@ export class CrudBacklogSprintComponent {
   selectedUsers: User[];
   filteredUsers: User[];
 
+  selectedProject: Project;
+
   get isCreationMode() {
     return !this.item.id;
   }
@@ -43,23 +51,35 @@ export class CrudBacklogSprintComponent {
   ) {}
 
   async ngOnInit() {
-    //TODO
-    // this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
-      // projectId: projectFromDropdwon.id,
-    // });
-    this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprints);
-    this.selectedSprint = this.sprints[0];
 
-    //TODO retrieve all task from selectedSprint
-    this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasks);
-    this.item = this.items[0];
+    this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
 
-    this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
-    console.log(this.taskStatus);
-    
-    this.selectedStatus = this.taskStatus[0];
-    this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
-    this.selectedType = this.taskType[0];
+      if (data) {
+        
+        console.log(data);
+        
+        this.selectedProject = data.project;
+  
+        this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
+        projectId: this.selectedProject.id,
+        });
+  
+        this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprints);
+        this.selectedSprint = this.sprints[0];
+  
+        //TODO retrieve all task from selectedSprint
+        this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasks);
+        this.item = this.items[0];
+  
+        this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
+        console.log(this.taskStatus);
+        
+        this.selectedStatus = this.taskStatus[0];
+        this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
+        this.selectedType = this.taskType[0];
+      }
+
+    });
 
   }
 
@@ -210,22 +230,22 @@ export class CrudBacklogSprintComponent {
     return;
   }
 
-  async filterUsers(event) {
-    let filtered : any[] = [];
+  async filterUsers(event:any) {
+    // let filtered : any[] = [];
 
-    //TODO retrieve projectId
-    const data: any[] = await this._ipcService.query(appIpcs.retrieveAllUsersInProject, '314674f2-947c-4c9f-9580-d4ce8ffa5632');
-    // console.log(data);
+    // //TODO retrieve projectId
+    // const data: any[] = await this._ipcService.query(appIpcs.retrieveAllUsersInProject, '314674f2-947c-4c9f-9580-d4ce8ffa5632');
+    // // console.log(data);
 
-    for(let i = 0; i < data.length; i++) {
+    // for(let i = 0; i < data.length; i++) {
       
-      let country = this.countries[i];
-      if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
-          filtered.push(country);
-      }
-    }
+    //   let country = this.countries[i];
+    //   if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+    //       filtered.push(country);
+    //   }
+    // }
 
-    this.filteredUsers = filtered;
+    // this.filteredUsers = filtered;
   }
 
 }
