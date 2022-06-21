@@ -4,7 +4,7 @@ import { appIpcs, Sprint, Project } from '@libraries/lib-scrum-toolbox';
 import { FindConditions } from 'typeorm';
 
 export class RetrieveAllSprintsByProjectHandler implements IpcRequestHandlerInterface {
-  channel = appIpcs.retrieveAllSprints;
+  channel = appIpcs.retrieveAllSprintsByProject;
 
   async handle(options: FindConditions<Project>): Promise<Sprint[]> {
     return Application.getInstance()

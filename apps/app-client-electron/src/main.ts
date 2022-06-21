@@ -50,6 +50,8 @@ import { TruncateDatabaseHandler } from './app/ipc-request-handlers/truncate-dat
 import { mainDataSource } from './app/datasources/main.datasource';
 import { RetrieveAllUsersInProject } from './app/ipc-request-handlers/project/retrieve-users-in-project.handler';
 import { StartupWindow } from './app/windows/startup.window';
+import { RetrieveAllTasksBySprintHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-sprint.handler';
+import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-project.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -77,6 +79,8 @@ import { StartupWindow } from './app/windows/startup.window';
       DeleteTaskHandler,
       RetrieveAllTasksHandler,
       RetrieveTaskHandler,
+      RetrieveAllTasksBySprintHandler,
+      RetrieveAllTasksByProjectHandler,
 
       CreateTaskTypeHandler,
       DeleteTaskTypeHandler,

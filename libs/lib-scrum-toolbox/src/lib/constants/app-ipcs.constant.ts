@@ -43,4 +43,6 @@ export const appIpcs = {
   loadFixtures: 'loadFixtures',
   truncateDatabase: 'truncateDatabase',
   retrieveAllUsersInProject: 'retrieveAllUsersInProject',
+  retrieveAllTasksBySprint: 'retrieveAllTasksBySprint',
+  retrieveAllTasksByProject: 'retrieveAllTasksByProject',
 };
