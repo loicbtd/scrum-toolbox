@@ -42,4 +42,5 @@ export const appIpcs = {
   retrieveProject: 'retrieveProject',
   loadFixtures: 'loadFixtures',
   truncateDatabase: 'truncateDatabase',
+  retrieveAllUsersInProject: 'retrieveAllUsersInProject',
 };

@@ -48,6 +48,8 @@ import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-
 import { LoadFixturesHandler } from './app/ipc-request-handlers/fixtures/load-fixtures.handler';
 import { TruncateDatabaseHandler } from './app/ipc-request-handlers/truncate-database.handler';
 import { mainDataSource } from './app/datasources/main.datasource';
+import { RetrieveAllUsersInProject } from './app/ipc-request-handlers/project/retrieve-users-in-project.handler';
+import { StartupWindow } from './app/windows/startup.window';
 
 (async () => {
   const application = Application.getInstance();
@@ -108,6 +110,7 @@ import { mainDataSource } from './app/datasources/main.datasource';
       RetrieveProjectHandler,
       RetrieveAllProjectsHandler,
       UpdateProjectHandler,
+      RetrieveAllUsersInProject,
 
       LoadFixturesHandler,
       TruncateDatabaseHandler,
@@ -117,10 +120,11 @@ import { mainDataSource } from './app/datasources/main.datasource';
 
   application.loadTray(MainTray);
 
-  // application.loadWindow(StartupWindow);
-  // await new Promise((resolve) => setTimeout(resolve, 5000));
+  application.loadWindow(StartupWindow);
+  
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  // application.unloadAllWindows(StartupWindow);
+  application.unloadAllWindows(StartupWindow);
 
   application.loadWindow(MainWindow);
 })();

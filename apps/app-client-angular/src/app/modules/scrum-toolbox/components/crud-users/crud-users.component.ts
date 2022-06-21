@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, User } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, User, UserModel } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Store } from '@ngxs/store';
@@ -13,11 +13,11 @@ import { MyProfileModel } from '../../../../global/models/my-profile.model';
 export class CrudUsersComponent {
   dialog: boolean;
 
-  items: User[];
+  items: UserModel[];
 
   item: User;
 
-  selectedItems: User[];
+  selectedItems: UserModel[];
 
   submitted: boolean;
 
@@ -33,7 +33,7 @@ export class CrudUsersComponent {
   ) {}
 
   async ngOnInit() {
-    this.items = await this._ipcService.query<User[]>(appIpcs.retrieveAllUsers);
+    this.items = await this._ipcService.query<UserModel[]>(appIpcs.retrieveAllUsers);
     this.item = this.items[0];
   }
 
@@ -71,12 +71,12 @@ export class CrudUsersComponent {
     });
   }
 
-  editItem(item: User) {
+  editItem(item: UserModel) {
     this.item = { ...item };
     this.dialog = true;
   }
 
-  async deleteItem(item: User) {
+  async deleteItem(item: UserModel) {
     const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
 
     if (myProfile.user.id == item.id) {
@@ -119,7 +119,7 @@ export class CrudUsersComponent {
       }
     } else {
       try {
-        this.item = await this._ipcService.query<User>(appIpcs.createUser, this.item);
+        this.item = await this._ipcService.query<UserModel>(appIpcs.createUser, this.item);
         this.items.push(this.item);
         this._toastMessageService.showSuccess('Item Created', 'Successful');
       } catch (error: any) {

@@ -1,9 +1,15 @@
-import { NgModule, Component } from '@angular/core';
+import { NgModule, Component, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { ProjectsComponent } from './components/projects/projects.component';
-import { AuthenticationService, MyProfileState, NavigationItemInterface } from '@libraries/lib-angular';
-import { appRoutes } from '@libraries/lib-scrum-toolbox';
+import {
+  AuthenticationService,
+  CurrentProjectState,
+  MyProfileState,
+  NavigationItemInterface,
+  CurrentProjectService,
+} from '@libraries/lib-angular';
+import { appIpcs, appRoutes, Project } from '@libraries/lib-scrum-toolbox';
 import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
@@ -12,6 +18,9 @@ import { CrudUsersComponent } from './components/crud-users/crud-users.component
 import { AdministrationComponent } from './components/administration/administration.component';
 import { CrudProjectsComponent } from './components/crud-projects/crud-projects.component';
 import { CrudProjectAttendeesComponent } from './components/crud-project-attendees/crud-project-attendees.component';
+import { IpcService } from '../../global/services/ipc.service';
+import { CurrentProjectModel } from '../../global/models/current-project.model';
+import { Dropdown } from 'primeng/dropdown';
 
 @Component({
   template: `
@@ -22,6 +31,19 @@ import { CrudProjectAttendeesComponent } from './components/crud-project-attende
       avatarImageSource="assets/images/avatar.png"
       [username]="getFormattedUsername((myProfile$ | async)?.user?.firstname, (myProfile$ | async)?.user?.lastname)"
     >
+      <div navigationBarContent class="flex align-content-center align-items-center">
+        <h2>Project :</h2>
+        <p-dropdown
+          #dropDownProject
+          class="ml-5"
+          (onChange)="updateProject($event.value)"
+          [options]="projects"
+          optionLabel="label"
+          optionValue="id"
+          placeholder="Select a project"
+        >
+        </p-dropdown>
+      </div>
       <router-outlet></router-outlet>
     </app-navigation-container>
   `,
@@ -63,6 +85,12 @@ export class ScrumToolboxComponent {
 
   @Select(MyProfileState) myProfile$: Observable<MyProfileModel>;
 
+  @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
+
+  projects!: Project[];
+
+  @ViewChild('dropDownProject') dropDownProject: Dropdown;
+
   getFormattedUsername(firstname?: string, lastname?: string): string {
     const formattedFirstname = firstname ? firstname.charAt(0).toUpperCase() + firstname.slice(1) : '';
 
@@ -75,7 +103,29 @@ export class ScrumToolboxComponent {
     return `${formattedFirstname} ${formattedLastname}`;
   }
 
-  constructor(private readonly _authenticationService: AuthenticationService) {}
+  async updateProject(projectId: string) {
+    const selected = this.projects.find((p) => (p.id = projectId));
+    if (selected) {
+      await this._currentProjectService.refreshProject<CurrentProjectModel>({
+        project: selected,
+      });
+    }
+  }
+
+  constructor(
+    private readonly _authenticationService: AuthenticationService,
+    private readonly _ipcService: IpcService,
+    private readonly _currentProjectService: CurrentProjectService
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    this.projects = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
+    this.currentProject$.subscribe((data: CurrentProjectModel) => {
+      if (data.project) {
+        this.dropDownProject.value = data.project.id;
+      }
+    });
+  }
 }
 
 @NgModule({

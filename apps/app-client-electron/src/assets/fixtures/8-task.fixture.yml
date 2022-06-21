@@ -9,7 +9,6 @@ items:
     sprint: '@sprint*'
     users:
       - '@users*'
-      - '@users*'
   task{20..40}:
     label: '{{lorem.words}}'
     description: '{{lorem.paragraph}}'

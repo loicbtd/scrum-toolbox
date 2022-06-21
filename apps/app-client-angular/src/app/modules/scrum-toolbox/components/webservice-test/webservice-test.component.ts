@@ -1,6 +1,19 @@
 import { Component } from '@angular/core';
-import { ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, Project, Sprint, SprintStatus, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
+import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
+import {
+  appIpcs,
+  Project,
+  Sprint,
+  SprintStatus,
+  Task,
+  TaskStatus,
+  TaskType,
+  User,
+  UserModel,
+} from '@libraries/lib-scrum-toolbox';
+import { Select } from '@ngxs/store';
+import { CurrentProjectModel } from '../../../../global/models/current-project.model';
+import { Observable } from 'rxjs';
 import { IpcService } from '../../../../global/services/ipc.service';
 
 @Component({
@@ -10,7 +23,15 @@ import { IpcService } from '../../../../global/services/ipc.service';
 export class WebserviceTestComponent {
   currentUser!: User;
 
+  @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
+
+  title?: string;
+
   constructor(private readonly _ipcService: IpcService, private readonly toastMessageService: ToastMessageService) {}
+
+  ngOnInit(): void {
+    this.testObserver();
+  }
 
   async createUser() {
     const u = new User();
@@ -38,7 +59,10 @@ export class WebserviceTestComponent {
   }
 
   async retrieveUser() {
-    console.log(await this._ipcService.query(appIpcs.retrieveUser, { id: 'esfzefzefbkjzefhbuzen' }));
+    const user = await this._ipcService.query<UserModel>(appIpcs.retrieveUser, {
+      id: 'f6a88420-b92f-45cc-83d4-a4a39979ffad',
+    });
+    console.log(user.username);
   }
 
   async activateUser() {
@@ -71,6 +95,10 @@ export class WebserviceTestComponent {
 
   async retrieveAllTaskType(): Promise<TaskType[]> {
     return this._ipcService.query(appIpcs.retrieveAllTasksType);
+  }
+
+  async retrieveTask(): Promise<TaskType[]> {
+    return this._ipcService.query(appIpcs.retrieveTask, { id: '806f847c-318c-412a-ab38-ab7649b8b1c2' });
   }
 
   async retrieveAllTasks() {
@@ -210,5 +238,11 @@ export class WebserviceTestComponent {
       this.toastMessageService.showError(error.message, 'Truncate Database failed');
       throw error;
     }
+  }
+
+  testObserver() {
+    this.currentProject$.subscribe((data: { project: Project }) => {
+      this.title = data.project.label;
+    });
   }
 }
