@@ -1,6 +1,6 @@
 import { DataSource } from 'typeorm';
 
-export interface Database {
+export interface DatabaseInterface {
   id: string;
   dataSource: DataSource;
 }

@@ -7,10 +7,10 @@ import { IpcMainService } from './services/ipc-main.service';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
 import { Container } from 'inversify';
 import { dependencies } from './constants/dependencies.contant';
-import { DatabaseConfiguration } from './interfaces/database-configuration.interface';
 import { DatabasesService } from './services/databases.service';
 import { SquirrelEventsHelper } from './helpers/squirrel-events.helper';
 import { UpdateEventsHelper } from './helpers/update-events.helper';
+import { DatabaseConfigurationInterface } from './interfaces/database-configuration.interface';
 
 export class Application {
   private static _instance: Application;
@@ -79,7 +79,7 @@ export class Application {
     version: string,
     options?: {
       backgroundTasks?: (new (...args: any[]) => BaseBackgroundTask)[];
-      databaseConfigurations?: DatabaseConfiguration[];
+      databaseConfigurations?: DatabaseConfigurationInterface[];
       ipcRequestHandlers?: (new (...args: any[]) => IpcRequestHandlerInterface)[];
       settingsDirectoryPath?: string[];
       updateServerUrl?: string;

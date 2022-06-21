@@ -9,6 +9,7 @@ export * from './lib/errors/electron-application.error';
 export * from './lib/helpers/squirrel-events.helper';
 export * from './lib/helpers/update-events.helper';
 
+export * from './lib/interfaces/database-configuration.interface';
 export * from './lib/interfaces/database.interface';
 
 export * from './lib/services/background-tasks.service';

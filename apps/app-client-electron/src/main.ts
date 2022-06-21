@@ -58,6 +58,7 @@ import { UpdateProjectHandler } from './app/ipc-request-handlers/project/update-
 import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-project.handler';
 import { LoadFixturesHandler } from './app/ipc-request-handlers/fixtures/load-fixtures.handler';
 import { TruncateDatabaseHandler } from './app/ipc-request-handlers/truncate-database.handler';
+import { mainDataSource } from './app/datasources/main.datasource';
 
 (async () => {
   const application = Application.getInstance();
@@ -66,19 +67,7 @@ import { TruncateDatabaseHandler } from './app/ipc-request-handlers/truncate-dat
     databaseConfigurations: [
       {
         id: 'main',
-        entities: [
-          TaskType,
-          User,
-          Sprint,
-          Project,
-          UserSprint,
-          SprintStatus,
-          UserType,
-          UserUserTypeProject,
-          Task,
-          TaskStatus,
-          TaskType,
-        ],
+        dataSourceOptions: mainDataSource,
       },
     ],
     ipcRequestHandlers: [

@@ -2,13 +2,13 @@ import { existsSync, mkdirSync } from 'fs';
 import { injectable } from 'inversify';
 import { dirname, join } from 'path';
 import { DataSource } from 'typeorm';
-import { Application } from '../application';
 import { ElectronApplicationError } from '../errors/electron-application.error';
-import { Database } from '../interfaces/database.interface';
+import { DatabaseConfigurationInterface } from '../interfaces/database-configuration.interface';
+import { DatabaseInterface } from '../interfaces/database.interface';
 
 @injectable()
 export class DatabasesService {
-  private _databases: Database[];
+  private _databases: DatabaseInterface[];
 
   constructor() {
     this._databases = [];
@@ -24,21 +24,29 @@ export class DatabasesService {
     return database.dataSource;
   }
 
-  public async initialize(databases: Database[]): Promise<void> {
-    if (!databases) {
+  public async initialize(databaseConfigurations: DatabaseConfigurationInterface[]): Promise<void> {
+    if (!databaseConfigurations) {
       throw new ElectronApplicationError('databaseConfigurations is undefined');
     }
 
-    for (const database of databases) {
-      if (database.dataSource.options.type === 'sqlite' || database.dataSource.options.type == 'better-sqlite3') {
-        if (!existsSync(dirname(database.dataSource.options.database))) {
-          mkdirSync(dirname(database.dataSource.options.database), { recursive: true });
+    for (const configuration of databaseConfigurations) {
+      if (
+        configuration.dataSourceOptions.type === 'sqlite' ||
+        configuration.dataSourceOptions.type == 'better-sqlite3'
+      ) {
+        if (!existsSync(dirname(configuration.dataSourceOptions.database))) {
+          mkdirSync(dirname(configuration.dataSourceOptions.database), { recursive: true });
         }
       }
 
-      await database.dataSource.initialize();
+      const dataSource = new DataSource(configuration.dataSourceOptions);
 
-      this._databases.push(database);
+      try {
+        await dataSource.initialize();
+        this._databases.push({ id: configuration.id, dataSource: dataSource });
+      } catch (error: any) {
+        throw new ElectronApplicationError('unable to initialize dataSource');
+      }
     }
   }
 }

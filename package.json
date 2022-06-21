@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "nx": "nx",
-    "typeorm": "typeorm",
+    "typeorm": "ts-node -P ./tsconfig.base.json -r module-alias/register -r tsconfig-paths/register ./node_modules/typeorm/cli-ts-node-commonjs.js -d apps/app-client-electron/src/app/datasources/main.datasource.ts",
     "postinstall": "exitzero electron-builder install-app-deps && ngcc --properties es2020 browser module main",
     "storybook": "nx run lib-angular:storybook",
     "start": "run-p start:app-desktop",
@@ -62,6 +62,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.5.5",
     "toad-scheduler": "^1.6.0",
+    "ts-node": "^10.8.1",
     "tslib": "^2.4.0",
     "typeorm": "^0.3.6",
     "uuid": "^8.3.2",
