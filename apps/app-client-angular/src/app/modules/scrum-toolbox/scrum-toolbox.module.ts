@@ -1,4 +1,4 @@
-import { NgModule, Component } from '@angular/core';
+import { NgModule, Component, ViewChild, ElementRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { ProjectsComponent } from './components/projects/projects.component';
@@ -19,6 +19,7 @@ import { AdministrationComponent } from './components/administration/administrat
 import { CrudProjectsComponent } from './components/crud-projects/crud-projects.component';
 import { IpcService } from '../../global/services/ipc.service';
 import { CurrentProjectModel } from '../../global/models/current-project.model';
+import { Dropdown } from 'primeng/dropdown';
 
 @Component({
   template: `
@@ -29,24 +30,17 @@ import { CurrentProjectModel } from '../../global/models/current-project.model';
       avatarImageSource="assets/images/avatar.png"
       [username]="getFormattedUsername((myProfile$ | async)?.user?.firstname, (myProfile$ | async)?.user?.lastname)"
     >
-      <div
-        navigationBarContent
-        class="flex align-content-center align-items-center"
-        *ngIf="selectedProject !== undefined"
-      >
+      <div navigationBarContent class="flex align-content-center align-items-center">
         <h2>Project :</h2>
         <p-dropdown
+          #dropDownProject
           class="ml-5"
           (onChange)="updateProject($event.value)"
-          [(ngModel)]="selectedProject"
           [options]="projects"
           optionLabel="label"
+          optionValue="id"
+          placeholder="Select a project"
         >
-          <ng-template pTemplate="selectedItem">
-            <div class="country-item country-item-value" *ngIf="selectedProject">
-              <div>{{ selectedProject.label }}</div>
-            </div>
-          </ng-template>
         </p-dropdown>
       </div>
       <router-outlet></router-outlet>
@@ -54,8 +48,6 @@ import { CurrentProjectModel } from '../../global/models/current-project.model';
   `,
 })
 export class ScrumToolboxComponent {
-  selectedProject?: Project = undefined;
-  projects!: Project[];
   navigationItems: NavigationItemInterface[] = [
     {
       label: 'Product backlog',
@@ -94,6 +86,10 @@ export class ScrumToolboxComponent {
 
   @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
 
+  projects!: Project[];
+
+  @ViewChild('dropDownProject') dropDownProject: Dropdown;
+
   getFormattedUsername(firstname?: string, lastname?: string): string {
     const formattedFirstname = firstname ? firstname.charAt(0).toUpperCase() + firstname.slice(1) : '';
 
@@ -106,11 +102,13 @@ export class ScrumToolboxComponent {
     return `${formattedFirstname} ${formattedLastname}`;
   }
 
-  async updateProject(project: Project) {
-    this.selectedProject = project;
-    await this._currentProjectService.refreshProject<CurrentProjectModel>({
-      project: project,
-    });
+  async updateProject(projectId: string) {
+    const selected = this.projects.find((p) => (p.id = projectId));
+    if (selected) {
+      await this._currentProjectService.refreshProject<CurrentProjectModel>({
+        project: selected,
+      });
+    }
   }
 
   constructor(
@@ -122,9 +120,10 @@ export class ScrumToolboxComponent {
   async ngOnInit(): Promise<void> {
     this.projects = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
     this.currentProject$.subscribe((data: CurrentProjectModel) => {
-      this.selectedProject = data.project;
+      if (data.project) {
+        this.dropDownProject.value = data.project.id;
+      }
     });
-    this.selectedProject = this.projects[0];
   }
 }
 
