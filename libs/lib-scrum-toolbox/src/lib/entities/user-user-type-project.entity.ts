@@ -15,7 +15,7 @@ export class UserUserTypeProject {
 
   @ManyToOne(() => UserType, (userType) => userType.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'userTypeId' })
-  userType?: string;
+  userType?: UserType;
 
   @ManyToOne(() => Project, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
