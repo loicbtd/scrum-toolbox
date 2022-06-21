@@ -1,6 +1,7 @@
 import { User } from './user.entity';
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
 import { Sprint } from './sprint.entity';
+import { UserModel } from '../models/user.model';
 
 @Entity()
 export class UserSprint {
@@ -9,7 +10,7 @@ export class UserSprint {
 
   @ManyToOne(() => User, (user) => user.id, { nullable: false })
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user: UserModel;
 
   @ManyToOne(() => Sprint, (sprint) => sprint.id, { nullable: false })
   @JoinColumn({ name: 'sprintId' })

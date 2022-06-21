@@ -14,3 +14,5 @@ export * from './lib/entities/task.entity';
 export * from './lib/entities/task-status.entity';
 export * from './lib/entities/task-type.entity';
 export * from './lib/constants/errors-name.constant';
+
+export * from './lib/models/user.model';
