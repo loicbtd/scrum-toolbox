@@ -5,7 +5,7 @@ import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Select } from '@ngxs/store';
 import { CurrentProjectModel } from '../../../../global/models/current-project.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   templateUrl: './crud-backlog-sprint.component.html',
@@ -45,6 +45,8 @@ export class CrudBacklogSprintComponent {
   selectedTasks: Task[];
   filteredTasks: Task[];
 
+  sub: Subscription;
+
   get isCreationMode() {
     return !this.item.id;
   }
@@ -63,7 +65,7 @@ export class CrudBacklogSprintComponent {
     this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
     this.selectedType = this.taskType[0];
 
-    this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
+    this.sub = this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
       if (data) {
         this.selectedProject = data.project;
 
@@ -164,6 +166,8 @@ export class CrudBacklogSprintComponent {
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
+        this.sub.unsubscribe();
+        this.ngOnInit();
 
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
@@ -173,7 +177,7 @@ export class CrudBacklogSprintComponent {
       try {
 
         this.selectedSprint.tasks = this.selectedTasks.concat(this.items);
-        // console.log(this.selectedSprint);
+        console.log(this.selectedSprint);
         await this._ipcService.query<Sprint>(appIpcs.updateSprint, this.selectedSprint.id);
 
         this._toastMessageService.showSuccess('Item Created', 'Successful');
@@ -272,12 +276,14 @@ export class CrudBacklogSprintComponent {
 
     const tasksProject: Task[] = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksByProject, this.selectedProject.id);
     
-    const tasksSprint: Task[] = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
+    let tasksSprint: Task[] = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
 
     if (tasksSprint.length == 0) {
       this.filteredTasks = tasksProject;
       return;
     }
+
+    tasksSprint = [...new Set([...tasksSprint, ...this.selectedTasks])];
     
     this.filteredTasks = tasksProject.filter((tasksFromProject) => {
       return tasksSprint.every((filter) => {
