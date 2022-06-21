@@ -87,13 +87,28 @@
   </p-table>
 </div>
 
-<p-dialog [(visible)]="dialogUpdate" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">
+<p-dialog [(visible)]="dialogUpdate" [style]="{ width: '450px', height: '60rem' }" header="Item Details" [modal]="true" styleClass="p-fluid">
   <ng-template pTemplate="content">
     
     <div class="field">
       <label for="label">Label</label>
       <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
       <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
+    </div>
+
+    <div class="field">
+      <label for="users">Assigned to</label>
+      <p-autoComplete
+        [(ngModel)]="selectedUsers"
+        [suggestions]="filteredUsers"
+        (completeMethod)="filterUsers(item)"
+        field="username"
+        [dropdown]="true"
+        [multiple]="true"
+        id="users"
+      >
+      </p-autoComplete>
+      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
     
     <div class="field">
@@ -141,21 +156,6 @@
     </div>
 
     <div class="field">
-      <label for="users">Assigned to</label>
-      <p-autoComplete
-        [(ngModel)]="selectedUsers"
-        [suggestions]="filteredUsers"
-        (completeMethod)="filterUsers(item)"
-        field="username"
-        [dropdown]="true"
-        [multiple]="true"
-        id="users"
-      >
-      </p-autoComplete>
-      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
-    </div>
-
-    <div class="field">
       <label for="createdAt">Creation Date</label><br>
       <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'd/MM/yyyy' }}</label>
     </div>
@@ -175,7 +175,7 @@
 </p-dialog>
 
 
-<p-dialog [(visible)]="dialogNew" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">
+<p-dialog [(visible)]="dialogNew" [style]="{ width: '450px', height: '40rem'}" header="Item Details" [modal]="true" styleClass="p-fluid">
   <ng-template pTemplate="content">
 
     <!-- TODO list all task from project minus current tasks (filter) -->

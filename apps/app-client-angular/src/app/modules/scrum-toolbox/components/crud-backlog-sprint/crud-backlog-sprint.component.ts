@@ -31,10 +31,10 @@ export class CrudBacklogSprintComponent {
   submitted: boolean;
 
   taskStatus: TaskStatus[];
-  selectedStatus: TaskStatus;
+  selectedStatus: TaskStatus | undefined;
 
   taskType: TaskType[];
-  selectedType: TaskType;
+  selectedType: TaskType | undefined;;
 
   selectedUsers: User[];
   filteredUsers: User[];
@@ -142,6 +142,7 @@ export class CrudBacklogSprintComponent {
 
   hideDialog() {
     this.dialogUpdate = false;
+    this.dialogNew = false;
     this.submitted = false;
   }
 
@@ -168,6 +169,8 @@ export class CrudBacklogSprintComponent {
         this._toastMessageService.showSuccess('Item Created', 'Successful');
         this.resetDialogNew();
       } catch (error: any) {
+        this.resetDialogNew();
+        this.hideDialog();
         this._toastMessageService.showError(error.message, `Error while creating item`);
       }
     }
@@ -181,7 +184,8 @@ export class CrudBacklogSprintComponent {
 
   resetDialogNew() {
     this.selectedTasks = [];
-    // this.selectedStatus = ;
+    this.selectedStatus = this.taskStatus.find((el) => el.label === 'TODO');
+    this.selectedType = this.taskType.find((el) => el.label === 'Bug');
   }
 
   findIndexById(id: string): number {
