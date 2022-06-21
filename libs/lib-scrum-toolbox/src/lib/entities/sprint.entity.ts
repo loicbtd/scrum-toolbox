@@ -40,6 +40,6 @@ export class Sprint {
   @JoinColumn({ name: 'projectId' })
   project?: Project;
 
-  @OneToMany(() => Task, (task) => task.id, { eager: true })
-  sprint?: Sprint;
+  @OneToMany(() => Task, (task) => task.sprint)
+  tasks?: Task[];
 }

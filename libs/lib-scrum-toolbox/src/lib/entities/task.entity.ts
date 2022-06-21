@@ -51,7 +51,7 @@ export class Task {
   @JoinTable()
   users?: UserModel[];
 
-  @ManyToOne(() => Sprint, (sprint) => sprint.id, { nullable: true, eager: true })
+  @ManyToOne(() => Sprint, (sprint) => sprint.tasks, { nullable: true, eager: true })
   @JoinColumn({ name: 'sprintId' })
   sprint?: Sprint;
 }
