@@ -6,9 +6,11 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { Project } from './project.entity';
 import { SprintStatus } from './sprint-status.entity';
+import { Task } from './task.entity';
 
 @Entity()
 export class Sprint {
@@ -37,4 +39,7 @@ export class Sprint {
   @ManyToOne(() => Project, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
   project?: Project;
+
+  @OneToMany(() => Task, (task) => task.id, { eager: true })
+  sprint?: Sprint;
 }

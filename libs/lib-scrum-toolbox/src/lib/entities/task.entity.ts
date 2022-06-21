@@ -14,6 +14,7 @@ import { Project } from './project.entity';
 import { TaskStatus } from './task-status.entity';
 import { TaskType } from './task-type.entity';
 import { User } from './user.entity';
+import { UserModel } from '../models/user.model';
 
 @Entity()
 export class Task {
@@ -46,7 +47,7 @@ export class Task {
 
   @ManyToMany(() => User, (user) => user.tasks, { eager: true })
   @JoinTable()
-  users?: User[];
+  users?: UserModel[];
 
   @ManyToOne(() => Sprint, (sprint) => sprint.id, { nullable: true, eager: true })
   @JoinColumn({ name: 'sprintId' })

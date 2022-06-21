@@ -15,6 +15,7 @@
 </div>
 <div>
   <p-button label="create task" (click)="createTask()"></p-button>
+  <p-button label="retrieve task" (click)="retrieveTask()"></p-button>
   <p-button label="retrieve all tasks" (click)="retrieveAllTasks()"></p-button>
   <p-button label="assign task to user" (click)="assignTaskToUser()"></p-button>
   <p-button label="assign task to sprint" (click)="assignTaskToSprint()"></p-button>
@@ -43,3 +44,7 @@
   <p-button label="GET ALL SPRINT" (click)="retrieveAllSprints()"></p-button>
   <p-button label="GET SPRINT" (click)="retrieveSprint()"></p-button>
 </div>
+
+<h1 [textContent]="(currentProject$ | async)?.project?.label"></h1>
+<h1>OTHER</h1>
+<h2 [textContent]="title"></h2>
