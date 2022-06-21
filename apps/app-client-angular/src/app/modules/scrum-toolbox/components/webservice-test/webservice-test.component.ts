@@ -185,7 +185,7 @@ export class WebserviceTestComponent {
   async retrieveAllSprintsByProject() {
     console.log(
       await this._ipcService.query(appIpcs.retrieveAllSprintsByProject, {
-        projectId: '5b93ebb9-ee28-4ac3-af7b-8141178762f9',
+        id: '314674f2-947c-4c9f-9580-d4ce8ffa5632',
       })
     );
   }

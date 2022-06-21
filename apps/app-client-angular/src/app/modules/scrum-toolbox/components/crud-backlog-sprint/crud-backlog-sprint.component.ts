@@ -52,6 +52,23 @@ export class CrudBacklogSprintComponent {
 
   async ngOnInit() {
 
+    //TODO temp project id
+    this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
+      id: '314674f2-947c-4c9f-9580-d4ce8ffa5632',
+    });
+    this.selectedSprint = this.sprints[0];
+
+    //TODO retrieve all task from selectedSprint
+    this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasks);
+    this.item = this.items[0];
+    
+    this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
+    this.selectedStatus = this.taskStatus[0];
+
+    this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
+    this.selectedType = this.taskType[0];
+
+    
     this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
 
       if (data) {
