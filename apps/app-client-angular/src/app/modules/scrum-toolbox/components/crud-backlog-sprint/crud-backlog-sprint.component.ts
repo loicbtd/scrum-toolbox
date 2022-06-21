@@ -14,7 +14,9 @@ import { Observable } from 'rxjs';
 export class CrudBacklogSprintComponent {
   @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
 
-  dialog: boolean;
+  dialogUpdate: boolean;
+
+  dialogNew: boolean;
 
   sprints: Sprint[];
 
@@ -76,7 +78,7 @@ export class CrudBacklogSprintComponent {
     const tempType = this.item.type as TaskType;
     this.item = { status: tempStatus, type: tempType };
     this.submitted = false;
-    this.dialog = true;
+    this.dialogNew = true;
   }
 
   deleteSelectedItems() {
@@ -109,7 +111,7 @@ export class CrudBacklogSprintComponent {
   editItem(item: Task) {
     this.initDialogFieldsUpdate(item);
     this.item = { ...item };
-    this.dialog = true;
+    this.dialogUpdate = true;
   }
 
   async deleteItem(item: Task) {
@@ -133,7 +135,7 @@ export class CrudBacklogSprintComponent {
   }
 
   hideDialog() {
-    this.dialog = false;
+    this.dialogUpdate = false;
     this.submitted = false;
   }
 
@@ -162,7 +164,7 @@ export class CrudBacklogSprintComponent {
     }
 
     this.items = [...this.items];
-    this.dialog = false;
+    this.dialogUpdate = false;
     const tempStatus = this.item.status as TaskStatus;
     const tempType = this.item.type as TaskType;
     this.item = { status: tempStatus, type: tempType };
@@ -230,7 +232,27 @@ export class CrudBacklogSprintComponent {
     this.filteredUsers = usersProject.filter((userFromProject) => {
       return this.selectedUsers.every((filter) => {
         return filter.id !== userFromProject.user?.id;
-        // return filter.username !== userFromProject.user?.username;
+        //TODO return filter.username !== userFromProject.user?.username;
+      });
+    });
+
+  }
+
+  async filterTasks(task: Task) {
+
+    const usersProject: UserUserTypeProject[] = await this._ipcService.query<UserUserTypeProject[]>(appIpcs.retrieveAllUsersInProject, this.selectedProject.id);
+
+    if (task.users?.length == 0) {
+      this.filteredUsers = this.convertUserUserTypeProjectIntoUsers(usersProject);
+      return;
+    }
+
+    this.selectedUsers = task.users || [];
+    
+    this.filteredUsers = usersProject.filter((userFromProject) => {
+      return this.selectedUsers.every((filter) => {
+        return filter.id !== userFromProject.user?.id;
+        //TODO return filter.username !== userFromProject.user?.username;
       });
     });
 
