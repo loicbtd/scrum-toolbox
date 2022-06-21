@@ -12,7 +12,6 @@ import { Observable } from 'rxjs';
   styleUrls: ['./crud-backlog-sprint.component.scss'],
 })
 export class CrudBacklogSprintComponent {
-  
   @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
 
   dialog: boolean;
@@ -31,7 +30,7 @@ export class CrudBacklogSprintComponent {
 
   taskStatus: TaskStatus[];
   selectedStatus: TaskStatus;
-  
+
   taskType: TaskType[];
   selectedType: TaskType;
 
@@ -51,41 +50,31 @@ export class CrudBacklogSprintComponent {
   ) {}
 
   async ngOnInit() {
-    
     this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
-
       if (data) {
-        
-        console.log(data);
-        
         this.selectedProject = data.project;
-  
+
         this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
           id: this.selectedProject.id,
         });
-        console.log(this.sprints);
-        
+
         this.selectedSprint = this.sprints[0];
-  
-        //TODO retrieve all task from selectedSprint
-        this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasks);
-        this.item = this.items[0];
-  
-        this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);        
+        console.log('here');
+        this.updateTasks(this.selectedSprint);
+
+        this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
         this.selectedStatus = this.taskStatus[0];
 
         this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
         this.selectedType = this.taskType[0];
       }
-
     });
-
   }
 
   openNew() {
     const tempStatus = this.item.status as TaskStatus;
     const tempType = this.item.type as TaskType;
-    this.item = {status: tempStatus, type: tempType};
+    this.item = { status: tempStatus, type: tempType };
     this.submitted = false;
     this.dialog = true;
   }
@@ -127,7 +116,7 @@ export class CrudBacklogSprintComponent {
           this.items = this.items.filter((_) => _.id !== item.id);
           const tempStatus = this.item.status as TaskStatus;
           const tempType = this.item.type as TaskType;
-          this.item = {status: tempStatus, type: tempType};
+          this.item = { status: tempStatus, type: tempType };
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
@@ -166,7 +155,7 @@ export class CrudBacklogSprintComponent {
     this.dialog = false;
     const tempStatus = this.item.status as TaskStatus;
     const tempType = this.item.type as TaskType;
-    this.item = {status: tempStatus, type: tempType};
+    this.item = { status: tempStatus, type: tempType };
   }
 
   findIndexById(id: string): number {
@@ -182,31 +171,27 @@ export class CrudBacklogSprintComponent {
   }
 
   selectColorStatus(it: any): object {
-    return {"background-color": it.status.backgroundColor, "color": it.status.textColor};
+    return { 'background-color': it.status.backgroundColor, color: it.status.textColor };
   }
   selectColorWithStatus(it: any): object {
-    return {"background-color": it.backgroundColor, "color": it.textColor};
+    return { 'background-color': it.backgroundColor, color: it.textColor };
   }
 
   selectColorType(it: any): object {
-    return {"background-color": it.type.backgroundColor, "color": it.type.textColor};
+    return { 'background-color': it.type.backgroundColor, color: it.type.textColor };
   }
   selectColorWithType(it: any): object {
-    return {"background-color": it.backgroundColor, "color": it.textColor};
+    return { 'background-color': it.backgroundColor, color: it.textColor };
   }
 
   getInitials(user: any): string {
-    console.log(user);
-    
-    console.log("" + user.firstname.charAt(0) + "" + user.lastname.charAt(0));
-    
-    return "" + user.firstname.charAt(0) + "" + user.lastname.charAt(0);
+    return '' + user.firstname.charAt(0) + '' + user.lastname.charAt(0);
   }
 
-  updateTasks() {
-    //TODO update tasks in sprint backlog view
-    // this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasks);
-    // this.item = this.items[0];
+  async updateTasks(sprint: Sprint) {
+    this.selectedSprint = sprint;
+    this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
+    this.item = this.items[0];
   }
 
   getStatus(blop: any): TaskStatus[] {
@@ -218,33 +203,28 @@ export class CrudBacklogSprintComponent {
   }
 
   updateStatus() {
-    console.log("here");
-    
+    console.log('here');
+
     return;
   }
 
   updateType() {
-    console.log("here2");
-    
+    console.log('here2');
+
     return;
   }
 
-  async filterUsers(event:any) {
+  async filterUsers(event: any) {
     // let filtered : any[] = [];
-
     // //TODO retrieve projectId
     // const data: any[] = await this._ipcService.query(appIpcs.retrieveAllUsersInProject, '314674f2-947c-4c9f-9580-d4ce8ffa5632');
     // // console.log(data);
-
     // for(let i = 0; i < data.length; i++) {
-      
     //   let country = this.countries[i];
     //   if (country.name.toLowerCase().indexOf(query.toLowerCase()) == 0) {
     //       filtered.push(country);
     //   }
     // }
-
     // this.filteredUsers = filtered;
   }
-
 }

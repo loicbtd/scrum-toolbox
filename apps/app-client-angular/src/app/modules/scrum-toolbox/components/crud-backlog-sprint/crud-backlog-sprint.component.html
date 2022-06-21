@@ -1,7 +1,13 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <p-dropdown (onChange)="updateTasks()" class="sprint-dropdown" [options]="sprints" [(ngModel)]="selectedSprint" optionLabel="label"></p-dropdown>
+      <p-dropdown
+        (onChange)="updateTasks($event.value)"
+        class="sprint-dropdown"
+        [options]="sprints"
+        [(ngModel)]="selectedSprint"
+        optionLabel="label"
+      ></p-dropdown>
       <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
       <p-button
         pRipple
@@ -36,13 +42,13 @@
         <th style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="label" [ngStyle]="{'width':'10rem'}">Label <p-sortIcon field="label"></p-sortIcon></th>
-        <th [ngStyle]="{'width':'35rem'}">Description</th>
+        <th pSortableColumn="label" [ngStyle]="{ width: '10rem' }">Label <p-sortIcon field="label"></p-sortIcon></th>
+        <th [ngStyle]="{ width: '35rem' }">Description</th>
         <th>Creation Date</th>
         <th>Last Update</th>
         <th pSortableColumn="status.label">Status <p-sortIcon field="status.label"></p-sortIcon></th>
         <th pSortableColumn="type.label">Type <p-sortIcon field="type.label"></p-sortIcon></th>
-        <th [ngStyle]="{'width':'10rem'}">Assigned To</th>
+        <th [ngStyle]="{ width: '10rem' }">Assigned To</th>
         <th>Edit/Delete</th>
       </tr>
     </ng-template>
@@ -100,7 +106,13 @@
     </div> -->
     <div class="field">
       <label for="status">Status</label>
-      <p-dropdown (onChange)="updateStatus()" class="custom-dropdown" [options]="getStatus(item.status)" [(ngModel)]="selectedStatus" optionLabel="label">
+      <p-dropdown
+        (onChange)="updateStatus()"
+        class="custom-dropdown"
+        [options]="getStatus(item.status)"
+        [(ngModel)]="selectedStatus"
+        optionLabel="label"
+      >
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedStatus">
             <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{ selectedStatus.label }}</span>
@@ -117,7 +129,13 @@
     </div>
     <div class="field">
       <label for="type">Type</label>
-      <p-dropdown (onChange)="updateType()" class="custom-dropdown" [options]="getTypes(item.type)" [(ngModel)]="selectedType" optionLabel="label">
+      <p-dropdown
+        (onChange)="updateType()"
+        class="custom-dropdown"
+        [options]="getTypes(item.type)"
+        [(ngModel)]="selectedType"
+        optionLabel="label"
+      >
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedType">
             <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedType)">{{ selectedType.label }}</span>
@@ -134,7 +152,14 @@
 
     <div class="field">
       <label for="users">Assigned to</label>
-      <p-autoComplete [(ngModel)]="selectedUsers" [suggestions]="filteredUsers" (completeMethod)="filterUsers($event)" field="name" [dropdown]="true" [multiple]="true">
+      <p-autoComplete
+        [(ngModel)]="selectedUsers"
+        [suggestions]="filteredUsers"
+        (completeMethod)="filterUsers($event)"
+        field="name"
+        [dropdown]="true"
+        [multiple]="true"
+      >
       </p-autoComplete>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
