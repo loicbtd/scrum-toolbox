@@ -41,6 +41,9 @@ export class CrudBacklogSprintComponent {
 
   selectedProject: Project;
 
+  selectedTasks: Task[];
+  filteredTasks: Task[];
+
   get isCreationMode() {
     return !this.item.id;
   }
@@ -52,6 +55,13 @@ export class CrudBacklogSprintComponent {
   ) {}
 
   async ngOnInit() {
+    
+    this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
+    this.selectedStatus = this.taskStatus[0];
+
+    this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
+    this.selectedType = this.taskType[0];
+
     this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
       if (data) {
         this.selectedProject = data.project;
@@ -63,17 +73,13 @@ export class CrudBacklogSprintComponent {
         this.selectedSprint = this.sprints[0];
         
         this.updateTasks(this.selectedSprint);
-
-        this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
-        this.selectedStatus = this.taskStatus[0];
-
-        this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
-        this.selectedType = this.taskType[0];
+     
       }
     });
   }
 
   openNew() {
+    this.filterTasks();
     const tempStatus = this.item.status as TaskStatus;
     const tempType = this.item.type as TaskType;
     this.item = { status: tempStatus, type: tempType };
@@ -83,7 +89,7 @@ export class CrudBacklogSprintComponent {
 
   deleteSelectedItems() {
     this._confirmationService.confirm({
-      message: 'Are you sure you want to delete the selected items?',
+      message: 'Are you sure you want to delete from the sprint the selected items?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
@@ -155,9 +161,12 @@ export class CrudBacklogSprintComponent {
       }
     } else {
       try {
-        this.item = await this._ipcService.query<Task>(appIpcs.createTask, this.item);
-        this.items.push(this.item);
+        this.selectedSprint.tasks = this.selectedTasks.concat(this.items);
+        console.log(this.selectedSprint);
+        await this._ipcService.query<Sprint>(appIpcs.updateSprint, this.selectedSprint.id);
+
         this._toastMessageService.showSuccess('Item Created', 'Successful');
+        this.resetDialogNew();
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while creating item`);
       }
@@ -168,6 +177,11 @@ export class CrudBacklogSprintComponent {
     const tempStatus = this.item.status as TaskStatus;
     const tempType = this.item.type as TaskType;
     this.item = { status: tempStatus, type: tempType };
+  }
+
+  resetDialogNew() {
+    this.selectedTasks = [];
+    // this.selectedStatus = ;
   }
 
   findIndexById(id: string): number {
@@ -221,9 +235,6 @@ export class CrudBacklogSprintComponent {
   async filterUsers(task: Task) {
 
     const usersProject: UserUserTypeProject[] = await this._ipcService.query<UserUserTypeProject[]>(appIpcs.retrieveAllUsersInProject, this.selectedProject.id);
-    console.log(usersProject);
-    
-    console.log(this.convertUserUserTypeProjectIntoUsers(usersProject));
 
     if (task.users?.length == 0) {
       this.filteredUsers = this.convertUserUserTypeProjectIntoUsers(usersProject);
@@ -239,30 +250,27 @@ export class CrudBacklogSprintComponent {
       });
     }));
 
-    console.log(this.filteredUsers);
     
 
   }
 
-  async filterTasks(task: Task) {
+  async filterTasks() {
 
-    //TODO retrieve all tasks from the project which are not in TODO status
-    const usersProject: UserUserTypeProject[] = await this._ipcService.query<UserUserTypeProject[]>(appIpcs.retrieveAllUsersInProject, this.selectedProject.id);
+    const tasksProject: Task[] = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksByProject, this.selectedProject.id);
+    console.log(tasksProject);
     
-    //TODO check length: if 0 : no tasks found
-    if (task.users?.length == 0) {
-      this.filteredUsers = this.convertUserUserTypeProjectIntoUsers(usersProject);
+    const tasksSprint: Task[] = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
+
+    if (tasksSprint.length == 0) {
+      this.filteredTasks = tasksProject;
       return;
     }
-
-    //TODO if > 0 : filter to remove tasks already in the sprint
-    this.selectedUsers = task.users || [];
     
-    this.filteredUsers = usersProject.filter((userFromProject) => {
-      return this.selectedUsers.every((filter) => {
-        return filter.username !== userFromProject.user?.username && filter.id !== userFromProject.user?.id;
+    this.filteredTasks = tasksProject.filter((tasksFromProject) => {
+      return tasksSprint.every((filter) => {
+        return filter.label !== tasksFromProject.label && filter.id !== tasksFromProject.id;
       });
-    });
+    });  
 
   }
 }

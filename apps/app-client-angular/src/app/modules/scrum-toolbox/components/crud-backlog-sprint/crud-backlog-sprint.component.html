@@ -179,20 +179,20 @@
   <ng-template pTemplate="content">
 
     <!-- TODO list all task from project minus current tasks (filter) -->
-    <!-- <div class="field">
+    <div class="field">
       <label for="tasks">Tasks</label>
       <p-autoComplete
         [(ngModel)]="selectedTasks"
         [suggestions]="filteredTasks"
-        (completeMethod)="filterTasks(item)"
-        field="username"
+        (completeMethod)="filterTasks()"
+        field="label"
         [dropdown]="true"
         [multiple]="true"
         id="tasks"
       >
       </p-autoComplete>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
-    </div> -->
+    </div>
 
     <!-- TODO status modif -->
     <div class="field">
