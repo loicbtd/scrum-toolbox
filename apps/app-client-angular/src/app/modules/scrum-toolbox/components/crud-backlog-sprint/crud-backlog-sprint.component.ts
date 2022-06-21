@@ -159,8 +159,8 @@ export class CrudBacklogSprintComponent {
         this.item.status = this.selectedStatus;
         this.item.type = this.selectedType;
         
-        console.log(this.item);
-        
+        // console.log(this.item);
+
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
@@ -173,7 +173,7 @@ export class CrudBacklogSprintComponent {
       try {
 
         this.selectedSprint.tasks = this.selectedTasks.concat(this.items);
-        console.log(this.selectedSprint);
+        // console.log(this.selectedSprint);
         await this._ipcService.query<Sprint>(appIpcs.updateSprint, this.selectedSprint.id);
 
         this._toastMessageService.showSuccess('Item Created', 'Successful');
@@ -278,11 +278,9 @@ export class CrudBacklogSprintComponent {
       this.filteredTasks = tasksProject;
       return;
     }
-
-    this.selectedTasks = [...new Set([...this.selectedTasks,...tasksSprint || []])];
     
     this.filteredTasks = tasksProject.filter((tasksFromProject) => {
-      return this.selectedTasks.every((filter) => {
+      return tasksSprint.every((filter) => {
         return filter.label !== tasksFromProject.label && filter.id !== tasksFromProject.id;
       });
     });
