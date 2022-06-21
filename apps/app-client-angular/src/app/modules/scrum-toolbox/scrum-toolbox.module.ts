@@ -105,7 +105,7 @@ export class ScrumToolboxComponent {
   }
 
   async updateProject(projectId: string) {
-    const selected = this.projects.find((p) => (p.id = projectId));
+    const selected = this.projects.find((p: Project) => p.id == projectId);
     if (selected) {
       await this._currentProjectService.refreshProject<CurrentProjectModel>({
         project: selected,
