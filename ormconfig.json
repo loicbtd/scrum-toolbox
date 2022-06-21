@@ -1,0 +1,12 @@
+[
+  {
+    "name": "default",
+    "type": "better-sqlite3",
+    "database": "dist/database.db",
+    "entities": ["libs/lib-scrum-toolbox/src/lib/entities/*.ts"],
+    "migrations": ["libs/lib-scrum-toolbox/src/lib/migrations/*.ts"],
+    "cli": {
+      "migrationsDir": "libs/lib-scrum-toolbox/src/lib/migrations"
+    }
+  }
+]

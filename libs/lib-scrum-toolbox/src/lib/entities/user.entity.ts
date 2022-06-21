@@ -1,4 +1,3 @@
-import 'reflect-metadata';
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany } from 'typeorm';
 import { Task } from './task.entity';
 
