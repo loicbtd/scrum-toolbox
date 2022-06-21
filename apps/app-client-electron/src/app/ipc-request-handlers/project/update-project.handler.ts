@@ -10,7 +10,7 @@ export class UpdateProjectHandler implements IpcRequestHandlerInterface {
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getDataSource('main')
       .getRepository<Project>(Project)
-      .update({ id: project.id }, project);
+      .save(project);
     return project;
   }
 }

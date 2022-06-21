@@ -10,7 +10,7 @@ export class UpdateSprintHandler implements IpcRequestHandlerInterface {
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getDataSource('main')
       .getRepository<Sprint>(Sprint)
-      .update({ id: sprint.id }, sprint);
+      .save(sprint);
     return sprint;
   }
 }

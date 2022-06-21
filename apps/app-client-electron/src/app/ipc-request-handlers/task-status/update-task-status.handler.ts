@@ -10,7 +10,7 @@ export class UpdateTaskStatusHandler implements IpcRequestHandlerInterface {
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getDataSource('main')
       .getRepository<TaskStatus>(TaskStatus)
-      .update({ id: taskStatus.id }, taskStatus);
+      .save(taskStatus);
     return taskStatus;
   }
 }
