@@ -12,6 +12,7 @@ export const appRoutes = {
       crudProjects: 'crudProjects',
     },
     mainMenu: 'mainMenu',
+    sprintBacklog: "sprintBacklog",
     all: 'all',
     test: 'test',
   },

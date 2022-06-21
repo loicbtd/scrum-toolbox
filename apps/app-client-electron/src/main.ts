@@ -59,6 +59,8 @@ import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-
 import { LoadFixturesHandler } from './app/ipc-request-handlers/fixtures/load-fixtures.handler';
 import { TruncateDatabaseHandler } from './app/ipc-request-handlers/truncate-database.handler';
 import { RetrieveAllUsersInProject } from './app/ipc-request-handlers/project/retrieve-users-in-project.handler';
+import { RetrieveAllTasksBySprintHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-sprint.handler';
+import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-project.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -98,6 +100,8 @@ import { RetrieveAllUsersInProject } from './app/ipc-request-handlers/project/re
       DeleteTaskHandler,
       RetrieveAllTasksHandler,
       RetrieveTaskHandler,
+      RetrieveAllTasksBySprintHandler,
+      RetrieveAllTasksByProjectHandler,
 
       CreateTaskTypeHandler,
       DeleteTaskTypeHandler,

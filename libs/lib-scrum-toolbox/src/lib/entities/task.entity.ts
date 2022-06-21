@@ -43,13 +43,15 @@ export class Task {
 
   @ManyToOne(() => Project, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
-  project!: Project;
+  project?: Project;
+  //TODO dropdown project
+  // project!: Project;
 
   @ManyToMany(() => User, (user) => user.tasks, { eager: true })
   @JoinTable()
   users?: UserModel[];
 
-  @ManyToOne(() => Sprint, (sprint) => sprint.id, { nullable: true, eager: true })
+  @ManyToOne(() => Sprint, (sprint) => sprint.tasks, { nullable: true, eager: true })
   @JoinColumn({ name: 'sprintId' })
   sprint?: Sprint;
 }

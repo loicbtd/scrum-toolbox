@@ -1,0 +1,250 @@
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <p-dropdown
+        (onChange)="updateTasks($event.value)"
+        class="sprint-dropdown"
+        [options]="sprints"
+        [(ngModel)]="selectedSprint"
+        optionLabel="label"
+      ></p-dropdown>
+      <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+      <p-button
+        pRipple
+        label="Delete"
+        icon="pi pi-trash"
+        class="p-button-danger ml-2"
+        (click)="deleteSelectedItems()"
+        [disabled]="!selectedItems || !selectedItems.length"
+      ></p-button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    #dt
+    [value]="items"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['firstname', 'lastname']"
+    [(selection)]="selectedItems"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex p-ai-center p-jc-between">
+        <h5 class="m-0">Manage items</h5>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th pSortableColumn="label" [ngStyle]="{ width: '10rem' }">Label <p-sortIcon field="label"></p-sortIcon></th>
+        <th [ngStyle]="{ width: '35rem' }">Description</th>
+        <th>Creation Date</th>
+        <th>Last Update</th>
+        <th pSortableColumn="status.label">Status <p-sortIcon field="status.label"></p-sortIcon></th>
+        <th pSortableColumn="type.label">Type <p-sortIcon field="type.label"></p-sortIcon></th>
+        <th [ngStyle]="{ width: '10rem' }">Assigned To</th>
+        <th>Edit/Delete</th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="item"></p-tableCheckbox>
+        </td>
+        <td>{{ item.label }}</td>
+        <td>{{ item.description }}</td>
+        <td>{{ item.createdAt | date: 'd/MM/yyyy' }}</td>
+        <td>{{ item.updatedAt | date: 'd/MM/yyyy' }}</td>
+        <td>
+          <span class="custom-tag" [ngStyle]="selectColorStatus(item)">{{ item.status.label }}</span>
+        </td>
+        <td>
+          <span class="custom-tag" [ngStyle]="selectColorType(item)">{{ item.type.label }}</span>
+        </td>
+        <td>
+          <span *ngFor="let user of item.users" class="user-initials">{{ getInitials(user) }}</span>
+        </td>
+        <td>
+          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded" (click)="editItem(item)"></p-button>
+          <p-button
+            pRipple
+            icon="pi pi-trash"
+            styleClass="p-button-rounded p-button-outlined ml-2"
+            (click)="deleteItem(item)"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex p-ai-center p-jc-between">Items count : {{ items ? items.length : 0 }}</div>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="dialogUpdate" [style]="{ width: '450px', height: '60rem' }" header="Item Details" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    
+    <div class="field">
+      <label for="label">Label</label>
+      <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
+      <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
+    </div>
+
+    <div class="field">
+      <label for="users">Assigned to</label>
+      <p-autoComplete
+        [(ngModel)]="selectedUsers"
+        [suggestions]="filteredUsers"
+        (completeMethod)="filterUsers(item)"
+        field="username"
+        [dropdown]="true"
+        [multiple]="true"
+        id="users"
+      >
+      </p-autoComplete>
+      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+    </div>
+    
+    <div class="field">
+      <label for="status">Status</label>
+      <p-dropdown
+        class="custom-dropdown"
+        [options]="taskStatus"
+        [(ngModel)]="selectedStatus"
+        optionLabel="label"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div *ngIf="selectedStatus">
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{ selectedStatus.label }}</span>
+          </div>
+        </ng-template>
+        <ng-template let-status pTemplate="item">
+          <div class="test">
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(status)">{{ status.label }}</span>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
+    </div>
+
+    <div class="field">
+      <label for="type">Type</label>
+      <p-dropdown
+        class="custom-dropdown"
+        [options]="taskType"
+        [(ngModel)]="selectedType"
+        optionLabel="label"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div *ngIf="selectedType">
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedType)">{{ selectedType.label }}</span>
+          </div>
+        </ng-template>
+        <ng-template let-type pTemplate="item">
+          <div class="test">
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(type)">{{ type.label }}</span>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+    </div>
+
+    <div class="field">
+      <label for="createdAt">Creation Date</label><br>
+      <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'd/MM/yyyy' }}</label>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea type="text" style="height: 5rem;" pInputText id="description" [(ngModel)]="item.description" required></textarea>
+      <small class="p-invalid" *ngIf="submitted && !item.description">Required field</small>
+    </div>
+
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
+  </ng-template>
+</p-dialog>
+
+
+<p-dialog [(visible)]="dialogNew" [style]="{ width: '450px', height: '40rem'}" header="Item Details" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+
+    <!-- TODO list all task from project minus current tasks (filter) -->
+    <div class="field">
+      <label for="tasks">Tasks</label>
+      <p-autoComplete
+        [(ngModel)]="selectedTasks"
+        [suggestions]="filteredTasks"
+        (completeMethod)="filterTasks()"
+        field="label"
+        [dropdown]="true"
+        [multiple]="true"
+        id="tasks"
+      >
+      </p-autoComplete>
+      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+    </div>
+
+    <!-- TODO status modif -->
+    <div class="field">
+      <label for="status">Status</label>
+      <p-dropdown
+        class="custom-dropdown"
+        [options]="taskStatus"
+        [(ngModel)]="selectedStatus"
+        optionLabel="label"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div *ngIf="selectedStatus">
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{ selectedStatus.label }}</span>
+          </div>
+        </ng-template>
+        <ng-template let-status pTemplate="item">
+          <div class="test">
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(status)">{{ status.label }}</span>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
+    </div>
+
+    <!-- TODO type modif -->
+    <div class="field">
+      <label for="type">Type</label>
+      <p-dropdown
+        class="custom-dropdown"
+        [options]="taskType"
+        [(ngModel)]="selectedType"
+        optionLabel="label"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div *ngIf="selectedType">
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedType)">{{ selectedType.label }}</span>
+          </div>
+        </ng-template>
+        <ng-template let-type pTemplate="item">
+          <div class="test">
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(type)">{{ type.label }}</span>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
