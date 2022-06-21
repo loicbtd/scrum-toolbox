@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { ToastMessageService } from '@libraries/lib-angular';
+import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
 import { appIpcs, Project, Sprint, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 })
 export class CrudBacklogSprintComponent {
   
-  @Select(CurrentProjectModel) currentProject$: Observable<CurrentProjectModel>;
+  @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
 
   dialog: boolean;
 
@@ -51,23 +51,6 @@ export class CrudBacklogSprintComponent {
   ) {}
 
   async ngOnInit() {
-
-    //TODO temp project id
-    this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
-      id: '314674f2-947c-4c9f-9580-d4ce8ffa5632',
-    });
-    this.selectedSprint = this.sprints[0];
-
-    //TODO retrieve all task from selectedSprint
-    this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasks);
-    this.item = this.items[0];
-    
-    this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
-    this.selectedStatus = this.taskStatus[0];
-
-    this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
-    this.selectedType = this.taskType[0];
-
     
     this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
 
@@ -78,20 +61,19 @@ export class CrudBacklogSprintComponent {
         this.selectedProject = data.project;
   
         this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
-        projectId: this.selectedProject.id,
+          id: this.selectedProject.id,
         });
-  
-        this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprints);
+        console.log(this.sprints);
+        
         this.selectedSprint = this.sprints[0];
   
         //TODO retrieve all task from selectedSprint
         this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasks);
         this.item = this.items[0];
   
-        this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
-        console.log(this.taskStatus);
-        
+        this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);        
         this.selectedStatus = this.taskStatus[0];
+
         this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
         this.selectedType = this.taskType[0];
       }
