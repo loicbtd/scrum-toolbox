@@ -8,7 +8,7 @@ export class CreateProjectHandler implements IpcRequestHandlerInterface {
   async handle(project: Project): Promise<Project> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<Project>(Project)
       .insert(project);
     return project;

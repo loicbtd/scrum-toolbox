@@ -8,10 +8,14 @@ export class AssignUserTaskHandler implements IpcRequestHandlerInterface {
   async handle(data: { taskId: string; userId: string }): Promise<void> {
     const datasource = Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main');
-    const user = await datasource.getRepository(User).findOneByOrFail({ id: data.userId });
-    const task = await datasource.getRepository(Task).findOneByOrFail({ id: data.taskId });
+      .getConnection('main');
+
+    const user = await datasource.getRepository(User).findOneOrFail({ id: data.userId });
+
+    const task = await datasource.getRepository(Task).findOneOrFail({ id: data.taskId });
+
     task.users.push(user);
+
     await datasource.getRepository(Task).save(task);
   }
 }

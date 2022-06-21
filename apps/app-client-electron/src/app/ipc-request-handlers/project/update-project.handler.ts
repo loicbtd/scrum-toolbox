@@ -8,7 +8,7 @@ export class UpdateProjectHandler implements IpcRequestHandlerInterface {
   async handle(project: Project): Promise<Project> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<Project>(Project)
       .update({ id: project.id }, project);
     return project;

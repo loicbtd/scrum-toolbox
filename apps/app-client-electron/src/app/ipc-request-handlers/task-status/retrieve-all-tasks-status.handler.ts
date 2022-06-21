@@ -8,7 +8,7 @@ export class RetrieveAllTaskStatusHandler implements IpcRequestHandlerInterface 
   async handle(): Promise<TaskStatus[]> {
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<TaskStatus>(TaskStatus)
       .find();
   }

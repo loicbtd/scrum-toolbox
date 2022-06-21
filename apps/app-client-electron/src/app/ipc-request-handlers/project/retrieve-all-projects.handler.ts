@@ -8,7 +8,7 @@ export class RetrieveAllProjectsHandler implements IpcRequestHandlerInterface {
   async handle(): Promise<Project[]> {
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<Project>(Project)
       .find();
   }

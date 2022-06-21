@@ -8,7 +8,7 @@ export class DeleteTaskHandler implements IpcRequestHandlerInterface {
   async handle(id: string): Promise<void> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<Task>(Task)
       .delete(id);
   }

@@ -10,7 +10,7 @@ export class LoadFixturesHandler implements IpcRequestHandlerInterface {
   async handle(): Promise<void> {
     const connection = Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main');
+      .getConnection('main');
 
     const loader = new Loader();
     loader.load(join(__dirname, 'assets', 'fixtures'));

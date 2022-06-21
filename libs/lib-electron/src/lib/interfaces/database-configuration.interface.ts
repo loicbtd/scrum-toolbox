@@ -1,6 +1,6 @@
-import { DataSourceOptions } from 'typeorm';
+import { ConnectionOptions } from 'typeorm';
 
 export interface DatabaseConfigurationInterface {
   id: string;
-  dataSourceOptions: DataSourceOptions;
+  connectionOptions: ConnectionOptions;
 }

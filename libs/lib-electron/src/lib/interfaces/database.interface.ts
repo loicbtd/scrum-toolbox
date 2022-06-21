@@ -1,6 +1,6 @@
-import { DataSource } from 'typeorm';
+import { Connection } from 'typeorm';
 
 export interface DatabaseInterface {
   id: string;
-  dataSource: DataSource;
+  connection: Connection;
 }

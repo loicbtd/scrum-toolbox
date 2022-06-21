@@ -8,7 +8,7 @@ export class UpdateTaskTypeHandler implements IpcRequestHandlerInterface {
   async handle(taskType: TaskType): Promise<TaskType> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<TaskType>(TaskType)
       .update({ id: taskType.id }, taskType);
     return taskType;

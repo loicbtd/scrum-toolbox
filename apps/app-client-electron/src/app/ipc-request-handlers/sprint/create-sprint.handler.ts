@@ -8,7 +8,7 @@ export class CreateSprintHandler implements IpcRequestHandlerInterface {
   async handle(sprint: Sprint): Promise<Sprint> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<Sprint>(Sprint)
       .insert(sprint);
     return sprint;

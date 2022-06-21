@@ -20,7 +20,7 @@ export class TruncateDatabaseHandler implements IpcRequestHandlerInterface {
   async handle(): Promise<void> {
     const connection = Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main');
+      .getConnection('main');
     const entities = [
       UserUserTypeProject,
       UserSprint,
