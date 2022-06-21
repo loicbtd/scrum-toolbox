@@ -221,6 +221,9 @@ export class CrudBacklogSprintComponent {
   async filterUsers(task: Task) {
 
     const usersProject: UserUserTypeProject[] = await this._ipcService.query<UserUserTypeProject[]>(appIpcs.retrieveAllUsersInProject, this.selectedProject.id);
+    console.log(usersProject);
+    
+    console.log(this.convertUserUserTypeProjectIntoUsers(usersProject));
 
     if (task.users?.length == 0) {
       this.filteredUsers = this.convertUserUserTypeProjectIntoUsers(usersProject);
@@ -229,30 +232,35 @@ export class CrudBacklogSprintComponent {
 
     this.selectedUsers = task.users || [];
     
-    this.filteredUsers = usersProject.filter((userFromProject) => {
+
+    this.filteredUsers = this.convertUserUserTypeProjectIntoUsers(usersProject.filter((userFromProject) => {
       return this.selectedUsers.every((filter) => {
-        return filter.id !== userFromProject.user?.id;
-        //TODO return filter.username !== userFromProject.user?.username;
+        return filter.username !== userFromProject.user?.username && filter.id !== userFromProject.user?.id;
       });
-    });
+    }));
+
+    console.log(this.filteredUsers);
+    
 
   }
 
   async filterTasks(task: Task) {
 
+    //TODO retrieve all tasks from the project which are not in TODO status
     const usersProject: UserUserTypeProject[] = await this._ipcService.query<UserUserTypeProject[]>(appIpcs.retrieveAllUsersInProject, this.selectedProject.id);
-
+    
+    //TODO check length: if 0 : no tasks found
     if (task.users?.length == 0) {
       this.filteredUsers = this.convertUserUserTypeProjectIntoUsers(usersProject);
       return;
     }
 
+    //TODO if > 0 : filter to remove tasks already in the sprint
     this.selectedUsers = task.users || [];
     
     this.filteredUsers = usersProject.filter((userFromProject) => {
       return this.selectedUsers.every((filter) => {
-        return filter.id !== userFromProject.user?.id;
-        //TODO return filter.username !== userFromProject.user?.username;
+        return filter.username !== userFromProject.user?.username && filter.id !== userFromProject.user?.id;
       });
     });
 
