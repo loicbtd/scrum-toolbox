@@ -31,10 +31,10 @@ export class CrudBacklogSprintComponent {
   submitted: boolean;
 
   taskStatus: TaskStatus[];
-  selectedStatus: TaskStatus | undefined;
+  selectedStatus: TaskStatus;
 
   taskType: TaskType[];
-  selectedType: TaskType | undefined;;
+  selectedType: TaskType;
 
   selectedAllUsersForTask: User[];
   selectedUsers: User[];
@@ -80,6 +80,7 @@ export class CrudBacklogSprintComponent {
   }
 
   openNew() {
+    this.selectedTasks = [];
     this.filterTasks();
     const tempStatus = this.item.status as TaskStatus;
     const tempType = this.item.type as TaskType;
@@ -152,11 +153,14 @@ export class CrudBacklogSprintComponent {
     this.submitted = true;   
 
     if (this.item.id) {
-      
-      console.log(this.item);
-      
+            
       try {
-        this.item.users = this.selectedUsers.concat()
+        this.item.users = this.selectedUsers;
+        this.item.status = this.selectedStatus;
+        this.item.type = this.selectedType;
+        
+        console.log(this.item);
+        
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
@@ -193,8 +197,8 @@ export class CrudBacklogSprintComponent {
 
   resetDialogNew() {
     this.selectedTasks = [];
-    this.selectedStatus = this.taskStatus.find((el) => el.label === 'TODO');
-    this.selectedType = this.taskType.find((el) => el.label === 'Bug');
+    // this.selectedStatus = this.taskStatus.find((el) => el.label === 'TODO');
+    // this.selectedType = this.taskType.find((el) => el.label === 'Bug');
   }
 
   findIndexById(id: string): number {
@@ -274,9 +278,11 @@ export class CrudBacklogSprintComponent {
       this.filteredTasks = tasksProject;
       return;
     }
+
+    this.selectedTasks = [...new Set([...this.selectedTasks,...tasksSprint || []])];
     
     this.filteredTasks = tasksProject.filter((tasksFromProject) => {
-      return tasksSprint.every((filter) => {
+      return this.selectedTasks.every((filter) => {
         return filter.label !== tasksFromProject.label && filter.id !== tasksFromProject.id;
       });
     });
