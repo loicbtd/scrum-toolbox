@@ -58,18 +58,11 @@ import { UpdateProjectHandler } from './app/ipc-request-handlers/project/update-
 import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-project.handler';
 import { LoadFixturesHandler } from './app/ipc-request-handlers/fixtures/load-fixtures.handler';
 import { TruncateDatabaseHandler } from './app/ipc-request-handlers/truncate-database.handler';
-import { mainDataSource } from './app/datasources/main.datasource';
 
 (async () => {
   const application = Application.getInstance();
 
   await application.initialize('app-client-angular', 4200, environment.version, {
-    databaseConfigurations: [
-      {
-        id: 'main',
-        dataSourceOptions: mainDataSource,
-      },
-    ],
     ipcRequestHandlers: [
       CreateUserHandler,
       DeleteUserHandler,

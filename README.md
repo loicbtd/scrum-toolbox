@@ -158,43 +158,48 @@ Il existe 5 types d'issues :
 -   [Angular Language Service](https://marketplace.visualstudio.com/items?itemName=Angular.ng-template)
 -   [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
 
-# 4. Database migrations
+# 4. Migration des bases de données
 
-## 4.1. Prerequisites
+## 4.1. Prérequis
 
-1. Create a `ormconfig.json` file in the root of the repository
+1. Créer un fichier `ormconfig.json` à la racine de la solution
 
-2. Fill it with the following content :
+2. Compléter le fichier avec le contenu suivant :
 
-```json
-[
-    {
-        "name": "default",
-        "type": "better-slqite3",
-        "database": "C:/Users/loicb/.scrum-toolbox/databases/main.sqlite3",
-        "entities": ["libs/lib-scrum-toolbox/src/lib/entities/*.ts"],
-        "migrations": ["apps/app-client-electron/src/app/migrations/*.ts"],
-        "cli": {
-            "migrationsDir": "apps/app-client-electron/src/app/migrations"
-        }
-    }
-]
-```
+    - Sqlite3
+        ```json
+        [
+            {
+                "name": "default",
+                "type": "better-sqlite3",
+                "database": "dist/database.db",
+                "entities": ["libs/lib-scrum-toolbox/src/lib/entities/*.ts"],
+                "migrations": ["libs/lib-scrum-toolbox/src/lib/migrations/*.ts"],
+                "cli": {
+                    "migrationsDir": "libs/lib-scrum-toolbox/src/lib/migrations"
+                }
+            }
+        ]
+        ```
 
-## 4.2. Migrations
+3. Réinstaller les drivers non-recompilés s'ils ont été recompilés dans un script de postinstall :
 
-### 4.2.1. Generate the migration after the model has changed
+    - Sqlite3 : `npm i better-sqlite3`
 
-Execute `npm run typeorm migration:generate -- -n <MigrationName>`
+## 4.2. Gérer les migrations
 
-### 4.2.2. Create a new empty migration
+### 4.2.1. Générer les migrations après un changement du modèle
 
-Execute `npm run typeorm migration:create -- -n <MigrationName>`
+Éxécuter : `npm run typeorm migration:generate -- -n <MigrationName>`
 
-### 4.2.3. Run migrations
+### 4.2.2. Créer une nouvelle migration vide
 
-Execute `npm run typeorm migration:run`
+Éxécuter : `npm run typeorm migration:create -- -n <MigrationName>`
 
-### 4.2.4. Revert the last migration
+### 4.2.3. Exécuter les migrations
 
-Execute `npm run typeorm migration:revert`
+Éxécuter : `npm run typeorm migration:run`
+
+### 4.2.4. Annuler la dernière migration
+
+Éxécuter : `npm run typeorm migration:revert`
