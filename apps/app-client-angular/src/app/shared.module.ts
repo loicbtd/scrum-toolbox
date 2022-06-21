@@ -41,6 +41,7 @@ import { BlockableDivModule, DurationPipeModule } from '@libraries/lib-angular';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { AppNavigationContainerModule } from '@libraries/lib-angular';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 const importedAndExportedModules = [
   CommonModule,
@@ -88,6 +89,7 @@ const importedAndExportedModules = [
   InputSwitchModule,
   AppNavigationContainerModule,
   ConfirmDialogModule,
+  MultiSelectModule,
 ];
 
 @NgModule({

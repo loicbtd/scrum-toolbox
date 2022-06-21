@@ -4,7 +4,6 @@ import { dirname, join } from 'path';
 import { DataSource } from 'typeorm';
 import { Application } from '../application';
 import { ElectronApplicationError } from '../errors/electron-application.error';
-import { DatabaseConfiguration } from '../interfaces/database-configuration.interface';
 import { Database } from '../interfaces/database.interface';
 
 @injectable()
@@ -25,34 +24,21 @@ export class DatabasesService {
     return database.dataSource;
   }
 
-  public async initialize(databaseConfigurations: DatabaseConfiguration[]): Promise<void> {
-    if (!databaseConfigurations) {
+  public async initialize(databases: Database[]): Promise<void> {
+    if (!databases) {
       throw new ElectronApplicationError('databaseConfigurations is undefined');
     }
 
-    for (const configuration of databaseConfigurations) {
-      let databaseDirectoryPath: string[];
-
-      if (configuration.customPath) {
-        databaseDirectoryPath = configuration.customPath;
-      } else {
-        databaseDirectoryPath = [...Application.getInstance().settingsDirectoryPath, 'databases'];
+    for (const database of databases) {
+      if (database.dataSource.options.type === 'sqlite' || database.dataSource.options.type == 'better-sqlite3') {
+        if (!existsSync(dirname(database.dataSource.options.database))) {
+          mkdirSync(dirname(database.dataSource.options.database), { recursive: true });
+        }
       }
 
-      if (!existsSync(dirname(join(...databaseDirectoryPath)))) {
-        mkdirSync(join(...databaseDirectoryPath), { recursive: true });
-      }
+      await database.dataSource.initialize();
 
-      const dataSource = new DataSource({
-        type: 'better-sqlite3',
-        entities: configuration.entities || [],
-        database: join(...databaseDirectoryPath, `${configuration.id}.sqlite3`),
-        synchronize: true,
-      });
-
-      await dataSource.initialize();
-
-      this._databases.push({ id: configuration.id, dataSource: dataSource });
+      this._databases.push(database);
     }
   }
 }

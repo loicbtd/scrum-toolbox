@@ -1,35 +1,25 @@
 import { Component } from '@angular/core';
 import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, Project, User } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, User } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Store } from '@ngxs/store';
 import { MyProfileModel } from '../../../../global/models/my-profile.model';
 
 @Component({
-  templateUrl: './crud-projects.component.html',
-  styleUrls: ['./crud-projects.component.scss'],
+  templateUrl: './crud-project-attendees.component.html',
+  styleUrls: ['./crud-project-attendees.component.scss'],
 })
-export class CrudProjectsComponent {
-  items: Project[];
+export class CrudProjectAttendeesComponent {
+  dialog: boolean;
 
-  item: Project;
+  items: User[];
 
-  selectedItems: Project[];
+  item: User;
+
+  selectedItems: User[];
 
   submitted: boolean;
-
-  dialog: boolean;
-  attendeesDialog: boolean;
-
-  productOwners: User[];
-  availableProductOwners: User[];
-
-  developers: User[];
-  availableDevelopers: User[];
-
-  scrumMasters: User[];
-  availableScrumMasters: User[];
 
   get isCreationMode() {
     return !this.item.id;
@@ -43,7 +33,8 @@ export class CrudProjectsComponent {
   ) {}
 
   async ngOnInit() {
-    this.items = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
+    this.items = await this._ipcService.query<User[]>(appIpcs.retrieveAllUsers);
+    this.item = this.items[0];
   }
 
   openNew() {
@@ -67,7 +58,7 @@ export class CrudProjectsComponent {
           }
 
           try {
-            await this._ipcService.query(appIpcs.deleteProject, item.id);
+            await this._ipcService.query(appIpcs.deleteUser, item.id);
             this.items = this.items.filter((_) => _.id !== item.id);
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
@@ -80,12 +71,12 @@ export class CrudProjectsComponent {
     });
   }
 
-  editItem(item: Project) {
+  editItem(item: User) {
     this.item = { ...item };
     this.dialog = true;
   }
 
-  async deleteItem(item: Project) {
+  async deleteItem(item: User) {
     const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
 
     if (myProfile.user.id == item.id) {
@@ -99,7 +90,7 @@ export class CrudProjectsComponent {
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         try {
-          await this._ipcService.query(appIpcs.deleteProject, item.id);
+          await this._ipcService.query(appIpcs.deleteUser, item.id);
           this.items = this.items.filter((_) => _.id !== item.id);
           this.item = {};
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
@@ -120,7 +111,7 @@ export class CrudProjectsComponent {
 
     if (this.item.id) {
       try {
-        await this._ipcService.query(appIpcs.updateProject, this.item);
+        await this._ipcService.query(appIpcs.updateUser, this.item);
         this.items[this.findIndexById(this.item.id)] = this.item;
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
       } catch (error: any) {
@@ -128,7 +119,7 @@ export class CrudProjectsComponent {
       }
     } else {
       try {
-        this.item = await this._ipcService.query<Project>(appIpcs.createProject, this.item);
+        this.item = await this._ipcService.query<User>(appIpcs.createUser, this.item);
         this.items.push(this.item);
         this._toastMessageService.showSuccess('Item Created', 'Successful');
       } catch (error: any) {
@@ -151,23 +142,5 @@ export class CrudProjectsComponent {
     }
 
     return index;
-  }
-
-  editAttendees(item: Project) {
-    this.productOwners = [];
-    this.developers = [];
-    this.scrumMasters = [];
-    this.attendeesDialog = true;
-  }
-
-  hideAttendesDialog() {
-    this.attendeesDialog = false;
-    this.productOwners = [];
-    this.developers = [];
-    this.scrumMasters = [];
-  }
-
-  saveAttendees() {
-    console.log();
   }
 }

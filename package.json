@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "nx": "nx",
-    "typeorm": "ts-node -P ./migrations/tsconfig.json --transpile-only -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm": "typeorm",
     "postinstall": "exitzero electron-builder install-app-deps && ngcc --properties es2020 browser module main",
     "storybook": "nx run lib-angular:storybook",
     "start": "run-p start:app-desktop",

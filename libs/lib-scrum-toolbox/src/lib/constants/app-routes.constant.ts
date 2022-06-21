@@ -8,8 +8,8 @@ export const appRoutes = {
     root: 'scrumToolbox',
     administration: {
       root: 'administration',
-      crudUsers: 'crudUsers',
-      crudProjects: 'crudProjects',
+      users: 'users',
+      projects: 'projects'
     },
     mainMenu: 'mainMenu',
     all: 'all',

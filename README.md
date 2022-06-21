@@ -64,7 +64,7 @@ Ce projet de bibliothèque Electron contient le code source qui peut s'exécuter
 
 **lib-electron-web**
 
-Ce projet de bibliothèque web contient le code source qui peut s'exécuter dans une application JavaScript. 
+Ce projet de bibliothèque web contient le code source qui peut s'exécuter dans une application JavaScript.
 
 **lib-scrum-toolbox**
 
@@ -157,3 +157,44 @@ Il existe 5 types d'issues :
 -   [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode)
 -   [Angular Language Service](https://marketplace.visualstudio.com/items?itemName=Angular.ng-template)
 -   [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
+
+# 4. Database migrations
+
+## 4.1. Prerequisites
+
+1. Create a `ormconfig.json` file in the root of the repository
+
+2. Fill it with the following content :
+
+```json
+[
+    {
+        "name": "default",
+        "type": "better-slqite3",
+        "database": "C:/Users/loicb/.scrum-toolbox/databases/main.sqlite3",
+        "entities": ["libs/lib-scrum-toolbox/src/lib/entities/*.ts"],
+        "migrations": ["apps/app-client-electron/src/app/migrations/*.ts"],
+        "cli": {
+            "migrationsDir": "apps/app-client-electron/src/app/migrations"
+        }
+    }
+]
+```
+
+## 4.2. Migrations
+
+### 4.2.1. Generate the migration after the model has changed
+
+Execute `npm run typeorm migration:generate -- -n <MigrationName>`
+
+### 4.2.2. Create a new empty migration
+
+Execute `npm run typeorm migration:create -- -n <MigrationName>`
+
+### 4.2.3. Run migrations
+
+Execute `npm run typeorm migration:run`
+
+### 4.2.4. Revert the last migration
+
+Execute `npm run typeorm migration:revert`

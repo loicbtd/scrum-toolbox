@@ -10,11 +10,11 @@ import { MenuItem } from 'primeng/api';
 })
 export class AdministrationComponent {
   items: MenuItem[] = [
-    { label: 'Users', icon: 'fa-solid fa-user', routerLink: [appRoutes.scrumToolbox.administration.crudUsers] },
+    { label: 'Users', icon: 'fa-solid fa-user', routerLink: [appRoutes.scrumToolbox.administration.users] },
     {
       label: 'Projects',
       icon: 'fa-solid fa-briefcase',
-      routerLink: [appRoutes.scrumToolbox.administration.crudProjects],
+      routerLink: [appRoutes.scrumToolbox.administration.projects],
     },
   ];
 }
