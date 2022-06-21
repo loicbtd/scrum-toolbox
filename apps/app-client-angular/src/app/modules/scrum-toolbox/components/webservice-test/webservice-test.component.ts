@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
-import { ToastMessageService } from '@libraries/lib-angular';
+import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
 import { appIpcs, Project, Sprint, SprintStatus, Task, TaskStatus, TaskType, User } from '@libraries/lib-scrum-toolbox';
+import { Select } from '@ngxs/store';
+import { CurrentProjectModel } from '../../../../global/models/current-project.model';
+import { Observable } from 'rxjs';
 import { IpcService } from '../../../../global/services/ipc.service';
 
 @Component({
@@ -10,7 +13,15 @@ import { IpcService } from '../../../../global/services/ipc.service';
 export class WebserviceTestComponent {
   currentUser!: User;
 
+  @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
+
+  title?: string;
+
   constructor(private readonly _ipcService: IpcService, private readonly toastMessageService: ToastMessageService) {}
+
+  ngOnInit(): void {
+    this.testObserver();
+  }
 
   async createUser() {
     const u = new User();
@@ -210,5 +221,11 @@ export class WebserviceTestComponent {
       this.toastMessageService.showError(error.message, 'Truncate Database failed');
       throw error;
     }
+  }
+
+  testObserver() {
+    this.currentProject$.subscribe((data: { project: Project }) => {
+      this.title = data.project.label;
+    });
   }
 }
