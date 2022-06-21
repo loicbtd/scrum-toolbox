@@ -36,6 +36,7 @@ export class CrudBacklogSprintComponent {
   taskType: TaskType[];
   selectedType: TaskType | undefined;;
 
+  selectedAllUsersForTask: User[];
   selectedUsers: User[];
   filteredUsers: User[];
 
@@ -109,6 +110,7 @@ export class CrudBacklogSprintComponent {
   }
 
   initDialogFieldsUpdate(item: Task) {
+    this.selectedUsers = [];
     this.selectedStatus = item.status;
     this.selectedType = item.type;
     this.filterUsers(item);
@@ -152,26 +154,33 @@ export class CrudBacklogSprintComponent {
     if (this.item.id) {
       
       console.log(this.item);
-
+      
       try {
+        this.item.users = this.selectedUsers.concat()
         await this._ipcService.query(appIpcs.updateTask, this.item);
-        this.items[this.findIndexById(this.item.id)] = this.item;
+
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
+
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
+
     } else {
       try {
+
         this.selectedSprint.tasks = this.selectedTasks.concat(this.items);
         console.log(this.selectedSprint);
         await this._ipcService.query<Sprint>(appIpcs.updateSprint, this.selectedSprint.id);
 
         this._toastMessageService.showSuccess('Item Created', 'Successful');
         this.resetDialogNew();
+
       } catch (error: any) {
+
         this.resetDialogNew();
         this.hideDialog();
         this._toastMessageService.showError(error.message, `Error while creating item`);
+
       }
     }
 
@@ -245,23 +254,19 @@ export class CrudBacklogSprintComponent {
       return;
     }
 
-    this.selectedUsers = task.users || [];
+    this.selectedUsers = [...new Set([...this.selectedUsers,...task.users || []])];
     
-
     this.filteredUsers = this.convertUserUserTypeProjectIntoUsers(usersProject.filter((userFromProject) => {
       return this.selectedUsers.every((filter) => {
         return filter.username !== userFromProject.user?.username && filter.id !== userFromProject.user?.id;
       });
     }));
 
-    
-
   }
 
   async filterTasks() {
 
     const tasksProject: Task[] = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksByProject, this.selectedProject.id);
-    console.log(tasksProject);
     
     const tasksSprint: Task[] = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
 
@@ -274,7 +279,7 @@ export class CrudBacklogSprintComponent {
       return tasksSprint.every((filter) => {
         return filter.label !== tasksFromProject.label && filter.id !== tasksFromProject.id;
       });
-    });  
+    });
 
   }
 }
