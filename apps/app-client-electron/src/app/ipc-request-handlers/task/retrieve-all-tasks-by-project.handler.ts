@@ -10,8 +10,8 @@ export class RetrieveAllTasksByProjectHandler implements IpcRequestHandlerInterf
 
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<Task>(Task)
-      .findBy({ project: { id: projectId } });
+      .find({ project: { id: projectId } });
   }
 }

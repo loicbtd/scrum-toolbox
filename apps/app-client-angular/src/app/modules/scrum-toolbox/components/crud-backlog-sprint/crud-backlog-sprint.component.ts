@@ -1,6 +1,15 @@
 import { Component } from '@angular/core';
 import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, Project, Sprint, Task, TaskStatus, TaskType, User, UserUserTypeProject } from '@libraries/lib-scrum-toolbox';
+import {
+  appIpcs,
+  Project,
+  Sprint,
+  Task,
+  TaskStatus,
+  TaskType,
+  User,
+  UserUserTypeProject,
+} from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Select } from '@ngxs/store';
@@ -56,7 +65,6 @@ export class CrudBacklogSprintComponent {
   ) {}
 
   async ngOnInit() {
-    
     this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
     this.selectedStatus = this.taskStatus[0];
 
@@ -72,9 +80,8 @@ export class CrudBacklogSprintComponent {
         });
 
         this.selectedSprint = this.sprints[0];
-        
+
         this.updateTasks(this.selectedSprint);
-     
       }
     });
   }
@@ -150,41 +157,34 @@ export class CrudBacklogSprintComponent {
   }
 
   async saveItem() {
-    this.submitted = true;   
+    this.submitted = true;
 
     if (this.item.id) {
-            
       try {
         this.item.users = this.selectedUsers;
         this.item.status = this.selectedStatus;
         this.item.type = this.selectedType;
-        
+
         console.log(this.item);
-        
+
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
-
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
-
     } else {
       try {
-
         this.selectedSprint.tasks = this.selectedTasks.concat(this.items);
         console.log(this.selectedSprint);
         await this._ipcService.query<Sprint>(appIpcs.updateSprint, this.selectedSprint.id);
 
         this._toastMessageService.showSuccess('Item Created', 'Successful');
         this.resetDialogNew();
-
       } catch (error: any) {
-
         this.resetDialogNew();
         this.hideDialog();
         this._toastMessageService.showError(error.message, `Error while creating item`);
-
       }
     }
 
@@ -233,14 +233,18 @@ export class CrudBacklogSprintComponent {
 
   async updateTasks(sprint: Sprint) {
     this.selectedSprint = sprint;
-    this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
+    console.log(this.selectedSprint);
+
+    const a = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
+
+    this.items = a;
     this.item = this.items[0];
   }
 
   convertUserUserTypeProjectIntoUsers(usersTypeProject: UserUserTypeProject[]): User[] {
     const result: User[] = [];
 
-    usersTypeProject.forEach(el => {
+    usersTypeProject.forEach((el) => {
       if (el.user) {
         result.push(el.user);
       }
@@ -250,42 +254,49 @@ export class CrudBacklogSprintComponent {
   }
 
   async filterUsers(task: Task) {
-
-    const usersProject: UserUserTypeProject[] = await this._ipcService.query<UserUserTypeProject[]>(appIpcs.retrieveAllUsersInProject, this.selectedProject.id);
+    const usersProject: UserUserTypeProject[] = await this._ipcService.query<UserUserTypeProject[]>(
+      appIpcs.retrieveAllUsersInProject,
+      this.selectedProject.id
+    );
 
     if (task.users?.length == 0) {
       this.filteredUsers = this.convertUserUserTypeProjectIntoUsers(usersProject);
       return;
     }
 
-    this.selectedUsers = [...new Set([...this.selectedUsers,...task.users || []])];
-    
-    this.filteredUsers = this.convertUserUserTypeProjectIntoUsers(usersProject.filter((userFromProject) => {
-      return this.selectedUsers.every((filter) => {
-        return filter.username !== userFromProject.user?.username && filter.id !== userFromProject.user?.id;
-      });
-    }));
+    this.selectedUsers = [...new Set([...this.selectedUsers, ...(task.users || [])])];
 
+    this.filteredUsers = this.convertUserUserTypeProjectIntoUsers(
+      usersProject.filter((userFromProject) => {
+        return this.selectedUsers.every((filter) => {
+          return filter.username !== userFromProject.user?.username && filter.id !== userFromProject.user?.id;
+        });
+      })
+    );
   }
 
   async filterTasks() {
+    const tasksProject: Task[] = await this._ipcService.query<Task[]>(
+      appIpcs.retrieveAllTasksByProject,
+      this.selectedProject.id
+    );
 
-    const tasksProject: Task[] = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksByProject, this.selectedProject.id);
-    
-    const tasksSprint: Task[] = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
+    const tasksSprint: Task[] = await this._ipcService.query<Task[]>(
+      appIpcs.retrieveAllTasksBySprint,
+      this.selectedSprint.id
+    );
 
     if (tasksSprint.length == 0) {
       this.filteredTasks = tasksProject;
       return;
     }
 
-    this.selectedTasks = [...new Set([...this.selectedTasks,...tasksSprint || []])];
-    
+    this.selectedTasks = [...new Set([...this.selectedTasks, ...(tasksSprint || [])])];
+
     this.filteredTasks = tasksProject.filter((tasksFromProject) => {
       return this.selectedTasks.every((filter) => {
         return filter.label !== tasksFromProject.label && filter.id !== tasksFromProject.id;
       });
     });
-
   }
 }

@@ -45,7 +45,7 @@ export class DatabasesService {
         await connection.connect();
         this._databases.push({ id: configuration.id, connection: connection });
       } catch (error: any) {
-        throw new ElectronApplicationError('unable to initialize connection');
+        throw new ElectronApplicationError(`unable to initialize connection ${error.message}`);
       }
     }
   }

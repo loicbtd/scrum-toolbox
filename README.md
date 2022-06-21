@@ -88,6 +88,7 @@ Il existe 5 types d'issues :
 
 -   `npm install` : installer les dépendances de la solution
 -   `npm start` : démarrer la solution en mode de développement
+-   `npm build` : construire les dépendances
 
 ## 2.3. Procédure d'implémentation d'une issue
 
@@ -184,6 +185,8 @@ Il existe 5 types d'issues :
 
 3. Réinstaller les drivers non-recompilés s'ils ont été recompilés dans un script de postinstall :
 
+>
+
     - Sqlite3 : `npm i better-sqlite3`
 
 ## 4.2. Gérer les migrations
@@ -203,3 +206,9 @@ Il existe 5 types d'issues :
 ### 4.2.4. Annuler la dernière migration
 
 Éxécuter : `npm run typeorm migration:revert`
+
+# Troubleshooting
+
+## `module` was compiled against a different Node.js version
+
+-   Remove `node_modules`

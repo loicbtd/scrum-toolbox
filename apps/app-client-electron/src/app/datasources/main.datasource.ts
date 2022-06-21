@@ -2,7 +2,7 @@ import { homedir } from 'os';
 import { join } from 'path';
 import { ConnectionOptions } from 'typeorm';
 import { environment } from '../../environments/environment';
-import { InitializeDatabase1655822535548 } from '../migrations/1655822535548-InitializeDatabase';
+import { InitializeDatabase } from '../migrations/initialize-database';
 import {
   Project,
   Sprint,
@@ -34,6 +34,5 @@ export const mainDataSource = {
     UserType,
     UserUserTypeProject,
   ],
-  migrations: [InitializeDatabase1655822535548],
-  migrationsRun: true,
+  migrations: [InitializeDatabase],
 } as ConnectionOptions;

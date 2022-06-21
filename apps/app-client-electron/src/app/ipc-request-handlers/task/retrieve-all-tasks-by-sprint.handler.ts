@@ -6,12 +6,10 @@ export class RetrieveAllTasksBySprintHandler implements IpcRequestHandlerInterfa
   channel = appIpcs.retrieveAllTasksBySprint;
 
   async handle(sprintId: string): Promise<Task[]> {
-    console.log('LA');
-
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<Task>(Task)
-      .findBy({ sprint: { id: sprintId } });
+      .find({ sprint: { id: sprintId } });
   }
 }
