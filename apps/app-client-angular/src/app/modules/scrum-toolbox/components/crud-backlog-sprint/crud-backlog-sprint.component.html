@@ -89,27 +89,18 @@
 
 <p-dialog [(visible)]="dialog" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">
   <ng-template pTemplate="content">
-    <!-- <div class="field">
+    
+    <div class="field">
       <label for="label">Label</label>
       <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
       <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
     </div>
-    <div class="field">
-      <label for="description">Description</label>
-      <textarea type="text" style="height: 5rem;" pInputText id="description" [(ngModel)]="item.description" required></textarea>
-      <small class="p-invalid" *ngIf="submitted && !item.description">Required field</small>
-    </div>
-    <div class="field">
-      <label for="createdAt">Creation Date</label>
-      <input type="text" pInputText id="createdAt" [(ngModel)]="item.createdAt" required />
-      <small class="p-invalid" *ngIf="submitted && !item.createdAt">Required field</small>
-    </div> -->
+    
     <div class="field">
       <label for="status">Status</label>
       <p-dropdown
-        (onChange)="updateStatus()"
         class="custom-dropdown"
-        [options]="getStatus(item.status)"
+        [options]="taskStatus"
         [(ngModel)]="selectedStatus"
         optionLabel="label"
       >
@@ -124,15 +115,14 @@
           </div>
         </ng-template>
       </p-dropdown>
-      <!-- <input type="text" pInputText id="status" [(ngModel)]="item.status" required /> -->
       <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
     </div>
+
     <div class="field">
       <label for="type">Type</label>
       <p-dropdown
-        (onChange)="updateType()"
         class="custom-dropdown"
-        [options]="getTypes(item.type)"
+        [options]="taskType"
         [(ngModel)]="selectedType"
         optionLabel="label"
       >
@@ -155,14 +145,27 @@
       <p-autoComplete
         [(ngModel)]="selectedUsers"
         [suggestions]="filteredUsers"
-        (completeMethod)="filterUsers($event)"
-        field="name"
+        (completeMethod)="filterUsers(item)"
+        field="username"
         [dropdown]="true"
         [multiple]="true"
+        id="users"
       >
       </p-autoComplete>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
+
+    <div class="field">
+      <label for="createdAt">Creation Date</label><br>
+      <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'd/MM/yyyy' }}</label>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea type="text" style="height: 5rem;" pInputText id="description" [(ngModel)]="item.description" required></textarea>
+      <small class="p-invalid" *ngIf="submitted && !item.description">Required field</small>
+    </div>
+
   </ng-template>
 
   <ng-template pTemplate="footer">

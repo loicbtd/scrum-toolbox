@@ -17,6 +17,11 @@
   padding: .3rem;
   border-radius: .4rem;
   background-color: #9fbecd;
+  margin-left: .2rem;
+}
+
+.creation-date {
+  font-weight: bold;
 }
 
 :host ::ng-deep {

@@ -11,13 +11,13 @@ export class UserUserTypeProject {
 
   @ManyToOne(() => User, (user) => user.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'userId' })
-  user?: Sprint;
+  user?: User;
 
   @ManyToOne(() => UserType, (userType) => userType.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'userTypeId' })
   userType?: Sprint;
-
+//TODO modify type Sprint into type UserType
   @ManyToOne(() => Project, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
-  project?: Sprint;
+  project?: Project;
 }
