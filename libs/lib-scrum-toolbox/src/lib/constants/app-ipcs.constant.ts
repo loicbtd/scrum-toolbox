@@ -44,4 +44,5 @@ export const appIpcs = {
   truncateDatabase: 'truncateDatabase',
   retrieveAllUsersInProject: 'retrieveAllUsersInProject',
   retrieveAllTasksBySprint: 'retrieveAllTasksBySprint',
+  retrieveAllTasksByProject: 'retrieveAllTasksByProject',
 };
