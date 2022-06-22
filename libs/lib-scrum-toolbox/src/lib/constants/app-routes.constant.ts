@@ -9,10 +9,13 @@ export const appRoutes = {
     administration: {
       root: 'administration',
       users: 'users',
-      projects: 'projects'
+      projects: 'projects',
+      taskStatus: 'taskStatus',
+      sprintStatus: 'sprintStatus',
+      taskType: 'taskType',
     },
     mainMenu: 'mainMenu',
-    sprintBacklog: "sprintBacklog",
+    sprintBacklog: 'sprintBacklog',
     all: 'all',
     test: 'test',
   },

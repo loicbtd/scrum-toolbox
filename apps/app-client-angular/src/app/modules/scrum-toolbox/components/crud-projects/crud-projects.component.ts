@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
+import { MyProfileState, ProjectsService, ToastMessageService } from '@libraries/lib-angular';
 import { appIpcs, Project, User } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
@@ -39,7 +39,8 @@ export class CrudProjectsComponent {
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
     private readonly _ipcService: IpcService,
-    private readonly _store: Store
+    private readonly _store: Store,
+    private readonly _projectsService: ProjectsService
   ) {}
 
   async ngOnInit() {
@@ -76,6 +77,7 @@ export class CrudProjectsComponent {
         this.selectedItems = [];
 
         this._toastMessageService.showSuccess('Items Deleted', 'Successful');
+        this.triggerUpdateProject();
       },
     });
   }
@@ -106,6 +108,7 @@ export class CrudProjectsComponent {
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
         }
+        this.triggerUpdateProject();
       },
     });
   }
@@ -139,6 +142,7 @@ export class CrudProjectsComponent {
     this.items = [...this.items];
     this.dialog = false;
     this.item = {};
+    this.triggerUpdateProject();
   }
 
   findIndexById(id: string): number {
@@ -169,5 +173,9 @@ export class CrudProjectsComponent {
 
   saveAttendees() {
     console.log();
+  }
+
+  triggerUpdateProject() {
+    this._projectsService.updateProjects();
   }
 }
