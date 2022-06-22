@@ -32,15 +32,15 @@
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th style="width: 3rem">
+        <th id="header-checkbox" style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="username">Username <p-sortIcon field="username"></p-sortIcon></th>
-        <th>Firstname</th>
-        <th>Lastname</th>
-        <th>Creation date</th>
-        <th>Activation</th>
-        <th></th>
+        <th id="header-username" pSortableColumn="username">Username <p-sortIcon field="username"></p-sortIcon></th>
+        <th id="header-first-name">Firstname</th>
+        <th id="header-last-name">Lastname</th>
+        <th id="header-creation-date">Creation date</th>
+        <th id="header-activation">Activation</th>
+        <th id="header-empty"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item>

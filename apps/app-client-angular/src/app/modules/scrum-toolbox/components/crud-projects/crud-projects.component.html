@@ -32,14 +32,14 @@
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th style="width: 3rem">
+        <th id="header-table" style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="label">Name<p-sortIcon field="label"></p-sortIcon></th>
-        <th>Description</th>
-        <th>Creation date</th>
-        <th>Update date</th>
-        <th></th>
+        <th id="header-name" pSortableColumn="label">Name<p-sortIcon field="label"></p-sortIcon></th>
+        <th id="header-description">Description</th>
+        <th id="header-created-date">Creation date</th>
+        <th id="header-update-date">Update date</th>
+        <th id="header-empty"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item>
