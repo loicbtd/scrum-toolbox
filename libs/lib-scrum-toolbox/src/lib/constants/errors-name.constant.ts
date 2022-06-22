@@ -4,4 +4,6 @@ export const errorsName = {
   usernameAlreadyExists: 'usernameAlreadyExists',
   userNotFound: 'userNotFound',
   userNotActivated: 'userNotActivated',
+  statusIsCurrentlyUsed: 'statusIsCurrentlyUsed',
+  typeIsCurrentlyUsed: 'typeIsCurrentlyUsed',
 };

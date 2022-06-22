@@ -16,6 +16,7 @@ export * from './lib/services/responsive.service';
 export * from './lib/services/theme.service';
 export * from './lib/services/toast-message.service';
 export * from './lib/services/current-project.service';
+export * from './lib/services/projects.service';
 
 export * from './lib/states/my-profile-state/base-my-profile.model';
 export * from './lib/states/my-profile-state/my-profile-configuration.interface';

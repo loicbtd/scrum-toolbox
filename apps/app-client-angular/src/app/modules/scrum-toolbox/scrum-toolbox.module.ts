@@ -8,6 +8,7 @@ import {
   MyProfileState,
   NavigationItemInterface,
   CurrentProjectService,
+  ProjectsService,
 } from '@libraries/lib-angular';
 import { appIpcs, appRoutes, Project } from '@libraries/lib-scrum-toolbox';
 import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
@@ -22,6 +23,9 @@ import { CrudBacklogSprintComponent } from './components/crud-backlog-sprint/cru
 import { IpcService } from '../../global/services/ipc.service';
 import { CurrentProjectModel } from '../../global/models/current-project.model';
 import { Dropdown } from 'primeng/dropdown';
+import { CrudTaskStatusComponent } from './components/crud-task-status/crud-task-status.component';
+import { CrudSprintStatusComponent } from './components/crud-sprint-status/crud-sprint-status.component';
+import { CrudTaskTypeComponent } from './components/crud-task-type/crud-task-type.component';
 
 @Component({
   template: `
@@ -116,11 +120,20 @@ export class ScrumToolboxComponent {
   constructor(
     private readonly _authenticationService: AuthenticationService,
     private readonly _ipcService: IpcService,
-    private readonly _currentProjectService: CurrentProjectService
+    private readonly _currentProjectService: CurrentProjectService,
+    private readonly _projectsService: ProjectsService
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  private async updateAllProjects() {
     this.projects = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.updateAllProjects();
+    this._projectsService.subject$.subscribe(() => {
+      this.updateAllProjects();
+    });
+
     this.currentProject$.subscribe((data: CurrentProjectModel) => {
       if (data.project) {
         this.dropDownProject.value = data.project.id;
@@ -139,6 +152,9 @@ export class ScrumToolboxComponent {
     AdministrationComponent,
     CrudProjectAttendeesComponent,
     CrudBacklogSprintComponent,
+    CrudTaskStatusComponent,
+    CrudSprintStatusComponent,
+    CrudTaskTypeComponent,
   ],
   providers: [ScrumToolboxModule],
   imports: [
@@ -175,6 +191,18 @@ export class ScrumToolboxComponent {
               {
                 component: CrudProjectsComponent,
                 path: appRoutes.scrumToolbox.administration.projects,
+              },
+              {
+                component: CrudTaskStatusComponent,
+                path: appRoutes.scrumToolbox.administration.taskStatus,
+              },
+              {
+                component: CrudTaskTypeComponent,
+                path: appRoutes.scrumToolbox.administration.taskType,
+              },
+              {
+                component: CrudSprintStatusComponent,
+                path: appRoutes.scrumToolbox.administration.sprintStatus,
               },
               {
                 path: '**',

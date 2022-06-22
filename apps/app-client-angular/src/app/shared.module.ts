@@ -43,6 +43,7 @@ import { AppNavigationContainerModule } from '@libraries/lib-angular';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AutoCompleteModule } from 'primeng/autocomplete';
+import { ColorPickerModule } from 'primeng/colorpicker';
 
 const importedAndExportedModules = [
   CommonModule,
@@ -92,6 +93,7 @@ const importedAndExportedModules = [
   ConfirmDialogModule,
   MultiSelectModule,
   AutoCompleteModule,
+  ColorPickerModule,
 ];
 
 @NgModule({

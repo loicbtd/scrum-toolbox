@@ -259,7 +259,10 @@
             "tsConfig": "libs/lib-electron-web/tsconfig.lib.json",
             "assets": ["libs/lib-electron-web/*.md"]
           },
-          "configurations": { "development": {}, "production": {} }
+          "configurations": {
+            "development": {},
+            "production": {}
+          }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",
@@ -286,7 +289,10 @@
             "tsConfig": "libs/lib-scrum-toolbox/tsconfig.lib.json",
             "assets": ["libs/lib-scrum-toolbox/*.md"]
           },
-          "configurations": { "development": {}, "production": {} }
+          "configurations": {
+            "development": {},
+            "production": {}
+          }
         },
         "lint": {
           "executor": "@nrwl/linter:eslint",

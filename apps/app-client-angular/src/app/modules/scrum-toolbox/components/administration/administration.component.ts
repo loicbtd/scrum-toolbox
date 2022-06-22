@@ -16,5 +16,20 @@ export class AdministrationComponent {
       icon: 'fa-solid fa-briefcase',
       routerLink: [appRoutes.scrumToolbox.administration.projects],
     },
+    {
+      label: 'Task Status',
+      icon: 'fa-solid fa-clipboard-check',
+      routerLink: [appRoutes.scrumToolbox.administration.taskStatus],
+    },
+    {
+      label: 'Task Type',
+      icon: 'fa-solid fa-clipboard-question',
+      routerLink: [appRoutes.scrumToolbox.administration.taskType],
+    },
+    {
+      label: 'Sprint Status',
+      icon: 'fa-solid fa-arrow-rotate-right',
+      routerLink: [appRoutes.scrumToolbox.administration.sprintStatus],
+    },
   ];
 }
