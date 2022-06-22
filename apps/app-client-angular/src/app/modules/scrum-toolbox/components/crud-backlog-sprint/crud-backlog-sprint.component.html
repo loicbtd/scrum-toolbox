@@ -39,17 +39,19 @@
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th style="width: 3rem">
+        <th id="header-checkbox" style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="label" [ngStyle]="{ width: '10rem' }">Label <p-sortIcon field="label"></p-sortIcon></th>
-        <th [ngStyle]="{ width: '35rem' }">Description</th>
-        <th>Creation Date</th>
-        <th>Last Update</th>
-        <th pSortableColumn="status.label">Status <p-sortIcon field="status.label"></p-sortIcon></th>
-        <th pSortableColumn="type.label">Type <p-sortIcon field="type.label"></p-sortIcon></th>
-        <th [ngStyle]="{ width: '10rem' }">Assigned To</th>
-        <th>Edit/Delete</th>
+        <th id="header-label" pSortableColumn="label" [ngStyle]="{ width: '10rem' }">
+          Label <p-sortIcon field="label"></p-sortIcon>
+        </th>
+        <th id="header-description" [ngStyle]="{ width: '35rem' }">Description</th>
+        <th id="header-creation-date">Creation Date</th>
+        <th id="header-last-updated">Last Updated</th>
+        <th id="header-status" pSortableColumn="status.label">Status <p-sortIcon field="status.label"></p-sortIcon></th>
+        <th id="header-type" pSortableColumn="type.label">Type <p-sortIcon field="type.label"></p-sortIcon></th>
+        <th id="header-assigned" [ngStyle]="{ width: '10rem' }">Assigned To</th>
+        <th id="header-action">Edit/Delete</th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item>
@@ -87,9 +89,14 @@
   </p-table>
 </div>
 
-<p-dialog [(visible)]="dialogUpdate" [style]="{ width: '450px', height: '60rem' }" header="Item Details" [modal]="true" styleClass="p-fluid">
+<p-dialog
+  [(visible)]="dialogUpdate"
+  [style]="{ width: '450px', height: '60rem' }"
+  header="Item Details"
+  [modal]="true"
+  styleClass="p-fluid"
+>
   <ng-template pTemplate="content">
-    
     <div class="field">
       <label for="label">Label</label>
       <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
@@ -110,15 +117,10 @@
       </p-autoComplete>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
-    
+
     <div class="field">
       <label for="status">Status</label>
-      <p-dropdown
-        class="custom-dropdown"
-        [options]="taskStatus"
-        [(ngModel)]="selectedStatus"
-        optionLabel="label"
-      >
+      <p-dropdown class="custom-dropdown" [options]="taskStatus" [(ngModel)]="selectedStatus" optionLabel="label">
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedStatus">
             <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{ selectedStatus.label }}</span>
@@ -135,12 +137,7 @@
 
     <div class="field">
       <label for="type">Type</label>
-      <p-dropdown
-        class="custom-dropdown"
-        [options]="taskType"
-        [(ngModel)]="selectedType"
-        optionLabel="label"
-      >
+      <p-dropdown class="custom-dropdown" [options]="taskType" [(ngModel)]="selectedType" optionLabel="label">
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedType">
             <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedType)">{{ selectedType.label }}</span>
@@ -156,16 +153,22 @@
     </div>
 
     <div class="field">
-      <label for="createdAt">Creation Date</label><br>
+      <label for="createdAt">Creation Date</label><br />
       <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'd/MM/yyyy' }}</label>
     </div>
 
     <div class="field">
       <label for="description">Description</label>
-      <textarea type="text" style="height: 5rem;" pInputText id="description" [(ngModel)]="item.description" required></textarea>
+      <textarea
+        type="text"
+        style="height: 5rem"
+        pInputText
+        id="description"
+        [(ngModel)]="item.description"
+        required
+      ></textarea>
       <small class="p-invalid" *ngIf="submitted && !item.description">Required field</small>
     </div>
-
   </ng-template>
 
   <ng-template pTemplate="footer">
@@ -174,10 +177,14 @@
   </ng-template>
 </p-dialog>
 
-
-<p-dialog [(visible)]="dialogNew" [style]="{ width: '450px', height: '40rem'}" header="Item Details" [modal]="true" styleClass="p-fluid">
+<p-dialog
+  [(visible)]="dialogNew"
+  [style]="{ width: '450px', height: '40rem' }"
+  header="Item Details"
+  [modal]="true"
+  styleClass="p-fluid"
+>
   <ng-template pTemplate="content">
-
     <!-- TODO list all task from project minus current tasks (filter) -->
     <div class="field">
       <label for="tasks">Tasks</label>
@@ -197,12 +204,7 @@
     <!-- TODO status modif -->
     <div class="field">
       <label for="status">Status</label>
-      <p-dropdown
-        class="custom-dropdown"
-        [options]="taskStatus"
-        [(ngModel)]="selectedStatus"
-        optionLabel="label"
-      >
+      <p-dropdown class="custom-dropdown" [options]="taskStatus" [(ngModel)]="selectedStatus" optionLabel="label">
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedStatus">
             <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{ selectedStatus.label }}</span>
@@ -220,12 +222,7 @@
     <!-- TODO type modif -->
     <div class="field">
       <label for="type">Type</label>
-      <p-dropdown
-        class="custom-dropdown"
-        [options]="taskType"
-        [(ngModel)]="selectedType"
-        optionLabel="label"
-      >
+      <p-dropdown class="custom-dropdown" [options]="taskType" [(ngModel)]="selectedType" optionLabel="label">
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedType">
             <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedType)">{{ selectedType.label }}</span>
