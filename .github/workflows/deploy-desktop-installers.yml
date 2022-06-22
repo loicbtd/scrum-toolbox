@@ -58,6 +58,7 @@ jobs:
         run: |
           npm install
           npm run build
+          npm run build:angular
           npm run publish:linux
 
       - name: Upload artifact
@@ -82,6 +83,7 @@ jobs:
         run: |
           npm install
           npm run build
+          npm run build:angular
           npm run publish:windows
 
       - name: Upload artifact
@@ -106,6 +108,7 @@ jobs:
         run: |
           npm install
           npm run build
+          npm run build:angular
           npm run publish:macos
 
       - name: Upload artifact
