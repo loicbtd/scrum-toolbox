@@ -82,8 +82,7 @@ export class CrudBacklogSprintComponent {
   }
 
   openNew() {
-    this.selectedTasks = [];
-    this.filterTasks();
+    this.initDialogFieldsNew();
     const tempStatus = this.item.status as TaskStatus;
     const tempType = this.item.type as TaskType;
     this.item = { status: tempStatus, type: tempType };
@@ -125,6 +124,12 @@ export class CrudBacklogSprintComponent {
     this.dialogUpdate = true;
   }
 
+  initDialogFieldsNew() {
+    this.selectedTasks = [];
+    this.filterTasks();
+  }
+
+  //TODO update task avec sprintID null ('')
   async deleteItem(item: Task) {
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
@@ -155,7 +160,7 @@ export class CrudBacklogSprintComponent {
     this.submitted = true;   
 
     if (this.item.id) {
-            
+
       try {
         this.item.users = this.selectedUsers;
         this.item.status = this.selectedStatus;
@@ -176,12 +181,21 @@ export class CrudBacklogSprintComponent {
     } else {
       try {
 
-        this.selectedSprint.tasks = this.selectedTasks.concat(this.items);
-        console.log(this.selectedSprint);
-        await this._ipcService.query<Sprint>(appIpcs.updateSprint, this.selectedSprint.id);
+        this.selectedTasks.forEach(async (task) => {
+          task.status = this.selectedStatus;
+          task.type = this.selectedType;
+
+          const t = await this._ipcService.query<Task>(appIpcs.updateTask, task);
+          await this._ipcService.query<Sprint>(appIpcs.assignTaskToSprint, { taskId: t.id, sprintId: this.selectedSprint.id });
+        });
+
 
         this._toastMessageService.showSuccess('Item Created', 'Successful');
         this.resetDialogNew();
+        this.hideDialog();
+
+        this.sub.unsubscribe();
+        this.ngOnInit();
 
       } catch (error: any) {
 
@@ -201,20 +215,6 @@ export class CrudBacklogSprintComponent {
 
   resetDialogNew() {
     this.selectedTasks = [];
-    // this.selectedStatus = this.taskStatus.find((el) => el.label === 'TODO');
-    // this.selectedType = this.taskType.find((el) => el.label === 'Bug');
-  }
-
-  findIndexById(id: string): number {
-    let index = -1;
-    for (let i = 0; i < this.items.length; i++) {
-      if (this.items[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-
-    return index;
   }
 
   selectColorStatus(it: any): object {
