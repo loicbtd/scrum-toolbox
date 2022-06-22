@@ -5,7 +5,7 @@
   "scripts": {
     "nx": "nx",
     "typeorm": "ts-node -P ./libs/lib-scrum-toolbox/tsconfig.typeorm-cli.json --transpile-only -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
-    "build": "npm-run-all build:electron build:electron",
+    "build": "npm-run-all build:angular build:electron",
     "build:angular": "ngcc --properties es2020 browser module main",
     "build:electron": "exitzero electron-builder install-app-deps",
     "storybook": "nx run lib-angular:storybook",
