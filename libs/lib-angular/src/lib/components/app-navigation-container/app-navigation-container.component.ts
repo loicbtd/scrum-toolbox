@@ -184,7 +184,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
   styles: [
     `
       :host {
-        --navigation-bar-heigth: 50px;
+        --navigation-bar-height: 50px;
         --navigation-bar-bottom-border-size: 1px;
         --navigation-collapsed-width: 60px;
         --navigation-expanded-width: 220px;
@@ -196,7 +196,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
 
       .navigation-bar {
         width: 100%;
-        height: var(--navigation-bar-heigth);
+        height: var(--navigation-bar-height);
         background-color: #fff;
         border-bottom: var(--navigation-bar-bottom-border-size) solid #575e6a;
         display: flex;
@@ -212,7 +212,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
 
       .navigation-bar .logo-container img {
         margin: auto;
-        height: calc(var(--navigation-bar-heigth) - 20px);
+        height: calc(var(--navigation-bar-height) - 20px);
       }
 
       .navigation-bar-content {
@@ -223,7 +223,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         display: flex;
         flex-direction: column;
         background-color: #575e6a;
-        height: calc(100% - calc(var(--navigation-bar-heigth) + var(--navigation-bar-bottom-border-size)));
+        height: calc(100% - calc(var(--navigation-bar-height) + var(--navigation-bar-bottom-border-size)));
       }
 
       .avatar-container {
@@ -234,8 +234,8 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
       }
 
       .avatar {
-        height: calc(var(--navigation-bar-heigth) - 10px);
-        width: calc(var(--navigation-bar-heigth) - 10px);
+        height: calc(var(--navigation-bar-height) - 10px);
+        width: calc(var(--navigation-bar-height) - 10px);
         display: flex;
         border: 1px solid #000;
         border-radius: 50%;
@@ -265,12 +265,12 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
       .navigation {
         background-color: #575e6a;
         width: 60px;
-        height: calc(100% - calc(var(--navigation-bar-heigth) + var(--navigation-bar-bottom-border-size)));
+        height: calc(100% - calc(var(--navigation-bar-height) + var(--navigation-bar-bottom-border-size)));
       }
 
       .navigation {
         background-color: #575e6a;
-        height: calc(100% - calc(var(--navigation-bar-heigth) + var(--navigation-bar-bottom-border-size)));
+        height: calc(100% - calc(var(--navigation-bar-height) + var(--navigation-bar-bottom-border-size)));
       }
 
       .navigation.collapsed {
@@ -310,7 +310,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         display: flex;
         align-items: center;
         justify-content: center;
-        heigth: 40px;
+        height: 40px;
         width: 40px;
       }
 
@@ -360,7 +360,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
       .avatar-navigation {
         display: none;
         position: fixed;
-        top: calc(var(--navigation-bar-heigth) + var(--navigation-bar-bottom-border-size));
+        top: calc(var(--navigation-bar-height) + var(--navigation-bar-bottom-border-size));
         right: 10px;
         flex-direction: column;
         background-color: #fff;
