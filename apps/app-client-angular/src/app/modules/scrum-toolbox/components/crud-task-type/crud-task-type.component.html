@@ -32,13 +32,13 @@
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th style="width: 3rem">
+        <th id="header-checkbox" style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="label">Label<p-sortIcon field="label"></p-sortIcon></th>
-        <th>Background Color</th>
-        <th>Text Color</th>
-        <th></th>
+        <th id="header-label" pSortableColumn="label">Label<p-sortIcon field="label"></p-sortIcon></th>
+        <th id="header-background-color">Background Color</th>
+        <th id="header-text-color">Text Color</th>
+        <th id="header-empty"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item>
