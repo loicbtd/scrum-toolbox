@@ -10,7 +10,7 @@ export class UpdateTaskTypeHandler implements IpcRequestHandlerInterface {
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main')
       .getRepository<TaskType>(TaskType)
-      .update({ id: taskType.id }, taskType);
+      .save(taskType);
     return taskType;
   }
 }

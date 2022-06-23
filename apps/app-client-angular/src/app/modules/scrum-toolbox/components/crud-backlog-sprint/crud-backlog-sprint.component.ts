@@ -14,7 +14,7 @@ import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Select } from '@ngxs/store';
 import { CurrentProjectModel } from '../../../../global/models/current-project.model';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   templateUrl: './crud-backlog-sprint.component.html',
@@ -54,6 +54,8 @@ export class CrudBacklogSprintComponent {
   selectedTasks: Task[];
   filteredTasks: Task[];
 
+  sub: Subscription;
+
   get isCreationMode() {
     return !this.item.id;
   }
@@ -64,14 +66,14 @@ export class CrudBacklogSprintComponent {
     private readonly _ipcService: IpcService
   ) {}
 
-  async ngOnInit() {
+  async ngOnInit(sprint: Sprint | undefined) {
     this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
     this.selectedStatus = this.taskStatus[0];
 
     this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
     this.selectedType = this.taskType[0];
 
-    this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
+    this.sub = this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
       if (data) {
         this.selectedProject = data.project;
 
@@ -79,7 +81,11 @@ export class CrudBacklogSprintComponent {
           id: this.selectedProject.id,
         });
 
-        this.selectedSprint = this.sprints[0];
+        if (sprint) {
+          this.selectedSprint = sprint;
+        } else {
+          this.selectedSprint = this.sprints[0];
+        }
 
         this.updateTasks(this.selectedSprint);
       }
@@ -87,8 +93,7 @@ export class CrudBacklogSprintComponent {
   }
 
   openNew() {
-    this.selectedTasks = [];
-    this.filterTasks();
+    this.initDialogFieldsNew();
     const tempStatus = this.item.status as TaskStatus;
     const tempType = this.item.type as TaskType;
     this.item = { status: tempStatus, type: tempType };
@@ -104,8 +109,8 @@ export class CrudBacklogSprintComponent {
       accept: async () => {
         for (const item of this.selectedItems) {
           try {
-            await this._ipcService.query(appIpcs.deleteTask, item.id);
-            this.items = this.items.filter((_) => _.id !== item.id);
+            await this._ipcService.query(appIpcs.unassignTaskToSprint, item.id);
+            this.ngOnInit(this.selectedSprint);
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
           }
@@ -130,20 +135,30 @@ export class CrudBacklogSprintComponent {
     this.dialogUpdate = true;
   }
 
-  async deleteItem(item: Task) {
+  initDialogFieldsNew() {
+    this.selectedTasks = [];
+    this.filterTasks();
+  }
+
+  async deleteItem(task: Task) {
     this._confirmationService.confirm({
-      message: 'Are you sure you want to delete the item ?',
+      message: 'Are you sure you want to remove this task from the sprint?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         try {
-          await this._ipcService.query(appIpcs.deleteTask, item.id);
-          this.items = this.items.filter((_) => _.id !== item.id);
+          await this._ipcService.query(appIpcs.unassignTaskToSprint, task.id);
+
           const tempStatus = this.item.status as TaskStatus;
           const tempType = this.item.type as TaskType;
           this.item = { status: tempStatus, type: tempType };
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
+
+          this.sub.unsubscribe();
+          this.ngOnInit(this.selectedSprint);
         } catch (error) {
+          console.log(error);
+
           this._toastMessageService.showError(`Error while deleting item`);
         }
       },
@@ -165,22 +180,33 @@ export class CrudBacklogSprintComponent {
         this.item.status = this.selectedStatus;
         this.item.type = this.selectedType;
 
-        console.log(this.item);
-
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
+        this.sub.unsubscribe();
+        this.ngOnInit(this.selectedSprint);
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
     } else {
       try {
-        this.selectedSprint.tasks = this.selectedTasks.concat(this.items);
-        console.log(this.selectedSprint);
-        await this._ipcService.query<Sprint>(appIpcs.updateSprint, this.selectedSprint.id);
+        this.selectedTasks.forEach(async (task) => {
+          task.status = this.selectedStatus;
+          task.type = this.selectedType;
+
+          const t = await this._ipcService.query<Task>(appIpcs.updateTask, task);
+          await this._ipcService.query<Sprint>(appIpcs.assignTaskToSprint, {
+            taskId: t.id,
+            sprintId: this.selectedSprint.id,
+          });
+        });
 
         this._toastMessageService.showSuccess('Item Created', 'Successful');
         this.resetDialogNew();
+        this.hideDialog();
+
+        this.sub.unsubscribe();
+        this.ngOnInit(this.selectedSprint);
       } catch (error: any) {
         this.resetDialogNew();
         this.hideDialog();
@@ -197,20 +223,6 @@ export class CrudBacklogSprintComponent {
 
   resetDialogNew() {
     this.selectedTasks = [];
-    // this.selectedStatus = this.taskStatus.find((el) => el.label === 'TODO');
-    // this.selectedType = this.taskType.find((el) => el.label === 'Bug');
-  }
-
-  findIndexById(id: string): number {
-    let index = -1;
-    for (let i = 0; i < this.items.length; i++) {
-      if (this.items[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-
-    return index;
   }
 
   selectColorStatus(it: any): object {
@@ -233,7 +245,7 @@ export class CrudBacklogSprintComponent {
 
   async updateTasks(sprint: Sprint) {
     this.selectedSprint = sprint;
-    console.log(this.selectedSprint);
+    // console.log(this.selectedSprint);
 
     const a = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
 
@@ -281,7 +293,7 @@ export class CrudBacklogSprintComponent {
       this.selectedProject.id
     );
 
-    const tasksSprint: Task[] = await this._ipcService.query<Task[]>(
+    let tasksSprint: Task[] = await this._ipcService.query<Task[]>(
       appIpcs.retrieveAllTasksBySprint,
       this.selectedSprint.id
     );
@@ -291,10 +303,10 @@ export class CrudBacklogSprintComponent {
       return;
     }
 
-    this.selectedTasks = [...new Set([...this.selectedTasks, ...(tasksSprint || [])])];
+    tasksSprint = [...new Set([...tasksSprint, ...this.selectedTasks])];
 
     this.filteredTasks = tasksProject.filter((tasksFromProject) => {
-      return this.selectedTasks.every((filter) => {
+      return tasksSprint.every((filter) => {
         return filter.label !== tasksFromProject.label && filter.id !== tasksFromProject.id;
       });
     });

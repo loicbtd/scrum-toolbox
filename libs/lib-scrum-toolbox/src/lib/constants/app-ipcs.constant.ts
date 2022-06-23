@@ -13,6 +13,7 @@ export const appIpcs = {
   retrieveTask: 'retrieveTask',
   assignTaskToUser: 'assignTaskToUser',
   assignTaskToSprint: 'assignTaskToSprint',
+  unassignTaskToSprint: 'unassignTaskToSprint',
   createTaskType: 'createTaskType',
   updateTaskType: 'updateTaskType',
   deleteTaskType: 'deleteTaskType',
