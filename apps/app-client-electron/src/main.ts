@@ -52,6 +52,7 @@ import { RetrieveAllUsersInProject } from './app/ipc-request-handlers/project/re
 import { StartupWindow } from './app/windows/startup.window';
 import { RetrieveAllTasksBySprintHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-sprint.handler';
 import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-project.handler';
+import { UnassignSprintTaskHandler } from './app/ipc-request-handlers/task/unassign-sprint-task.handler copy';
 
 (async () => {
   const application = Application.getInstance();
@@ -73,6 +74,7 @@ import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/tas
       LoginHandler,
 
       AssignSprintTaskHandler,
+      UnassignSprintTaskHandler,
       AssignUserTaskHandler,
       CreateTaskHandler,
       UpdateTaskHandler,
@@ -125,7 +127,7 @@ import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/tas
   application.loadTray(MainTray);
 
   application.loadWindow(StartupWindow);
-  
+
   await new Promise((resolve) => setTimeout(resolve, 3000));
 
   application.unloadAllWindows(StartupWindow);

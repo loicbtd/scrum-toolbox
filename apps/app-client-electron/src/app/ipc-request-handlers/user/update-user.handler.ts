@@ -10,7 +10,7 @@ export class UpdateUserHandler implements IpcRequestHandlerInterface {
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main')
       .getRepository<User>(User)
-      .update({ id: user.id }, user);
+      .save(user);
     return {
       id: user.id,
       username: user.username,

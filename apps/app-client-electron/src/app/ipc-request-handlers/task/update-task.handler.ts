@@ -5,12 +5,12 @@ import { appIpcs, Task } from '@libraries/lib-scrum-toolbox';
 export class UpdateTaskHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.updateTask;
 
-  async handle(task: Task): Promise<Task> {
+  async handle(task: Task): Promise<Task> {   
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main')
       .getRepository<Task>(Task)
-      .update({ id: task.id }, task);
+      .save(task);
 
     return task;
   }
