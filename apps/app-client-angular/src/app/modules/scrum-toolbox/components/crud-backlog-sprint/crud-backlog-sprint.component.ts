@@ -111,7 +111,7 @@ export class CrudBacklogSprintComponent {
         for (const item of this.selectedItems) {
           try {
             item.sprint = undefined;
-            await this._ipcService.query(appIpcs.deleteTask, item.id);
+            await this._ipcService.query(appIpcs.updateTask, item);
 
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
@@ -144,14 +144,13 @@ export class CrudBacklogSprintComponent {
 
   async deleteItem(task: Task) {
 
-    console.log(task);
-    
     this._confirmationService.confirm({
       message: 'Are you sure you want to remove this task from the sprint?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         try {
+          
           task.sprint = undefined;
           
           await this._ipcService.query(appIpcs.updateTask, task);
@@ -188,8 +187,6 @@ export class CrudBacklogSprintComponent {
         this.item.users = this.selectedUsers;
         this.item.status = this.selectedStatus;
         this.item.type = this.selectedType;
-
-        console.log(this.item);
 
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
