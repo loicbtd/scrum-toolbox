@@ -7,6 +7,7 @@ items:
     type: '@task_type*'
     project: '@project*'
     sprint: '@sprint*'
+    capacity: '{{datatype.number(10)}}'
     users:
       - '@users*'
   task{20..40}:
@@ -15,3 +16,4 @@ items:
     status: '@task_status*'
     type: '@task_type*'
     project: '@project*'
+    capacity: '{{datatype.number(10)}}'

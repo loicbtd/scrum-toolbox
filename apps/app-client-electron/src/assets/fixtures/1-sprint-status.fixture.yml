@@ -2,7 +2,13 @@ entity: sprint_status
 items:
   sprint_status1:
     label: 'SCHEDULED'
+    backgroundColor: '#D09DFE'
+    textColor: '#000000'
   sprint_status2:
     label: 'IN PROGRESS'
+    backgroundColor: '#FBCA04'
+    textColor: '#000000'
   sprint_status3:
-    label: 'DONE'
+    label: DONE
+    backgroundColor: '#90EE90'
+    textColor: '#000000'

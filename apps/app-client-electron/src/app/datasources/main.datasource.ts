@@ -15,6 +15,8 @@ import {
   UserType,
   UserUserTypeProject,
 } from '@libraries/lib-scrum-toolbox';
+import { AddTaskCapacity } from '../migrations/add-task-capacity';
+import { AddColosToSprintStatus } from '../migrations/add-colors-sprint-status';
 
 export const mainDataSource = {
   type: 'better-sqlite3',
@@ -34,5 +36,5 @@ export const mainDataSource = {
     UserType,
     UserUserTypeProject,
   ],
-  migrations: [InitializeDatabase],
+  migrations: [InitializeDatabase, AddTaskCapacity, AddColosToSprintStatus],
 } as ConnectionOptions;

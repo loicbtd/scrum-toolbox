@@ -25,6 +25,8 @@ export class CrudSprintStatusComponent {
 
   dialog: boolean;
 
+  labelDisabled = false;
+
   constructor(
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
@@ -37,7 +39,7 @@ export class CrudSprintStatusComponent {
 
   openNew() {
     this.item = new SprintStatus();
-    this.submitted = false;
+    this.submitted = this.labelDisabled = false;
     this.dialog = true;
   }
 
@@ -57,6 +59,7 @@ export class CrudSprintStatusComponent {
 
   editItem(item: SprintStatus) {
     this.item = { ...item };
+    this.labelDisabled = true;
     this.dialog = true;
   }
 
@@ -93,20 +96,20 @@ export class CrudSprintStatusComponent {
 
   async saveItem() {
     this.submitted = true;
-    if (this.item.label) {
-      if (
-        this.items.find((it) => it.label?.trim().toLocaleLowerCase() === this.item.label?.trim().toLocaleLowerCase())
-      ) {
-        this._toastMessageService.showError('This label already exists', `Error`);
+    if (this.item.label && this.item.textColor && this.item.backgroundColor) {
+      if (this.item.id) {
+        try {
+          await this._ipcService.query(appIpcs.updateSprintStatus, this.item);
+          this.items[this.findIndexById(this.item.id)] = this.item;
+          this._toastMessageService.showSuccess('Item Updated', 'Successful');
+        } catch (error: any) {
+          this._toastMessageService.showError(error.message, `Error while updating item`);
+        }
       } else {
-        if (this.item.id) {
-          try {
-            await this._ipcService.query(appIpcs.updateSprintStatus, this.item);
-            this.items[this.findIndexById(this.item.id)] = this.item;
-            this._toastMessageService.showSuccess('Item Updated', 'Successful');
-          } catch (error: any) {
-            this._toastMessageService.showError(error.message, `Error while updating item`);
-          }
+        if (
+          this.items.find((it) => it.label?.trim().toLocaleLowerCase() === this.item.label?.trim().toLocaleLowerCase())
+        ) {
+          this._toastMessageService.showError('This label already exists', `Error`);
         } else {
           try {
             this.item = await this._ipcService.query<SprintStatus>(appIpcs.createSprintStatus, this.item);
@@ -116,10 +119,10 @@ export class CrudSprintStatusComponent {
             this._toastMessageService.showError(error.message, `Error while creating item`);
           }
         }
-        this.items = [...this.items];
-        this.dialog = false;
-        this.item = new SprintStatus();
       }
+      this.items = [...this.items];
+      this.dialog = false;
+      this.item = new SprintStatus();
     }
   }
 
