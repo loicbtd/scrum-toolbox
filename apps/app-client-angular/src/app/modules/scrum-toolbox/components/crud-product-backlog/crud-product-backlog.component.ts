@@ -1,25 +1,39 @@
 import { Component } from '@angular/core';
-import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, User, UserModel } from '@libraries/lib-scrum-toolbox';
+import { CurrentProjectState, MyProfileState, ToastMessageService } from '@libraries/lib-angular';
+import { appIpcs, Project, Task, TaskStatus, TaskType, UserModel } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
-import { Store } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { MyProfileModel } from '../../../../global/models/my-profile.model';
+import { Observable, Subscription } from 'rxjs';
+import { CurrentProjectModel } from '../../../../global/models/current-project.model';
 
 @Component({
   templateUrl: './crud-product-backlog.component.html',
   styleUrls: ['./crud-product-backlog.component.scss'],
 })
 export class CrudProductBacklogComponent {
-  dialog: boolean;
+  @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
 
-  items: UserModel[];
+  dialogUpdate: boolean;
+  dialogNew: boolean;
 
-  item: User;
+  items: Task[];
 
-  selectedItems: UserModel[];
+  item: Task;
+
+  selectedItems: Task[];
 
   submitted: boolean;
+  
+  selectedProject: Project;
+  
+  tasks: Task[];
+
+  taskType: TaskType[];
+  selectedType: TaskType;
+
+  sub: Subscription;
 
   get isCreationMode() {
     return !this.item.id;
@@ -33,14 +47,29 @@ export class CrudProductBacklogComponent {
   ) {}
 
   async ngOnInit() {
-    this.items = await this._ipcService.query<UserModel[]>(appIpcs.retrieveAllUsers);
-    this.item = this.items[0];
+
+    this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
+    this.selectedType = this.taskType[0];
+    
+    this.sub = this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
+      if (data) {
+        
+        this.selectedProject = data.project;
+
+        this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksByProject, this.selectedProject.id);
+        this.item = this.items[0];
+
+      }
+    });
+    
   }
 
   openNew() {
-    this.item = {};
+    const tempStatus = this.item?.status as TaskStatus;
+    const tempType = this.item?.type as TaskType;
+    this.item = { status: tempStatus, type: tempType };
     this.submitted = false;
-    this.dialog = true;
+    this.dialogNew = true;
   }
 
   deleteSelectedItems() {
@@ -71,12 +100,12 @@ export class CrudProductBacklogComponent {
     });
   }
 
-  editItem(item: UserModel) {
+  editItem(item: Task) {
     this.item = { ...item };
-    this.dialog = true;
+    this.dialogUpdate = true;
   }
 
-  async deleteItem(item: UserModel) {
+  async deleteItem(item: Task) {
     const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
 
     if (myProfile.user.id == item.id) {
@@ -92,7 +121,7 @@ export class CrudProductBacklogComponent {
         try {
           await this._ipcService.query(appIpcs.deleteUser, item.id);
           this.items = this.items.filter((_) => _.id !== item.id);
-          this.item = {};
+          // this.item = {};
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
@@ -102,7 +131,8 @@ export class CrudProductBacklogComponent {
   }
 
   hideDialog() {
-    this.dialog = false;
+    this.dialogUpdate = false;
+    this.dialogNew = false;
     this.submitted = false;
   }
 
@@ -119,8 +149,8 @@ export class CrudProductBacklogComponent {
       }
     } else {
       try {
-        this.item = await this._ipcService.query<UserModel>(appIpcs.createUser, this.item);
-        this.items.push(this.item);
+        // this.item = await this._ipcService.query<UserModel>(appIpcs.createUser, this.item);
+        // this.items.push(this.item);
         this._toastMessageService.showSuccess('Item Created', 'Successful');
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while creating item`);
@@ -128,8 +158,9 @@ export class CrudProductBacklogComponent {
     }
 
     this.items = [...this.items];
-    this.dialog = false;
-    this.item = {};
+    this.dialogUpdate = false;
+    this.dialogNew = false;
+    // this.item = {};
   }
 
   findIndexById(id: string): number {
@@ -143,4 +174,39 @@ export class CrudProductBacklogComponent {
 
     return index;
   }
+
+  selectColorStatus(it: any): object {
+    return { 'background-color': it.status.backgroundColor, color: it.status.textColor };
+  }
+
+  selectColorWithStatus(it: any): object {
+    return { 'background-color': it.backgroundColor, color: it.textColor };
+  }
+
+  selectColorType(it: any): object {
+    return { 'background-color': it.type.backgroundColor, color: it.type.textColor };
+  }
+
+  selectColorWithType(it: any): object {
+    return { 'background-color': it.backgroundColor, color: it.textColor };
+  }
+
+  getInitials(user: any): string {
+    return '' + user.firstname.charAt(0) + '' + user.lastname.charAt(0);
+  }
+
+  sprintName(task: Task) {
+    if (task.sprint?.label) {
+      return '' + task.sprint.label;
+    }
+    return 'not assigned';
+  }
+
+  setColorWithStatus(task: Task): any {
+    if (!task.sprint?.label) {
+      return { 'background-color': '#6fa8dc', color: '#ffffff' };
+    }
+    return;
+  }
+
 }
