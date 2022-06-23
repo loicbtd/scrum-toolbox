@@ -8,7 +8,10 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-navigation-container',
   template: `
-    <ng-container *ngIf="isMobile$ | async; then mobile; else desktop"></ng-container>
+    <ng-container
+      *ngIf="isMobile$ | async; then mobile; else desktop"
+      [ngStyle]="{ maxHeight: '100%', overflow: 'auto' }"
+    ></ng-container>
 
     <ng-template #mobile>
       <app-navigation-container-mobile [navigationItems]="navigationItems">
@@ -24,6 +27,7 @@ import { CommonModule } from '@angular/common';
         [avatarImageSource]="avatarImageSource"
         [logoImageSource]="logoImageSource"
         [username]="username"
+        [ngStyle]="{ overflow: 'hidden' }"
       >
         <ng-container navigationBarContent><ng-content select="[navigationBarContent]"></ng-content></ng-container>
         <ng-container appContent><ng-content></ng-content></ng-container>
@@ -177,6 +181,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         'navigation-expanded': desktopNavigationExpanded,
         'navigation-collapsed': !desktopNavigationExpanded
       }"
+      [ngStyle]="{ maxHeight: '90%', overflow: 'auto' }"
     >
       <ng-content></ng-content>
     </div>
