@@ -7,4 +7,10 @@ export class SprintStatus {
 
   @Column()
   label?: string;
+
+  @Column({ length: '7' })
+  backgroundColor?: string;
+
+  @Column({ length: '7' })
+  textColor?: string;
 }

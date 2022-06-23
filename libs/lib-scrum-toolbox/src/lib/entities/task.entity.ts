@@ -27,6 +27,9 @@ export class Task {
   @Column()
   description?: string;
 
+  @Column({ default: 5 })
+  capacity?: number;
+
   @CreateDateColumn()
   createdAt?: Date;
 

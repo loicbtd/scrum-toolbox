@@ -36,6 +36,9 @@
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
         <th id="header-label" pSortableColumn="label">Label<p-sortIcon field="label"></p-sortIcon></th>
+        <th id="header-background-color">Background Color</th>
+        <th id="header-text-color">Text Color</th>
+        <th id="header-empty"></th>
         <th id="header-empty"></th>
       </tr>
     </ng-template>
@@ -45,6 +48,18 @@
           <p-tableCheckbox [value]="item"></p-tableCheckbox>
         </td>
         <td>{{ item.label }}</td>
+        <td>
+          <p
+            [ngStyle]="{ backgroundColor: item.backgroundColor, tabSize: 8, width: '2rem', border: 'thin solid black' }"
+          >
+            &nbsp;&nbsp;
+          </p>
+        </td>
+        <td>
+          <p [ngStyle]="{ backgroundColor: item.textColor, tabSize: 8, width: '2rem', border: 'thin solid black' }">
+            &nbsp;&nbsp;
+          </p>
+        </td>
         <td>
           <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded ml-2" (click)="editItem(item)"></p-button>
           <p-button
@@ -72,8 +87,18 @@
   <ng-template pTemplate="content">
     <div class="field flex flex-column">
       <label for="label">Label</label>
-      <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
+      <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus [disabled]="labelDisabled" />
       <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
+    </div>
+    <div class="field flex flex-column">
+      <label for="label">Background Color</label>
+      <p-colorPicker [(ngModel)]="item.backgroundColor" appendTo="body"></p-colorPicker>
+      <small class="p-invalid" *ngIf="submitted && !item.backgroundColor">Required field</small>
+    </div>
+    <div class="field flex flex-column">
+      <label for="label">Text Color</label>
+      <p-colorPicker [(ngModel)]="item.textColor" appendTo="body"></p-colorPicker>
+      <small class="p-invalid" *ngIf="submitted && !item.textColor">Required field</small>
     </div>
   </ng-template>
 
