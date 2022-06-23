@@ -61,8 +61,8 @@
         </td>
         <td>{{ item.label }}</td>
         <td>{{ item.description }}</td>
-        <td>{{ item.createdAt | date: 'd/MM/yyyy' }}</td>
-        <td>{{ item.updatedAt | date: 'd/MM/yyyy' }}</td>
+        <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
         <td>
           <span class="custom-tag" [ngStyle]="selectColorStatus(item)">{{ item.status.label }}</span>
         </td>
@@ -155,7 +155,7 @@
 
     <div class="field">
       <label for="createdAt">Creation Date</label><br />
-      <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'd/MM/yyyy' }}</label>
+      <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'dd/MM/yyyy' }}</label>
     </div>
 
     <div class="field">

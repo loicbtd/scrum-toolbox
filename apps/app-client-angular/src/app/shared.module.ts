@@ -44,6 +44,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ColorPickerModule } from 'primeng/colorpicker';
+import { CalendarModule } from 'primeng/calendar';
 
 const importedAndExportedModules = [
   CommonModule,
@@ -94,6 +95,7 @@ const importedAndExportedModules = [
   MultiSelectModule,
   AutoCompleteModule,
   ColorPickerModule,
+  CalendarModule,
 ];
 
 @NgModule({
