@@ -109,8 +109,8 @@ export class CrudBacklogSprintComponent {
       accept: async () => {
         for (const item of this.selectedItems) {
           try {
-            item.sprint = undefined;
-            await this._ipcService.query(appIpcs.updateTask, item);
+            await this._ipcService.query(appIpcs.unassignTaskToSprint, item.id);
+            this.ngOnInit(this.selectedSprint);
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
           }
