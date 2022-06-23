@@ -94,8 +94,8 @@ export class CrudBacklogSprintComponent {
 
   openNew() {
     this.initDialogFieldsNew();
-    const tempStatus = this.item.status as TaskStatus;
-    const tempType = this.item.type as TaskType;
+    const tempStatus = this.item?.status as TaskStatus;
+    const tempType = this.item?.type as TaskType;
     this.item = { status: tempStatus, type: tempType };
     this.submitted = false;
     this.dialogNew = true;
