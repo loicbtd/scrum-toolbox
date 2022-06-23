@@ -86,7 +86,7 @@
   <ng-template pTemplate="content">
     <div class="field flex flex-column">
       <label for="label">Label</label>
-      <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
+      <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus [disabled]="labelDisabled" />
       <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
     </div>
     <div class="field flex flex-column">

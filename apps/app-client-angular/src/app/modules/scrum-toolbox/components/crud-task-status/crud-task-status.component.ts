@@ -25,6 +25,8 @@ export class CrudTaskStatusComponent {
 
   dialog: boolean;
 
+  labelDisabled = false;
+
   constructor(
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
@@ -37,7 +39,7 @@ export class CrudTaskStatusComponent {
 
   openNew() {
     this.item = new TaskStatus();
-    this.submitted = false;
+    this.submitted = this.labelDisabled = false;
     this.dialog = true;
   }
 
@@ -57,6 +59,7 @@ export class CrudTaskStatusComponent {
 
   editItem(item: TaskStatus) {
     this.item = { ...item };
+    this.labelDisabled = true;
     this.dialog = true;
   }
 
@@ -94,19 +97,19 @@ export class CrudTaskStatusComponent {
   async saveItem() {
     this.submitted = true;
     if (this.item.label && this.item.textColor && this.item.backgroundColor) {
-      if (
-        this.items.find((it) => it.label?.trim().toLocaleLowerCase() === this.item.label?.trim().toLocaleLowerCase())
-      ) {
-        this._toastMessageService.showError('This label already exists', `Error`);
+      if (this.item.id) {
+        try {
+          await this._ipcService.query(appIpcs.updateTaskStatus, this.item);
+          this.items[this.findIndexById(this.item.id)] = this.item;
+          this._toastMessageService.showSuccess('Item Updated', 'Successful');
+        } catch (error: any) {
+          this._toastMessageService.showError(error.message, `Error while updating item`);
+        }
       } else {
-        if (this.item.id) {
-          try {
-            await this._ipcService.query(appIpcs.updateTaskStatus, this.item);
-            this.items[this.findIndexById(this.item.id)] = this.item;
-            this._toastMessageService.showSuccess('Item Updated', 'Successful');
-          } catch (error: any) {
-            this._toastMessageService.showError(error.message, `Error while updating item`);
-          }
+        if (
+          this.items.find((it) => it.label?.trim().toLocaleLowerCase() === this.item.label?.trim().toLocaleLowerCase())
+        ) {
+          this._toastMessageService.showError('This label already exists', `Error`);
         } else {
           try {
             this.item = await this._ipcService.query<TaskStatus>(appIpcs.createTaskStatus, this.item);
@@ -116,10 +119,10 @@ export class CrudTaskStatusComponent {
             this._toastMessageService.showError(error.message, `Error while creating item`);
           }
         }
-        this.items = [...this.items];
-        this.dialog = false;
-        this.item = new TaskStatus();
       }
+      this.items = [...this.items];
+      this.dialog = false;
+      this.item = new TaskStatus();
     }
   }
 
