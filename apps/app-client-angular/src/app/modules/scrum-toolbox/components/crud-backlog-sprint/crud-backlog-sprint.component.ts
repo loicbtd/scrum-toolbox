@@ -66,7 +66,8 @@ export class CrudBacklogSprintComponent {
     private readonly _ipcService: IpcService
   ) {}
 
-  async ngOnInit() {
+  async ngOnInit(sprint: Sprint | undefined) {
+
     this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
     this.selectedStatus = this.taskStatus[0];
 
@@ -81,7 +82,11 @@ export class CrudBacklogSprintComponent {
           id: this.selectedProject.id,
         });
 
-        this.selectedSprint = this.sprints[0];
+        if (sprint) {
+          this.selectedSprint = sprint;
+        } else {
+          this.selectedSprint = this.sprints[0];
+        }
 
         this.updateTasks(this.selectedSprint);
       }
@@ -105,8 +110,9 @@ export class CrudBacklogSprintComponent {
       accept: async () => {
         for (const item of this.selectedItems) {
           try {
+            item.sprint = undefined;
             await this._ipcService.query(appIpcs.deleteTask, item.id);
-            this.items = this.items.filter((_) => _.id !== item.id);
+
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
           }
@@ -136,21 +142,31 @@ export class CrudBacklogSprintComponent {
     this.filterTasks();
   }
 
-  //TODO update task avec sprintID null ('')
-  async deleteItem(item: Task) {
+  async deleteItem(task: Task) {
+
+    console.log(task);
+    
     this._confirmationService.confirm({
-      message: 'Are you sure you want to delete the item ?',
+      message: 'Are you sure you want to remove this task from the sprint?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         try {
-          await this._ipcService.query(appIpcs.deleteTask, item.id);
-          this.items = this.items.filter((_) => _.id !== item.id);
+          task.sprint = undefined;
+          
+          await this._ipcService.query(appIpcs.updateTask, task);
+
           const tempStatus = this.item.status as TaskStatus;
           const tempType = this.item.type as TaskType;
           this.item = { status: tempStatus, type: tempType };
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
+
+          this.sub.unsubscribe();
+          this.ngOnInit(this.selectedSprint);
+
         } catch (error) {
+          console.log(error);
+          
           this._toastMessageService.showError(`Error while deleting item`);
         }
       },
@@ -179,7 +195,7 @@ export class CrudBacklogSprintComponent {
 
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
         this.sub.unsubscribe();
-        this.ngOnInit();
+        this.ngOnInit(this.selectedSprint);
 
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
@@ -201,7 +217,7 @@ export class CrudBacklogSprintComponent {
         this.hideDialog();
 
         this.sub.unsubscribe();
-        this.ngOnInit();
+        this.ngOnInit(this.selectedSprint);
 
       } catch (error: any) {
         this.resetDialogNew();
@@ -241,7 +257,7 @@ export class CrudBacklogSprintComponent {
 
   async updateTasks(sprint: Sprint) {
     this.selectedSprint = sprint;
-    console.log(this.selectedSprint);
+    // console.log(this.selectedSprint);
 
     const a = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
 

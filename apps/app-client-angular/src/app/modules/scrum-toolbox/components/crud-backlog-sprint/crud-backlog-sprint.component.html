@@ -91,7 +91,7 @@
 
 <p-dialog
   [(visible)]="dialogUpdate"
-  [style]="{ width: '450px', height: '60rem' }"
+  [style]="{ width: '450px' }"
   header="Item Details"
   [modal]="true"
   styleClass="p-fluid"
@@ -112,6 +112,7 @@
         field="username"
         [dropdown]="true"
         [multiple]="true"
+        appendTo="body"
         id="users"
       >
       </p-autoComplete>
@@ -120,7 +121,7 @@
 
     <div class="field">
       <label for="status">Status</label>
-      <p-dropdown class="custom-dropdown" [options]="taskStatus" [(ngModel)]="selectedStatus" optionLabel="label">
+      <p-dropdown [options]="taskStatus" [(ngModel)]="selectedStatus" optionLabel="label" appendTo="body">
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedStatus">
             <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{ selectedStatus.label }}</span>
@@ -137,7 +138,7 @@
 
     <div class="field">
       <label for="type">Type</label>
-      <p-dropdown class="custom-dropdown" [options]="taskType" [(ngModel)]="selectedType" optionLabel="label">
+      <p-dropdown [options]="taskType" [(ngModel)]="selectedType" optionLabel="label" appendTo="body">
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedType">
             <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedType)">{{ selectedType.label }}</span>
@@ -160,9 +161,12 @@
     <div class="field">
       <label for="description">Description</label>
       <textarea
+        pInputTextarea
         type="text"
         style="height: 5rem"
-        pInputText
+        [rows]="5" 
+        [cols]="30"  
+        [autoResize]="true"
         id="description"
         [(ngModel)]="item.description"
         required
@@ -179,13 +183,12 @@
 
 <p-dialog
   [(visible)]="dialogNew"
-  [style]="{ width: '450px', height: '40rem' }"
+  [style]="{ width: '450px' }"
   header="Item Details"
   [modal]="true"
   styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
-    <!-- TODO list all task from project minus current tasks (filter) -->
     <div class="field">
       <label for="tasks">Tasks</label>
       <p-autoComplete
@@ -195,16 +198,16 @@
         field="label"
         [dropdown]="true"
         [multiple]="true"
+        appendTo="body"
         id="tasks"
       >
       </p-autoComplete>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
 
-    <!-- TODO status modif -->
     <div class="field">
       <label for="status">Status</label>
-      <p-dropdown class="custom-dropdown" [options]="taskStatus" [(ngModel)]="selectedStatus" optionLabel="label">
+      <p-dropdown [options]="taskStatus" [(ngModel)]="selectedStatus" optionLabel="label" appendTo="body">
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedStatus">
             <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{ selectedStatus.label }}</span>
@@ -219,10 +222,9 @@
       <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
     </div>
 
-    <!-- TODO type modif -->
     <div class="field">
       <label for="type">Type</label>
-      <p-dropdown class="custom-dropdown" [options]="taskType" [(ngModel)]="selectedType" optionLabel="label">
+      <p-dropdown [options]="taskType" [(ngModel)]="selectedType" optionLabel="label" appendTo="body">
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedType">
             <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedType)">{{ selectedType.label }}</span>
