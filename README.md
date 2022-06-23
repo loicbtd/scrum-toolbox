@@ -64,7 +64,7 @@ Ce projet de bibliothèque Electron contient le code source qui peut s'exécuter
 
 **lib-electron-web**
 
-Ce projet de bibliothèque web contient le code source qui peut s'exécuter dans une application JavaScript. 
+Ce projet de bibliothèque web contient le code source qui peut s'exécuter dans une application JavaScript.
 
 **lib-scrum-toolbox**
 
@@ -88,6 +88,7 @@ Il existe 5 types d'issues :
 
 -   `npm install` : installer les dépendances de la solution
 -   `npm start` : démarrer la solution en mode de développement
+-   `npm build` : construire les dépendances
 
 ## 2.3. Procédure d'implémentation d'une issue
 
@@ -157,3 +158,54 @@ Il existe 5 types d'issues :
 -   [SonarLint](https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarlint-vscode)
 -   [Angular Language Service](https://marketplace.visualstudio.com/items?itemName=Angular.ng-template)
 -   [Path Intellisense](https://marketplace.visualstudio.com/items?itemName=christian-kohler.path-intellisense)
+
+# 4. Migration des bases de données
+
+## 4.1. Prérequis
+
+1. Créer un fichier `ormconfig.json` à la racine de la solution
+
+2. Compléter le fichier avec le contenu suivant :
+
+    - Sqlite3
+        ```json
+        [
+            {
+                "name": "default",
+                "type": "better-sqlite3",
+                "database": "dist/database.db",
+                "entities": ["libs/lib-scrum-toolbox/src/lib/entities/*.ts"],
+                "migrations": ["libs/lib-scrum-toolbox/src/lib/migrations/*.ts"],
+                "cli": {
+                    "migrationsDir": "libs/lib-scrum-toolbox/src/lib/migrations"
+                }
+            }
+        ]
+        ```
+
+3. Réinstaller les drivers non-recompilés s'ils ont été recompilés dans un script de postinstall :
+    - Sqlite3 : `npm i better-sqlite3`
+
+## 4.2. Gérer les migrations
+
+### 4.2.1. Générer les migrations après un changement du modèle
+
+Éxécuter : `npm run typeorm migration:generate -- -n <MigrationName>`
+
+### 4.2.2. Créer une nouvelle migration vide
+
+Éxécuter : `npm run typeorm migration:create -- -n <MigrationName>`
+
+### 4.2.3. Exécuter les migrations
+
+Éxécuter : `npm run typeorm migration:run`
+
+### 4.2.4. Annuler la dernière migration
+
+Éxécuter : `npm run typeorm migration:revert`
+
+# Troubleshooting
+
+## `module` was compiled against a different Node.js version
+
+-   Remove `node_modules`

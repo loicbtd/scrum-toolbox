@@ -8,7 +8,7 @@ export class DeleteSprintHandler implements IpcRequestHandlerInterface {
   async handle(id: string): Promise<void> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<Sprint>(Sprint)
       .delete(id);
   }

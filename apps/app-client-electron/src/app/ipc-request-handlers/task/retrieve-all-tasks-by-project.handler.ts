@@ -6,12 +6,10 @@ export class RetrieveAllTasksByProjectHandler implements IpcRequestHandlerInterf
   channel = appIpcs.retrieveAllTasksByProject;
 
   async handle(projectId: string): Promise<Task[]> {
-    console.log('LA');
-
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<Task>(Task)
-      .findBy({ project: { id: projectId } });
+      .find({ project: { id: projectId } });
   }
 }

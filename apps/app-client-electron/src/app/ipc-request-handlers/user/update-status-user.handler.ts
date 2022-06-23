@@ -8,7 +8,7 @@ export class UpdateStatusUserHandler implements IpcRequestHandlerInterface {
   async handle(data: { id: string; isActivated: boolean }): Promise<void> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .createQueryBuilder()
       .update(User)
       .set({ isActivated: data.isActivated })

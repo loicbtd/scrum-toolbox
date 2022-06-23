@@ -1,18 +1,17 @@
 import { Component } from '@angular/core';
-import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, Project } from '@libraries/lib-scrum-toolbox';
+import { MyProfileState, ProjectsUpdatedState, ToastMessageService, UpdateProjects } from '@libraries/lib-angular';
+import { appIpcs, Project, User } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
-import { Store } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { MyProfileModel } from '../../../../global/models/my-profile.model';
+import { lastValueFrom, Observable } from 'rxjs';
 
 @Component({
   templateUrl: './crud-projects.component.html',
   styleUrls: ['./crud-projects.component.scss'],
 })
 export class CrudProjectsComponent {
-  dialog: boolean;
-
   items: Project[];
 
   item: Project;
@@ -21,9 +20,23 @@ export class CrudProjectsComponent {
 
   submitted: boolean;
 
+  dialog: boolean;
+  attendeesDialog: boolean;
+
+  productOwners: User[];
+  availableProductOwners: User[];
+
+  developers: User[];
+  availableDevelopers: User[];
+
+  scrumMasters: User[];
+  availableScrumMasters: User[];
+
   get isCreationMode() {
     return !this.item.id;
   }
+
+  @Select(ProjectsUpdatedState) projectsUdpated$: Observable<string>;
 
   constructor(
     private readonly _toastMessageService: ToastMessageService,
@@ -34,7 +47,6 @@ export class CrudProjectsComponent {
 
   async ngOnInit() {
     this.items = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
-    this.item = this.items[0];
   }
 
   openNew() {
@@ -63,6 +75,7 @@ export class CrudProjectsComponent {
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
           }
+          this.triggerUpdateProject('DELETE', item);
         }
         this.selectedItems = [];
 
@@ -97,6 +110,7 @@ export class CrudProjectsComponent {
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
         }
+        this.triggerUpdateProject('DELETE', item);
       },
     });
   }
@@ -127,6 +141,7 @@ export class CrudProjectsComponent {
       }
     }
 
+    this.triggerUpdateProject('ADD', this.item);
     this.items = [...this.items];
     this.dialog = false;
     this.item = {};
@@ -142,5 +157,27 @@ export class CrudProjectsComponent {
     }
 
     return index;
+  }
+
+  editAttendees(item: Project) {
+    this.productOwners = [];
+    this.developers = [];
+    this.scrumMasters = [];
+    this.attendeesDialog = true;
+  }
+
+  hideAttendesDialog() {
+    this.attendeesDialog = false;
+    this.productOwners = [];
+    this.developers = [];
+    this.scrumMasters = [];
+  }
+
+  saveAttendees() {
+    console.log();
+  }
+
+  async triggerUpdateProject(action: string, project: Project) {
+    await lastValueFrom(this._store.dispatch(new UpdateProjects(action, project.label + '')));
   }
 }

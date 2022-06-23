@@ -8,7 +8,7 @@ export class RetrieveAllTaskTypesHandler implements IpcRequestHandlerInterface {
   async handle(): Promise<TaskType[]> {
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<TaskType>(TaskType)
       .find();
   }

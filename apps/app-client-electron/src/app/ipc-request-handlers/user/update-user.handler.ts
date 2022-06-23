@@ -8,7 +8,7 @@ export class UpdateUserHandler implements IpcRequestHandlerInterface {
   async handle(user: User): Promise<UserModel> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<User>(User)
       .save(user);
     return {

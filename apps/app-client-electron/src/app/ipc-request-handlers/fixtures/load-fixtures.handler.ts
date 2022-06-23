@@ -1,7 +1,7 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
 import { appIpcs } from '@libraries/lib-scrum-toolbox';
-import * as path from 'path';
+import { join } from 'path';
 import { Builder, fixturesIterator, Loader, Parser, Resolver } from 'typeorm-fixtures-cli/dist';
 
 export class LoadFixturesHandler implements IpcRequestHandlerInterface {
@@ -10,10 +10,10 @@ export class LoadFixturesHandler implements IpcRequestHandlerInterface {
   async handle(): Promise<void> {
     const connection = Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main');
+      .getConnection('main');
 
     const loader = new Loader();
-    loader.load(path.resolve('./fixtures'));
+    loader.load(join(__dirname, 'assets', 'fixtures'));
 
     const resolver = new Resolver();
     const fixtures = resolver.resolve(loader.fixtureConfigs);

@@ -8,7 +8,7 @@ export class RetrieveAllUsersHandler implements IpcRequestHandlerInterface {
   async handle(): Promise<UserModel[]> {
     const users = await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<User>(User)
       .find({
         order: {

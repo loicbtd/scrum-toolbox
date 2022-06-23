@@ -1,0 +1,110 @@
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+      <p-button
+        pRipple
+        label="Delete"
+        icon="pi pi-trash"
+        class="p-button-danger ml-2"
+        (click)="deleteSelectedItems()"
+        [disabled]="!selectedItems || !selectedItems.length"
+      ></p-button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    #dt
+    [value]="items"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['label']"
+    [(selection)]="selectedItems"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex p-ai-center p-jc-between">
+        <h5 class="m-0">Manage items</h5>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th id="header-checkbox" style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th id="header-label" pSortableColumn="label">Label<p-sortIcon field="label"></p-sortIcon></th>
+        <th id="header-background-color">Background Color</th>
+        <th id="header-text-color">Text Color</th>
+        <th id="header-empty"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="item"></p-tableCheckbox>
+        </td>
+        <td>{{ item.label }}</td>
+        <td>
+          <p
+            [ngStyle]="{ backgroundColor: item.backgroundColor, tabSize: 8, width: '2rem', border: 'thin solid black' }"
+          >
+            &nbsp;&nbsp;
+          </p>
+        </td>
+        <td>
+          <p [ngStyle]="{ backgroundColor: item.textColor, tabSize: 8, width: '2rem', border: 'thin solid black' }">
+            &nbsp;&nbsp;
+          </p>
+        </td>
+        <td>
+          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded ml-2" (click)="editItem(item)"></p-button>
+          <p-button
+            pRipple
+            icon="pi pi-trash"
+            styleClass="p-button-rounded p-button-outlined ml-2"
+            (click)="deleteItem(item)"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex p-ai-center p-jc-between">Items count : {{ items ? items.length : 0 }}</div>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog
+  [(visible)]="dialog"
+  [style]="{ width: '450px', minHeight: '10rem' }"
+  header="Item Details"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="field flex flex-column">
+      <label for="label">Label</label>
+      <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus [disabled]="labelDisabled" />
+      <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
+    </div>
+    <div class="field flex flex-column">
+      <label for="label">Background Color</label>
+      <p-colorPicker [(ngModel)]="item.backgroundColor" appendTo="body"></p-colorPicker>
+      <small class="p-invalid" *ngIf="submitted && !item.backgroundColor">Required field</small>
+    </div>
+    <div class="field flex flex-column">
+      <label for="label">Text Color</label>
+      <p-colorPicker [(ngModel)]="item.textColor" appendTo="body"></p-colorPicker>
+      <small class="p-invalid" *ngIf="submitted && !item.textColor">Required field</small>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

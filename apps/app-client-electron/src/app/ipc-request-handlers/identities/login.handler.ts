@@ -12,9 +12,9 @@ export class LoginHandler implements IpcRequestHandlerInterface {
     try {
       user = await Application.getInstance()
         .dependencies.get<DatabasesService>(dependencies.databases)
-        .getDataSource('main')
+        .getConnection('main')
         .getRepository<User>(User)
-        .findOneByOrFail({ username: data.login });
+        .findOneOrFail({ username: data.login });
     } catch (error: any) {
       if (error instanceof EntityNotFoundError) {
         throw new Error(errorsName.incorrectUsername);

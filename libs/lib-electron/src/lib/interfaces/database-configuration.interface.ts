@@ -1,5 +1,6 @@
-export interface DatabaseConfiguration {
+import { ConnectionOptions } from 'typeorm';
+
+export interface DatabaseConfigurationInterface {
   id: string;
-  entities?: any[];
-  customPath?: string[];
+  connectionOptions: ConnectionOptions;
 }

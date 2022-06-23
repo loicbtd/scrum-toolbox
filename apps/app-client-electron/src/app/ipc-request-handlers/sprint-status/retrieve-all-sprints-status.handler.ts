@@ -8,7 +8,7 @@ export class RetrieveAllSprintStatusHandler implements IpcRequestHandlerInterfac
   async handle(): Promise<SprintStatus[]> {
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<SprintStatus>(SprintStatus)
       .find();
   }

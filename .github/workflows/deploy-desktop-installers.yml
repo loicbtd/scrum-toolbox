@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - .github/workflows/deploy-installers.yml
+      - .github/workflows/deploy-desktop-installers.yml
       - apps/app-client-angular/**
       - apps/app-client-electron/**
       - libs/**
@@ -57,7 +57,7 @@ jobs:
       - name: Build
         run: |
           npm install
-          npm run postinstall
+          npm run build
           npm run publish:linux
 
       - name: Upload artifact
@@ -81,7 +81,7 @@ jobs:
       - name: Build
         run: |
           npm install
-          npm run postinstall
+          npm run build
           npm run publish:windows
 
       - name: Upload artifact
@@ -105,7 +105,7 @@ jobs:
       - name: Build
         run: |
           npm install
-          npm run postinstall
+          npm run build
           npm run publish:macos
 
       - name: Upload artifact
@@ -129,11 +129,11 @@ jobs:
 
       - name: Prepare files
         run: |
-          cp linux/app.AppImage ${{env.APP_NAME}}-latest.AppImage         
+          cp linux/app.AppImage ${{env.APP_NAME}}-latest.AppImage
           mv linux/app.AppImage ${{env.APP_NAME}}-${{env.APP_VERSION}}.AppImage
-          cp windows/app.exe ${{env.APP_NAME}}-latest.exe         
+          cp windows/app.exe ${{env.APP_NAME}}-latest.exe
           mv windows/app.exe ${{env.APP_NAME}}-${{env.APP_VERSION}}.exe
-          cp macos/app.dmg ${{env.APP_NAME}}-latest.dmg         
+          cp macos/app.dmg ${{env.APP_NAME}}-latest.dmg
           mv macos/app.dmg ${{env.APP_NAME}}-${{env.APP_VERSION}}.dmg
 
       - name: Update current version release

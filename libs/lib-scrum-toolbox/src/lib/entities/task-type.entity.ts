@@ -1,5 +1,3 @@
-import 'reflect-metadata';
-
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity()
@@ -11,8 +9,8 @@ export class TaskType {
   label?: string;
 
   @Column({ length: '7' })
-  backgroundColor: string;
+  backgroundColor?: string;
 
   @Column({ length: '7' })
-  textColor: string;
+  textColor?: string;
 }

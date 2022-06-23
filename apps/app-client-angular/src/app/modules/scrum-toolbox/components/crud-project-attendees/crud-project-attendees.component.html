@@ -1,0 +1,111 @@
+<div class="card">
+  <p-toolbar styleClass="p-mb-4">
+    <ng-template pTemplate="left">
+      <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+      <p-button
+        pRipple
+        label="Delete"
+        icon="pi pi-trash"
+        class="p-button-danger ml-2"
+        (click)="deleteSelectedItems()"
+        [disabled]="!selectedItems || !selectedItems.length"
+      ></p-button>
+    </ng-template>
+  </p-toolbar>
+
+  <p-table
+    #dt
+    [value]="items"
+    [rows]="10"
+    [paginator]="true"
+    [globalFilterFields]="['firstname', 'lastname']"
+    [(selection)]="selectedItems"
+    [rowHover]="true"
+    dataKey="id"
+    currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+    [showCurrentPageReport]="true"
+  >
+    <ng-template pTemplate="caption">
+      <div class="flex p-ai-center p-jc-between">
+        <h5 class="m-0">Manage items</h5>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="header">
+      <tr>
+        <th id="header-checkbox" style="width: 3rem">
+          <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+        </th>
+        <th id="header-user" pSortableColumn="username">Username <p-sortIcon field="username"></p-sortIcon></th>
+        <th id="header-first-name">Firstname</th>
+        <th id="header-last-name">Lastname</th>
+        <th id="header-creation-date">Creation date</th>
+        <th id="header-activation">Activation</th>
+        <th id="header-empty"></th>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="body" let-item>
+      <tr>
+        <td>
+          <p-tableCheckbox [value]="item"></p-tableCheckbox>
+        </td>
+        <td>{{ item.username }}</td>
+        <td>{{ item.firstname }}</td>
+        <td>{{ item.lastname }}</td>
+        <td>{{ item.createdAt | date: 'd/MM/yyyy' }}</td>
+        <td>
+          <p-tag *ngIf="item.isActivated" severity="success" value="Activated"></p-tag>
+          <p-tag *ngIf="!item.isActivated" severity="danger" value="Disabled"></p-tag>
+        </td>
+
+        <td>
+          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded" (click)="editItem(item)"></p-button>
+          <p-button
+            pRipple
+            icon="pi pi-trash"
+            styleClass="p-button-rounded p-button-outlined ml-2"
+            (click)="deleteItem(item)"
+          ></p-button>
+        </td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="summary">
+      <div class="flex p-ai-center p-jc-between">Items count : {{ items ? items.length : 0 }}</div>
+    </ng-template>
+  </p-table>
+</div>
+
+<p-dialog [(visible)]="dialog" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">
+  <ng-template pTemplate="content">
+    <div class="field">
+      <label for="username">Username</label>
+      <input type="text" pInputText id="username" [(ngModel)]="item.username" required autofocus />
+      <small class="p-invalid" *ngIf="submitted && !item.username">Required field</small>
+    </div>
+    <div *ngIf="isCreationMode" class="field">
+      <label for="password">Password</label>
+      <input type="password" pPassword id="password" [(ngModel)]="item.password" required />
+      <small class="p-invalid" *ngIf="submitted && !item.password">Required field</small>
+    </div>
+    <div class="field">
+      <label for="firstname">Firstname</label>
+      <input type="text" pInputText id="firstname" [(ngModel)]="item.firstname" required />
+      <small class="p-invalid" *ngIf="submitted && !item.username">Required field</small>
+    </div>
+    <div class="field">
+      <label for="lastname">Lastname</label>
+      <input type="text" pInputText id="lastname" [(ngModel)]="item.lastname" required />
+      <small class="p-invalid" *ngIf="submitted && !item.lastname">Required field</small>
+    </div>
+    <div class="field flex flex-column">
+      <label for="isActivated">Activation</label>
+      <p-inputSwitch inputId="isActivated" [(ngModel)]="item.isActivated"></p-inputSwitch>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
+  </ng-template>
+</p-dialog>
+
+<p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

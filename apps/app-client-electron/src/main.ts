@@ -1,18 +1,7 @@
 import { Application } from '@libraries/lib-electron';
 import { homedir } from 'os';
 import { MainTray } from './app/main.tray';
-import {
-  Project,
-  Sprint,
-  SprintStatus,
-  Task,
-  TaskStatus,
-  TaskType,
-  User,
-  UserSprint,
-  UserType,
-  UserUserTypeProject,
-} from '@libraries/lib-scrum-toolbox';
+
 import { MainWindow } from './app/windows/main.window';
 import { RetrieveAllUsersHandler } from './app/ipc-request-handlers/user/retrieve-all-users.handler';
 import { CreateUserHandler } from './app/ipc-request-handlers/user/create-user.handler';
@@ -58,7 +47,9 @@ import { UpdateProjectHandler } from './app/ipc-request-handlers/project/update-
 import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-project.handler';
 import { LoadFixturesHandler } from './app/ipc-request-handlers/fixtures/load-fixtures.handler';
 import { TruncateDatabaseHandler } from './app/ipc-request-handlers/truncate-database.handler';
+import { mainDataSource } from './app/datasources/main.datasource';
 import { RetrieveAllUsersInProject } from './app/ipc-request-handlers/project/retrieve-users-in-project.handler';
+import { StartupWindow } from './app/windows/startup.window';
 import { RetrieveAllTasksBySprintHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-sprint.handler';
 import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-project.handler';
 
@@ -69,19 +60,7 @@ import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/tas
     databaseConfigurations: [
       {
         id: 'main',
-        entities: [
-          TaskType,
-          User,
-          Sprint,
-          Project,
-          UserSprint,
-          SprintStatus,
-          UserType,
-          UserUserTypeProject,
-          Task,
-          TaskStatus,
-          TaskType,
-        ],
+        connectionOptions: mainDataSource,
       },
     ],
     ipcRequestHandlers: [
@@ -145,10 +124,11 @@ import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/tas
 
   application.loadTray(MainTray);
 
-  // application.loadWindow(StartupWindow);
-  // await new Promise((resolve) => setTimeout(resolve, 5000));
+  application.loadWindow(StartupWindow);
+  
+  await new Promise((resolve) => setTimeout(resolve, 3000));
 
-  // application.unloadAllWindows(StartupWindow);
+  application.unloadAllWindows(StartupWindow);
 
   application.loadWindow(MainWindow);
 })();

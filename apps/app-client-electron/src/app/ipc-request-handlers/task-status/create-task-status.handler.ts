@@ -8,9 +8,10 @@ export class CreateTaskStatusHandler implements IpcRequestHandlerInterface {
   async handle(taskStatus: TaskStatus): Promise<TaskStatus> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<TaskStatus>(TaskStatus)
       .insert(taskStatus);
+
     return taskStatus;
   }
 }

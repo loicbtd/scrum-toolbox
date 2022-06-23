@@ -32,13 +32,14 @@
     </ng-template>
     <ng-template pTemplate="header">
       <tr>
-        <th style="width: 3rem">
+        <th id="header-table" style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th pSortableColumn="label">Name<p-sortIcon field="label"></p-sortIcon></th>
-        <th>Description</th>
-        <th>Creation date</th>
-        <th>Update date</th>
+        <th id="header-name" pSortableColumn="label">Name<p-sortIcon field="label"></p-sortIcon></th>
+        <th id="header-description">Description</th>
+        <th id="header-created-date">Creation date</th>
+        <th id="header-update-date">Update date</th>
+        <th id="header-empty"></th>
       </tr>
     </ng-template>
     <ng-template pTemplate="body" let-item>
@@ -52,7 +53,8 @@
         <td>{{ item.updatedAt | date: 'd/MM/yyyy' }}</td>
 
         <td>
-          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded" (click)="editItem(item)"></p-button>
+          <p-button pRipple icon="pi pi-users" styleClass="p-button-rounded" (click)="editAttendees(item)"></p-button>
+          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded ml-2" (click)="editItem(item)"></p-button>
           <p-button
             pRipple
             icon="pi pi-trash"
@@ -77,7 +79,15 @@
     </div>
     <div class="field">
       <label for="password">Description</label>
-      <textarea rows="5" cols="30" type="text" pInputTextarea [autoResize]="true" id="description" [(ngModel)]="item.description"></textarea>
+      <textarea
+        rows="5"
+        cols="30"
+        type="text"
+        pInputTextarea
+        [autoResize]="true"
+        id="description"
+        [(ngModel)]="item.description"
+      ></textarea>
     </div>
   </ng-template>
 
@@ -88,3 +98,50 @@
 </p-dialog>
 
 <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
+
+<p-dialog
+  [(visible)]="attendeesDialog"
+  [style]="{ width: '450px' }"
+  header="Project attendeees"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="field">
+      <label for="projectOnwners">Product owners</label>
+      <p-multiSelect
+        [options]="availableProductOwners"
+        [(ngModel)]="productOwners"
+        defaultLabel="Select the product owners"
+        optionLabel="name"
+        class="multiselect-custom"
+      >
+        <ng-template let-value pTemplate="selectedItems">
+          <div class="country-item country-item-value" *ngFor="let option of availableProductOwners">
+            <div>{{ option.username }}</div>
+          </div>
+          <div *ngIf="!availableProductOwners || availableProductOwners.length === 0" class="country-placeholder">
+            Select product owner
+          </div>
+        </ng-template>
+        <ng-template let-user pTemplate="item">
+          <div class="country-item">
+            <div>{{ user.username }}</div>
+          </div>
+        </ng-template>
+      </p-multiSelect>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button
+      pButton
+      pRipple
+      label="Cancel"
+      icon="pi pi-times"
+      class="p-button-text"
+      (click)="hideAttendesDialog()"
+    ></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveAttendees()"></button>
+  </ng-template>
+</p-dialog>

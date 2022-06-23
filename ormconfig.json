@@ -1,0 +1,12 @@
+[
+  {
+    "name": "default",
+    "type": "better-sqlite3",
+    "database": "dist/database.db",
+    "entities": ["libs/lib-scrum-toolbox/src/lib/entities/*.ts"],
+    "migrations": ["apps/app-client-electron/src/app/migrations/*.ts"],
+    "cli": {
+      "migrationsDir": "apps/app-client-electron/src/app/migrations"
+    }
+  }
+]

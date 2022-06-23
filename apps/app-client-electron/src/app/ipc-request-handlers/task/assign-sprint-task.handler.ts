@@ -6,11 +6,13 @@ export class AssignSprintTaskHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.assignTaskToSprint;
 
   async handle(data: { taskId: string; sprintId: string }): Promise<void> {
-    const datasource = Application.getInstance()
+    const connection = Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main');
-    const sprint = await datasource.getRepository(Sprint).findOneByOrFail({ id: data.sprintId });
-    await datasource
+      .getConnection('main');
+
+    const sprint = await connection.getRepository(Sprint).findOneOrFail({ id: data.sprintId });
+
+    await connection
       .getRepository<Task>(Task)
       .createQueryBuilder()
       .update(Task)

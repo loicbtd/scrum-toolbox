@@ -8,8 +8,8 @@ export class RetrieveAllUsersInProject implements IpcRequestHandlerInterface {
   async handle(projectId: string): Promise<UserUserTypeProject[]> {
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<UserUserTypeProject>(UserUserTypeProject)
-      .findBy({ project: { id: projectId } });
+      .find({ project: { id: projectId } });
   }
 }

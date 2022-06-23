@@ -8,7 +8,7 @@ export class UpdateSprintStatusHandler implements IpcRequestHandlerInterface {
   async handle(sprint_status: SprintStatus): Promise<SprintStatus> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<SprintStatus>(SprintStatus)
       .save(sprint_status);
     return sprint_status;

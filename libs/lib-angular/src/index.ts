@@ -33,3 +33,7 @@ export * from './lib/states/current-project-state/base-current-project.model';
 export * from './lib/states/current-project-state/current-project.module';
 export * from './lib/states/current-project-state/current-project.actions';
 export * from './lib/states/current-project-state/current-project.state';
+
+export * from './lib/states/projects-updated-state/projects-updated.actions';
+export * from './lib/states/projects-updated-state/projects-updated.module';
+export * from './lib/states/projects-updated-state/projects-updated.state';

@@ -1,4 +1,4 @@
-import { NgModule, Component } from '@angular/core';
+import { NgModule, Component, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { ProjectsComponent } from './components/projects/projects.component';
@@ -8,6 +8,7 @@ import {
   MyProfileState,
   NavigationItemInterface,
   CurrentProjectService,
+  ProjectsUpdatedState,
 } from '@libraries/lib-angular';
 import { appIpcs, appRoutes, Project } from '@libraries/lib-scrum-toolbox';
 import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
@@ -17,9 +18,14 @@ import { MyProfileModel } from '../../global/models/my-profile.model';
 import { CrudUsersComponent } from './components/crud-users/crud-users.component';
 import { AdministrationComponent } from './components/administration/administration.component';
 import { CrudProjectsComponent } from './components/crud-projects/crud-projects.component';
+import { CrudProjectAttendeesComponent } from './components/crud-project-attendees/crud-project-attendees.component';
 import { CrudBacklogSprintComponent } from './components/crud-backlog-sprint/crud-backlog-sprint.component';
 import { IpcService } from '../../global/services/ipc.service';
 import { CurrentProjectModel } from '../../global/models/current-project.model';
+import { Dropdown } from 'primeng/dropdown';
+import { CrudTaskStatusComponent } from './components/crud-task-status/crud-task-status.component';
+import { CrudSprintStatusComponent } from './components/crud-sprint-status/crud-sprint-status.component';
+import { CrudTaskTypeComponent } from './components/crud-task-type/crud-task-type.component';
 
 @Component({
   template: `
@@ -30,24 +36,17 @@ import { CurrentProjectModel } from '../../global/models/current-project.model';
       avatarImageSource="assets/images/avatar.png"
       [username]="getFormattedUsername((myProfile$ | async)?.user?.firstname, (myProfile$ | async)?.user?.lastname)"
     >
-      <div
-        navigationBarContent
-        class="flex align-content-center align-items-center"
-        *ngIf="selectedProject !== undefined"
-      >
+      <div navigationBarContent class="flex align-content-center align-items-center">
         <h2>Project :</h2>
         <p-dropdown
+          #dropDownProject
           class="ml-5"
           (onChange)="updateProject($event.value)"
-          [(ngModel)]="selectedProject"
           [options]="projects"
           optionLabel="label"
+          optionValue="id"
+          placeholder="Select a project"
         >
-          <ng-template pTemplate="selectedItem">
-            <div class="country-item country-item-value" *ngIf="selectedProject">
-              <div>{{ selectedProject.label }}</div>
-            </div>
-          </ng-template>
         </p-dropdown>
       </div>
       <router-outlet></router-outlet>
@@ -55,8 +54,6 @@ import { CurrentProjectModel } from '../../global/models/current-project.model';
   `,
 })
 export class ScrumToolboxComponent {
-  selectedProject?: Project = undefined;
-  projects!: Project[];
   navigationItems: NavigationItemInterface[] = [
     {
       label: 'Product backlog',
@@ -95,6 +92,12 @@ export class ScrumToolboxComponent {
 
   @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
 
+  projects!: Project[];
+
+  @Select(ProjectsUpdatedState) projectsUdpated$: Observable<string>;
+
+  @ViewChild('dropDownProject') dropDownProject: Dropdown;
+
   getFormattedUsername(firstname?: string, lastname?: string): string {
     const formattedFirstname = firstname ? firstname.charAt(0).toUpperCase() + firstname.slice(1) : '';
 
@@ -107,11 +110,13 @@ export class ScrumToolboxComponent {
     return `${formattedFirstname} ${formattedLastname}`;
   }
 
-  async updateProject(project: Project) {
-    this.selectedProject = project;
-    await this._currentProjectService.refreshProject<CurrentProjectModel>({
-      project: project,
-    });
+  async updateProject(projectId: string) {
+    const selected = this.projects.find((p: Project) => p.id == projectId);
+    if (selected) {
+      await this._currentProjectService.refreshProject<CurrentProjectModel>({
+        project: selected,
+      });
+    }
   }
 
   constructor(
@@ -120,12 +125,21 @@ export class ScrumToolboxComponent {
     private readonly _currentProjectService: CurrentProjectService
   ) {}
 
-  async ngOnInit(): Promise<void> {
+  private async updateAllProjects() {
     this.projects = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
-    this.currentProject$.subscribe((data: CurrentProjectModel) => {
-      this.selectedProject = data.project;
+  }
+
+  async ngOnInit(): Promise<void> {
+    await this.updateAllProjects();
+    this.projectsUdpated$.subscribe(async () => {
+      await this.updateAllProjects();
     });
-    this.selectedProject = this.projects[0];
+
+    this.currentProject$.subscribe((data: CurrentProjectModel) => {
+      if (data.project) {
+        this.dropDownProject.value = data.project.id;
+      }
+    });
   }
 }
 
@@ -137,7 +151,11 @@ export class ScrumToolboxComponent {
     CrudUsersComponent,
     CrudProjectsComponent,
     AdministrationComponent,
+    CrudProjectAttendeesComponent,
     CrudBacklogSprintComponent,
+    CrudTaskStatusComponent,
+    CrudSprintStatusComponent,
+    CrudTaskTypeComponent,
   ],
   providers: [ScrumToolboxModule],
   imports: [
@@ -169,15 +187,27 @@ export class ScrumToolboxComponent {
             children: [
               {
                 component: CrudUsersComponent,
-                path: appRoutes.scrumToolbox.administration.crudUsers,
+                path: appRoutes.scrumToolbox.administration.users,
               },
               {
                 component: CrudProjectsComponent,
-                path: appRoutes.scrumToolbox.administration.crudProjects,
+                path: appRoutes.scrumToolbox.administration.projects,
+              },
+              {
+                component: CrudTaskStatusComponent,
+                path: appRoutes.scrumToolbox.administration.taskStatus,
+              },
+              {
+                component: CrudTaskTypeComponent,
+                path: appRoutes.scrumToolbox.administration.taskType,
+              },
+              {
+                component: CrudSprintStatusComponent,
+                path: appRoutes.scrumToolbox.administration.sprintStatus,
               },
               {
                 path: '**',
-                redirectTo: appRoutes.scrumToolbox.administration.crudUsers,
+                redirectTo: appRoutes.scrumToolbox.administration.users,
               },
             ],
           },

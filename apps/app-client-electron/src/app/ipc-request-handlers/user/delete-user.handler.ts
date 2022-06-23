@@ -8,7 +8,7 @@ export class DeleteUserHandler implements IpcRequestHandlerInterface {
   async handle(id: string): Promise<void> {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
-      .getDataSource('main')
+      .getConnection('main')
       .getRepository<User>(User)
       .delete(id);
   }
