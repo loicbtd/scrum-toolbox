@@ -16,7 +16,6 @@ export * from './lib/services/responsive.service';
 export * from './lib/services/theme.service';
 export * from './lib/services/toast-message.service';
 export * from './lib/services/current-project.service';
-export * from './lib/services/projects.service';
 
 export * from './lib/states/my-profile-state/base-my-profile.model';
 export * from './lib/states/my-profile-state/my-profile-configuration.interface';
@@ -34,3 +33,7 @@ export * from './lib/states/current-project-state/base-current-project.model';
 export * from './lib/states/current-project-state/current-project.module';
 export * from './lib/states/current-project-state/current-project.actions';
 export * from './lib/states/current-project-state/current-project.state';
+
+export * from './lib/states/projects-updated-state/projects-updated.actions';
+export * from './lib/states/projects-updated-state/projects-updated.module';
+export * from './lib/states/projects-updated-state/projects-updated.state';

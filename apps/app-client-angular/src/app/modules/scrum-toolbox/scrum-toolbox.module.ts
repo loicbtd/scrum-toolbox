@@ -8,7 +8,7 @@ import {
   MyProfileState,
   NavigationItemInterface,
   CurrentProjectService,
-  ProjectsService,
+  ProjectsUpdatedState,
 } from '@libraries/lib-angular';
 import { appIpcs, appRoutes, Project } from '@libraries/lib-scrum-toolbox';
 import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
@@ -94,6 +94,8 @@ export class ScrumToolboxComponent {
 
   projects!: Project[];
 
+  @Select(ProjectsUpdatedState) projectsUdpated$: Observable<string>;
+
   @ViewChild('dropDownProject') dropDownProject: Dropdown;
 
   getFormattedUsername(firstname?: string, lastname?: string): string {
@@ -120,8 +122,7 @@ export class ScrumToolboxComponent {
   constructor(
     private readonly _authenticationService: AuthenticationService,
     private readonly _ipcService: IpcService,
-    private readonly _currentProjectService: CurrentProjectService,
-    private readonly _projectsService: ProjectsService
+    private readonly _currentProjectService: CurrentProjectService
   ) {}
 
   private async updateAllProjects() {
@@ -130,8 +131,8 @@ export class ScrumToolboxComponent {
 
   async ngOnInit(): Promise<void> {
     await this.updateAllProjects();
-    this._projectsService.subject$.subscribe(() => {
-      this.updateAllProjects();
+    this.projectsUdpated$.subscribe(async () => {
+      await this.updateAllProjects();
     });
 
     this.currentProject$.subscribe((data: CurrentProjectModel) => {

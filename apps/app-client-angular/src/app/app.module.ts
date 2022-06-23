@@ -14,6 +14,7 @@ import {
   VisitedRoutesStateModule,
   CurrentProjectState,
   CurrentProjectStateModule,
+  ProjectUpdatedStateModule,
 } from '@libraries/lib-angular';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
@@ -86,6 +87,7 @@ export class AppComponent {
     MyProfileStateModule,
     CurrentProjectStateModule,
     VisitedRoutesStateModule,
+    ProjectUpdatedStateModule,
   ],
   bootstrap: [AppComponent],
 })

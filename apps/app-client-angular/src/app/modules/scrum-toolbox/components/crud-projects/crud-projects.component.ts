@@ -1,10 +1,11 @@
 import { Component } from '@angular/core';
-import { MyProfileState, ProjectsService, ToastMessageService } from '@libraries/lib-angular';
+import { MyProfileState, ProjectsUpdatedState, ToastMessageService, UpdateProjects } from '@libraries/lib-angular';
 import { appIpcs, Project, User } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
-import { Store } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { MyProfileModel } from '../../../../global/models/my-profile.model';
+import { lastValueFrom, Observable } from 'rxjs';
 
 @Component({
   templateUrl: './crud-projects.component.html',
@@ -35,12 +36,13 @@ export class CrudProjectsComponent {
     return !this.item.id;
   }
 
+  @Select(ProjectsUpdatedState) projectsUdpated$: Observable<string>;
+
   constructor(
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
     private readonly _ipcService: IpcService,
-    private readonly _store: Store,
-    private readonly _projectsService: ProjectsService
+    private readonly _store: Store
   ) {}
 
   async ngOnInit() {
@@ -73,11 +75,11 @@ export class CrudProjectsComponent {
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
           }
+          this.triggerUpdateProject('DELETE', item);
         }
         this.selectedItems = [];
 
         this._toastMessageService.showSuccess('Items Deleted', 'Successful');
-        this.triggerUpdateProject();
       },
     });
   }
@@ -108,7 +110,7 @@ export class CrudProjectsComponent {
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
         }
-        this.triggerUpdateProject();
+        this.triggerUpdateProject('DELETE', item);
       },
     });
   }
@@ -139,10 +141,10 @@ export class CrudProjectsComponent {
       }
     }
 
+    this.triggerUpdateProject('ADD', this.item);
     this.items = [...this.items];
     this.dialog = false;
     this.item = {};
-    this.triggerUpdateProject();
   }
 
   findIndexById(id: string): number {
@@ -175,7 +177,7 @@ export class CrudProjectsComponent {
     console.log();
   }
 
-  triggerUpdateProject() {
-    this._projectsService.updateProjects();
+  async triggerUpdateProject(action: string, project: Project) {
+    await lastValueFrom(this._store.dispatch(new UpdateProjects(action, project.label + '')));
   }
 }
