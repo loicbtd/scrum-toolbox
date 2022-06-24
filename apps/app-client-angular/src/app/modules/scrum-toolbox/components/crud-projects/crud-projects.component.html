@@ -53,12 +53,12 @@
         <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
 
         <td>
-          <p-button pRipple icon="pi pi-users" styleClass="p-button-rounded" (click)="editAttendees(item)"></p-button>
-          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded ml-2" (click)="editItem(item)"></p-button>
+          <p-button pRipple icon="pi pi-users" styleClass="p-button-rounded m-2" (click)="editAttendees(item)"></p-button>
+          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded m-2" (click)="editItem(item)"></p-button>
           <p-button
             pRipple
             icon="pi pi-trash"
-            styleClass="p-button-rounded p-button-outlined ml-2"
+            styleClass="p-button-rounded p-button-outlined m-2"
             (click)="deleteItem(item)"
           ></p-button>
         </td>
