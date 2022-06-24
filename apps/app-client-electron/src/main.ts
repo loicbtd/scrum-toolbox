@@ -53,6 +53,7 @@ import { StartupWindow } from './app/windows/startup.window';
 import { RetrieveAllTasksBySprintHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-sprint.handler';
 import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-project.handler';
 import { UnassignSprintTaskHandler } from './app/ipc-request-handlers/task/unassign-sprint-task.handler copy';
+import { RetrieveAllSprintsOfUser } from './app/ipc-request-handlers/user/retrieve-all-sprints-of-user.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -72,6 +73,7 @@ import { UnassignSprintTaskHandler } from './app/ipc-request-handlers/task/unass
       RetrieveUserHandler,
       UpdateStatusUserHandler,
       LoginHandler,
+      RetrieveAllSprintsOfUser,
 
       AssignSprintTaskHandler,
       UnassignSprintTaskHandler,

@@ -46,4 +46,5 @@ export const appIpcs = {
   retrieveAllUsersInProject: 'retrieveAllUsersInProject',
   retrieveAllTasksBySprint: 'retrieveAllTasksBySprint',
   retrieveAllTasksByProject: 'retrieveAllTasksByProject',
+  retrieveAllSprintsOfUser: 'retrieveAllSprintsOfUser',
 };
