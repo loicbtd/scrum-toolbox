@@ -26,6 +26,7 @@ import { Dropdown } from 'primeng/dropdown';
 import { CrudTaskStatusComponent } from './components/crud-task-status/crud-task-status.component';
 import { CrudSprintStatusComponent } from './components/crud-sprint-status/crud-sprint-status.component';
 import { CrudTaskTypeComponent } from './components/crud-task-type/crud-task-type.component';
+import { ProjectTeamComponent } from './components/project-team/project-team.component';
 
 @Component({
   template: `
@@ -65,7 +66,7 @@ export class ScrumToolboxComponent {
       iconClass: 'fa-solid fa-list-check',
       routerLink: [appRoutes.scrumToolbox.sprintBacklog],
     },
-    { label: 'Team', iconClass: 'fa-solid fa-user', routerLink: ['#'] },
+    { label: 'Team', iconClass: 'fa-solid fa-user', routerLink: [appRoutes.scrumToolbox.projectTeam] },
     { label: 'Metrics', iconClass: 'fa-solid fa-chart-line', routerLink: ['#'] },
     {
       label: 'TEST',
@@ -156,6 +157,7 @@ export class ScrumToolboxComponent {
     CrudTaskStatusComponent,
     CrudSprintStatusComponent,
     CrudTaskTypeComponent,
+    ProjectTeamComponent,
   ],
   providers: [ScrumToolboxModule],
   imports: [
@@ -180,6 +182,10 @@ export class ScrumToolboxComponent {
           {
             path: appRoutes.scrumToolbox.sprintBacklog,
             component: CrudBacklogSprintComponent,
+          },
+          {
+            path: appRoutes.scrumToolbox.projectTeam,
+            component: ProjectTeamComponent,
           },
           {
             path: appRoutes.scrumToolbox.administration.root,

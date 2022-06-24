@@ -1,3 +1,5 @@
+import { Task } from '../entities/task.entity';
+
 export class UserModel {
   id?: string;
 
@@ -10,4 +12,6 @@ export class UserModel {
   createdAt?: Date;
 
   isActivated?: boolean;
+
+  tasks?: Task[];
 }

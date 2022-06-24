@@ -18,5 +18,6 @@ export const appRoutes = {
     sprintBacklog: 'sprintBacklog',
     all: 'all',
     test: 'test',
+    projectTeam: 'projectTeam',
   },
 };
