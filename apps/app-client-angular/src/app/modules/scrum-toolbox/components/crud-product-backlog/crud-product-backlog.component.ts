@@ -80,6 +80,7 @@ export class CrudProductBacklogComponent {
     const tempStatus = this.item?.status as TaskStatus;
     const tempType = this.item?.type as TaskType;
     this.item = { status: tempStatus, type: tempType };
+    this.selectedSprint = this.sprintNull;
     this.submitted = false;
     this.dialogNew = true;
   }
@@ -181,9 +182,23 @@ export class CrudProductBacklogComponent {
       }
     } else {
       try {
-        // this.item = await this._ipcService.query<UserModel>(appIpcs.createUser, this.item);
-        // this.items.push(this.item);
+        
+        this.item.type = this.selectedType;
+        this.item.project = this.selectedProject
+        console.log(this.item);
+        
+        this.item = await this._ipcService.query<Task>(appIpcs.createTask, this.item);
+
+        if (this.selectedSprint?.label === this.sprintNull.label) {          
+          await this._ipcService.query(appIpcs.unassignTaskToSprint, this.item.id);
+          this.item.sprint = undefined;
+        } else {
+          this.item.sprint = this.selectedSprint;
+        }
+        
         this._toastMessageService.showSuccess('Item Created', 'Successful');
+        this.ngOnInit();
+
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while creating item`);
       }

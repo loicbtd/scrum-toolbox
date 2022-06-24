@@ -152,5 +152,70 @@
   </ng-template>
 </p-dialog>
 
+<p-dialog
+  [(visible)]="dialogNew"
+  [style]="{ width: '450px' }"
+  header="Item Details"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="field">
+      <label for="label">Label</label>
+      <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
+      <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
+    </div>
+
+    <div class="field">
+      <label for="type">Type</label>
+      <p-dropdown [options]="taskType" [(ngModel)]="selectedType" optionLabel="label" appendTo="body">
+        <ng-template pTemplate="selectedItem">
+          <div *ngIf="selectedType">
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedType)">{{ selectedType.label }}</span>
+          </div>
+        </ng-template>
+        <ng-template let-type pTemplate="item">
+          <div class="test">
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(type)">{{ type.label }}</span>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+    </div>
+
+    <div class="field">
+      <label for="sprint">Sprint</label>
+      <p-dropdown [options]="projectSprints" [(ngModel)]="selectedSprint" optionLabel="label" appendTo="body"></p-dropdown>
+      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+    </div>
+
+    <div class="field">
+      <label for="createdAt">Creation Date</label><br />
+      <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'dd/MM/yyyy' }}</label>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea
+        pInputTextarea
+        type="text"
+        style="height: 5rem"
+        [rows]="5" 
+        [cols]="30"  
+        [autoResize]="true"
+        id="description"
+        [(ngModel)]="item.description"
+        required
+      ></textarea>
+      <small class="p-invalid" *ngIf="submitted && !item.description">Required field</small>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
+  </ng-template>
+</p-dialog>
+
 
 <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
