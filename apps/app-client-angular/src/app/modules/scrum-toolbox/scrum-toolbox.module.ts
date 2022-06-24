@@ -28,6 +28,7 @@ import { CrudSprintStatusComponent } from './components/crud-sprint-status/crud-
 import { CrudTaskTypeComponent } from './components/crud-task-type/crud-task-type.component';
 import { ProjectTeamComponent } from './components/project-team/project-team.component';
 import { CrudProductBacklogComponent } from './components/crud-product-backlog/crud-product-backlog.component';
+import { CrudSprintComponent } from './components/crud-sprint/crud-sprint.component';
 
 @Component({
   template: `
@@ -62,6 +63,7 @@ export class ScrumToolboxComponent {
       iconClass: 'fa-solid fa-clipboard-list',
       routerLink: [appRoutes.scrumToolbox.root],
     },
+    { label: '', iconClass: 'fa-solid fa-bars-progress', routerLink: [appRoutes.scrumToolbox.sprintsManagement] },
     {
       label: 'Sprint backlog',
       iconClass: 'fa-solid fa-list-check',
@@ -83,7 +85,7 @@ export class ScrumToolboxComponent {
       routerLink: [appRoutes.scrumToolbox.administration.root],
     },
     {
-      label: 'Déconnexion',
+      label: 'Disconnect',
       iconClass: 'fa-solid fa-clipboard-list',
       separatorAbove: true,
       action: async () => await this._authenticationService.logout([appRoutes.login]),
@@ -160,6 +162,7 @@ export class ScrumToolboxComponent {
     CrudTaskTypeComponent,
     ProjectTeamComponent,
     CrudProductBacklogComponent,
+    CrudSprintComponent,
   ],
   providers: [ScrumToolboxModule],
   imports: [
@@ -192,6 +195,10 @@ export class ScrumToolboxComponent {
           {
             path: appRoutes.scrumToolbox.root,
             component: CrudProductBacklogComponent,
+          },
+          {
+            path: appRoutes.scrumToolbox.sprintsManagement,
+            component: CrudSprintComponent,
           },
           {
             path: appRoutes.scrumToolbox.administration.root,
