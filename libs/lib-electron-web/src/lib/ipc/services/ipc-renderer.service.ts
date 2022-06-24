@@ -6,7 +6,7 @@ import { IpcInterface } from '../interfaces/ipc.interface';
 export class IpcRendererService {
   private readonly _ipc: IpcInterface;
 
-  private readonly _requestHandlers: IpcRequestHandlerInterface[];
+  private _requestHandlers: IpcRequestHandlerInterface[];
 
   constructor(document: Document, apiKey = 'electron') {
     this._ipc = (document.defaultView as any)[apiKey];
@@ -120,7 +120,7 @@ export class IpcRendererService {
 
     this._ipc.removeAllListeners(handler.channel);
 
-    this._requestHandlers.filter((_) => !(_.channel == handler.channel));
+    this._requestHandlers = this._requestHandlers.filter((_) => !(_.channel == handler.channel));
   }
 
   public removeRequestHandlers(handlerTypes: (new () => IpcRequestHandlerInterface)[]): void {

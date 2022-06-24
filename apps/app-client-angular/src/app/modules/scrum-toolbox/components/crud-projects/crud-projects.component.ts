@@ -26,11 +26,11 @@ export class CrudProjectsComponent {
   productOwners: User[];
   availableProductOwners: User[];
 
-  developers: User[];
-  availableDevelopers: User[];
-
   scrumMasters: User[];
   availableScrumMasters: User[];
+
+  developers: User[];
+  availableDevelopers: User[];
 
   get isCreationMode() {
     return !this.item.id;

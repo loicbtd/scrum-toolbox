@@ -6,7 +6,7 @@ import { Application } from '../application';
 
 @injectable()
 export class IpcMainService {
-  private readonly _requestHandlers: IpcRequestHandlerInterface[];
+  private _requestHandlers: IpcRequestHandlerInterface[];
 
   constructor() {
     this._requestHandlers = [];
@@ -119,7 +119,7 @@ export class IpcMainService {
 
     ipcMain.removeAllListeners(handler.channel);
 
-    this._requestHandlers.filter((_) => !(_.channel == handler.channel));
+    this._requestHandlers = this._requestHandlers.filter((_) => !(_.channel == handler.channel));
   }
 
   public removeRequestHandlers(handlerTypes: (new (...args: any[]) => IpcRequestHandlerInterface)[]): void {
