@@ -4,6 +4,27 @@
   display: block;
 }
 
+
+.custom-tag {
+  padding: .3rem;
+  border-radius: .4rem;
+}
+
+.sprint-dropdown {
+  margin-right: 1rem;
+}
+
+.user-initials {
+  padding: .3rem;
+  border-radius: .4rem;
+  background-color: #9fbecd;
+  margin-left: .2rem;
+}
+
+.creation-date {
+  font-weight: bold;
+}
+
 :host ::ng-deep {
   .p-paginator {
     .p-paginator-current {

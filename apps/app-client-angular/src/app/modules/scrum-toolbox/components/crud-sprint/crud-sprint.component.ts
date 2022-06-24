@@ -1,25 +1,55 @@
 import { Component } from '@angular/core';
-import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, User, UserModel } from '@libraries/lib-scrum-toolbox';
+import { CurrentProjectState, MyProfileState, ToastMessageService } from '@libraries/lib-angular';
+import { appIpcs, Project, Sprint, SprintStatus, User, UserModel } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
-import { Store } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { MyProfileModel } from '../../../../global/models/my-profile.model';
+import { Observable, Subscription } from 'rxjs';
+import { CurrentProjectModel } from '../../../../global/models/current-project.model';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 
 @Component({
   templateUrl: './crud-sprint.component.html',
   styleUrls: ['./crud-sprint.component.scss'],
 })
 export class CrudSprintComponent {
-  dialog: boolean;
+  @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
 
-  items: UserModel[];
+  dialogNew: boolean;
+  dialogUpdate: boolean;
 
-  item: User;
+  items: Sprint[];
+  item: Sprint;
 
-  selectedItems: UserModel[];
+  selectedItems: Sprint[];
+
+  selectedProject: Project;
 
   submitted: boolean;
+
+  sub: Subscription;
+
+
+  form = this.fb.group({
+    label: ['', [Validators.required]],
+    startDate: ['', [Validators.required]],
+    endDate: ['', [Validators.required]],
+    selectedProjectForm: ['', [Validators.required]],
+  });
+
+  sprint: Sprint;
+
+  projects: Project[];
+  selectedProjectForm: Project;
+
+  startWrong : boolean;
+  endWrong : boolean;
+  minStartDate : Date;
+  minEndDate : Date;
+
+  sprintStatus: SprintStatus[];
+
 
   get isCreationMode() {
     return !this.item.id;
@@ -29,18 +59,34 @@ export class CrudSprintComponent {
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
     private readonly _ipcService: IpcService,
-    private readonly _store: Store
+    private readonly _store: Store,
+    private readonly fb: UntypedFormBuilder
   ) {}
 
   async ngOnInit() {
-    this.items = await this._ipcService.query<UserModel[]>(appIpcs.retrieveAllUsers);
-    this.item = this.items[0];
+
+    this.projects = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
+    this.sprintStatus = await this._ipcService.query<SprintStatus[]>(appIpcs.retrieveAllSprintsStatus);
+
+    this.sub = this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
+      if (data) {
+        
+        this.selectedProject = data.project;
+    
+        this.items = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
+          id: this.selectedProject.id,
+        });
+        this.item = this.items[0];
+        
+      }
+    });
+    
   }
 
   openNew() {
     this.item = {};
     this.submitted = false;
-    this.dialog = true;
+    this.dialogNew = true;
   }
 
   deleteSelectedItems() {
@@ -50,59 +96,57 @@ export class CrudSprintComponent {
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         for (const item of this.selectedItems) {
-          const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
-
-          if (myProfile.user.id == item.id) {
-            this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
-            continue;
-          }
 
           try {
-            await this._ipcService.query(appIpcs.deleteUser, item.id);
-            this.items = this.items.filter((_) => _.id !== item.id);
+
+            await this._ipcService.query(appIpcs.deleteSprint, {id: item.id});
+
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
           }
         }
+
         this.selectedItems = [];
 
         this._toastMessageService.showSuccess('Items Deleted', 'Successful');
+
+        this.refresh();
+
       },
     });
   }
 
-  editItem(item: UserModel) {
+  editItem(item: Sprint) {
     this.item = { ...item };
-    this.dialog = true;
+    this.selectedProjectForm = this.selectedProject;
+    this.dialogUpdate = true;
   }
 
-  async deleteItem(item: UserModel) {
-    const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
-
-    if (myProfile.user.id == item.id) {
-      this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
-      return;
-    }
-
+  async deleteItem(item: Sprint) {
+    
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         try {
-          await this._ipcService.query(appIpcs.deleteUser, item.id);
-          this.items = this.items.filter((_) => _.id !== item.id);
-          this.item = {};
+          await this._ipcService.query(appIpcs.deleteSprint, {id: item.id});
+          
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
+
+          this.refresh();
+
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
         }
       },
     });
+
   }
 
   hideDialog() {
-    this.dialog = false;
+    this.dialogUpdate = false;
+    this.dialogNew = false;
     this.submitted = false;
   }
 
@@ -119,17 +163,31 @@ export class CrudSprintComponent {
       }
     } else {
       try {
-        this.item = await this._ipcService.query<UserModel>(appIpcs.createUser, this.item);
-        this.items.push(this.item);
+
+        this.item.project = this.selectedProjectForm;
+
+        this.item = await this._ipcService.query<Sprint>(appIpcs.createSprint);
+        
         this._toastMessageService.showSuccess('Item Created', 'Successful');
+
+        this.refresh();
+
       } catch (error: any) {
+
         this._toastMessageService.showError(error.message, `Error while creating item`);
+
       }
     }
 
     this.items = [...this.items];
-    this.dialog = false;
+    this.dialogUpdate = false;
+    this.dialogNew = false;
     this.item = {};
+  }
+  
+  refresh() {
+    this.sub.unsubscribe();
+    this.ngOnInit();
   }
 
   findIndexById(id: string): number {
@@ -143,4 +201,58 @@ export class CrudSprintComponent {
 
     return index;
   }
+
+  selectColorStatus(it: any): object {
+    return { 'background-color': it.status.backgroundColor, color: it.status.textColor };
+  }
+
+  async saveSprint() {
+    this.submitted = true;
+    this.startWrong = false;
+    this.endWrong = false;
+
+    if (this.form.invalid) {
+      this.submitted = false;
+      return;
+    }
+
+    this.sprint = new Sprint();
+    this.sprint.label = this.form.get('label')?.value
+
+    if(this.form.get('startDate')?.value < new Date('dd/MM/yyyy')){
+        this.startWrong = true;
+        return;
+    }
+    if(this.form.get('endDate')?.value < this.form.get('startDate')?.value){
+      this.endWrong = true;
+      return;
+    }
+
+    try {
+      this.sprint.start_date = this.form.get('startDate')?.value;
+      this.sprint.end_date = this.form.get('endDate')?.value;
+
+      this.sprint.project = this.selectedProject;
+      this.sprint.status = this.sprintStatus.find((status) => { return status.label === this.sprintStatus[0].label});
+
+      await this._ipcService.query<Sprint>(appIpcs.createSprint, this.sprint);
+
+      this._toastMessageService.showSuccess('Sprint Created', 'Successful');
+        
+      this.form.reset()
+      this.submitted = false;
+      this.startWrong = false;
+      this.endWrong = false;
+
+      this.hideDialog();
+
+      this.refresh();
+
+    } catch (error: any) {
+      this._toastMessageService.showError(error.message, `Error while creating Sprint`);
+    }
+
+
+  }
+
 }
