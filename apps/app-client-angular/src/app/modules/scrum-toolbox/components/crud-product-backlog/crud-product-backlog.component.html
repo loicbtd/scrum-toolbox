@@ -58,7 +58,7 @@
         <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
         <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
         <td>
-          <span class="custom-tag" [ngStyle]="setColorWithStatus(item)">{{ sprintName(item) }}</span>
+          <span class="custom-tag" [ngStyle]="setColorWithStatusForSprint(item)">{{ sprintName(item) }}</span>
         </td>
         <td>
           <span class="custom-tag" [ngStyle]="selectColorStatus(item)">{{ item.status.label }}</span>
@@ -118,6 +118,11 @@
     </div>
 
     <!-- TODO assign sprint to task -->
+    <div class="field">
+      <label for="sprint">Sprint</label>
+      <p-dropdown [options]="projectSprints" [(ngModel)]="selectedSprint" optionLabel="label" appendTo="body"></p-dropdown>
+      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+    </div>
 
     <div class="field">
       <label for="createdAt">Creation Date</label><br />

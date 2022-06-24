@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { CurrentProjectState, MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, Project, Task, TaskStatus, TaskType, UserModel } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, Project, Sprint, Task, TaskStatus, TaskType, UserModel } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Select, Store } from '@ngxs/store';
@@ -19,7 +19,6 @@ export class CrudProductBacklogComponent {
   dialogNew: boolean;
 
   items: Task[];
-
   item: Task;
 
   selectedItems: Task[];
@@ -33,7 +32,11 @@ export class CrudProductBacklogComponent {
   taskType: TaskType[];
   selectedType: TaskType;
 
+  selectedSprint: Sprint | undefined;
+  projectSprints: Sprint[];
+
   sub: Subscription;
+  sprintNull: Sprint;
 
   get isCreationMode() {
     return !this.item.id;
@@ -51,6 +54,9 @@ export class CrudProductBacklogComponent {
     this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
     this.selectedType = this.taskType[0];
     
+    this.sprintNull = new Sprint();
+    this.sprintNull.label = 'not assigned';    
+    
     this.sub = this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
       if (data) {
         
@@ -58,6 +64,12 @@ export class CrudProductBacklogComponent {
 
         this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksByProject, this.selectedProject.id);
         this.item = this.items[0];
+        
+        this.projectSprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
+          id: this.selectedProject.id,
+        });
+        this.selectedSprint = this.projectSprints[0];
+        this.projectSprints.push(this.sprintNull);
 
       }
     });
@@ -100,9 +112,18 @@ export class CrudProductBacklogComponent {
     });
   }
 
-  editItem(item: Task) {
+  editItem(item: Task) {  
     this.item = { ...item };
+    this.selectedType = item.type;
+
+    if (item.sprint) {
+      this.selectedSprint = item.sprint;
+    } else {
+      this.selectedSprint = this.sprintNull;
+    }
+
     this.dialogUpdate = true;
+    
   }
 
   async deleteItem(item: Task) {
@@ -141,9 +162,20 @@ export class CrudProductBacklogComponent {
 
     if (this.item.id) {
       try {
-        await this._ipcService.query(appIpcs.updateUser, this.item);
-        this.items[this.findIndexById(this.item.id)] = this.item;
+        this.item.type = this.selectedType;
+
+        if (this.selectedSprint?.label === this.sprintNull.label) {          
+          await this._ipcService.query(appIpcs.unassignTaskToSprint, this.item.id);
+          this.item.sprint = undefined;
+        } else {
+          this.item.sprint = this.selectedSprint;
+        }
+        
+        await this._ipcService.query(appIpcs.updateTask, this.item);
+
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
+        this.ngOnInit();
+
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
@@ -202,7 +234,7 @@ export class CrudProductBacklogComponent {
     return 'not assigned';
   }
 
-  setColorWithStatus(task: Task): any {
+  setColorWithStatusForSprint(task: Task): any {
     if (!task.sprint?.label) {
       return { 'background-color': '#6fa8dc', color: '#ffffff' };
     }
