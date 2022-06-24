@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MyProfileState, ProjectsUpdatedState, ToastMessageService, UpdateProjects } from '@libraries/lib-angular';
 import { appIpcs, Project, User } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
@@ -11,7 +11,7 @@ import { lastValueFrom, Observable } from 'rxjs';
   templateUrl: './crud-projects.component.html',
   styleUrls: ['./crud-projects.component.scss'],
 })
-export class CrudProjectsComponent {
+export class CrudProjectsComponent implements OnInit {
   items: Project[];
 
   item: Project;

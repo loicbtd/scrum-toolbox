@@ -18,7 +18,6 @@ import { MyProfileModel } from '../../global/models/my-profile.model';
 import { CrudUsersComponent } from './components/crud-users/crud-users.component';
 import { AdministrationComponent } from './components/administration/administration.component';
 import { CrudProjectsComponent } from './components/crud-projects/crud-projects.component';
-import { CrudProjectAttendeesComponent } from './components/crud-project-attendees/crud-project-attendees.component';
 import { CrudBacklogSprintComponent } from './components/crud-backlog-sprint/crud-backlog-sprint.component';
 import { IpcService } from '../../global/services/ipc.service';
 import { CurrentProjectModel } from '../../global/models/current-project.model';
@@ -154,7 +153,6 @@ export class ScrumToolboxComponent {
     CrudUsersComponent,
     CrudProjectsComponent,
     AdministrationComponent,
-    CrudProjectAttendeesComponent,
     CrudBacklogSprintComponent,
     CrudTaskStatusComponent,
     CrudSprintStatusComponent,
