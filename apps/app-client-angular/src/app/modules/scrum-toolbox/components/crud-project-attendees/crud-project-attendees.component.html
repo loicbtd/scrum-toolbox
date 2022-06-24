@@ -51,7 +51,7 @@
         <td>{{ item.username }}</td>
         <td>{{ item.firstname }}</td>
         <td>{{ item.lastname }}</td>
-        <td>{{ item.createdAt | date: 'd/MM/yyyy' }}</td>
+        <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
         <td>
           <p-tag *ngIf="item.isActivated" severity="success" value="Activated"></p-tag>
           <p-tag *ngIf="!item.isActivated" severity="danger" value="Disabled"></p-tag>

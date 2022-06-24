@@ -27,6 +27,7 @@ import { CrudTaskStatusComponent } from './components/crud-task-status/crud-task
 import { CrudSprintStatusComponent } from './components/crud-sprint-status/crud-sprint-status.component';
 import { CrudTaskTypeComponent } from './components/crud-task-type/crud-task-type.component';
 import { ProjectTeamComponent } from './components/project-team/project-team.component';
+import { CrudProductBacklogComponent } from './components/crud-product-backlog/crud-product-backlog.component';
 
 @Component({
   template: `
@@ -59,7 +60,7 @@ export class ScrumToolboxComponent {
     {
       label: 'Product backlog',
       iconClass: 'fa-solid fa-clipboard-list',
-      routerLink: ['#'],
+      routerLink: [appRoutes.scrumToolbox.root],
     },
     {
       label: 'Sprint backlog',
@@ -158,6 +159,7 @@ export class ScrumToolboxComponent {
     CrudSprintStatusComponent,
     CrudTaskTypeComponent,
     ProjectTeamComponent,
+    CrudProductBacklogComponent,
   ],
   providers: [ScrumToolboxModule],
   imports: [
@@ -186,6 +188,10 @@ export class ScrumToolboxComponent {
           {
             path: appRoutes.scrumToolbox.projectTeam,
             component: ProjectTeamComponent,
+          },
+          {
+            path: appRoutes.scrumToolbox.root,
+            component: CrudProductBacklogComponent,
           },
           {
             path: appRoutes.scrumToolbox.administration.root,
@@ -219,7 +225,7 @@ export class ScrumToolboxComponent {
           },
           {
             path: '**',
-            redirectTo: appRoutes.scrumToolbox.all,
+            redirectTo: appRoutes.scrumToolbox.root,
           },
         ],
       },

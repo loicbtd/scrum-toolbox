@@ -94,8 +94,8 @@ export class CrudBacklogSprintComponent {
 
   openNew() {
     this.initDialogFieldsNew();
-    const tempStatus = this.item.status as TaskStatus;
-    const tempType = this.item.type as TaskType;
+    const tempStatus = this.item?.status as TaskStatus;
+    const tempType = this.item?.type as TaskType;
     this.item = { status: tempStatus, type: tempType };
     this.submitted = false;
     this.dialogNew = true;
@@ -110,14 +110,15 @@ export class CrudBacklogSprintComponent {
         for (const item of this.selectedItems) {
           try {
             await this._ipcService.query(appIpcs.unassignTaskToSprint, item.id);
-            this.ngOnInit(this.selectedSprint);
+            
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
           }
         }
         this.selectedItems = [];
-
+        
         this._toastMessageService.showSuccess('Items Deleted', 'Successful');
+        this.refresh();
       },
     });
   }
@@ -154,11 +155,8 @@ export class CrudBacklogSprintComponent {
           this.item = { status: tempStatus, type: tempType };
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
 
-          this.sub.unsubscribe();
-          this.ngOnInit(this.selectedSprint);
+          this.refresh();
         } catch (error) {
-          console.log(error);
-
           this._toastMessageService.showError(`Error while deleting item`);
         }
       },
@@ -183,8 +181,9 @@ export class CrudBacklogSprintComponent {
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
-        this.sub.unsubscribe();
-        this.ngOnInit(this.selectedSprint);
+
+        this.refresh();
+        
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
@@ -205,11 +204,12 @@ export class CrudBacklogSprintComponent {
         this.resetDialogNew();
         this.hideDialog();
 
-        this.sub.unsubscribe();
-        this.ngOnInit(this.selectedSprint);
+        this.refresh();
+
       } catch (error: any) {
         this.resetDialogNew();
         this.hideDialog();
+
         this._toastMessageService.showError(error.message, `Error while creating item`);
       }
     }
@@ -219,6 +219,11 @@ export class CrudBacklogSprintComponent {
     const tempStatus = this.item.status as TaskStatus;
     const tempType = this.item.type as TaskType;
     this.item = { status: tempStatus, type: tempType };
+  }
+
+  refresh() {
+    this.sub.unsubscribe();
+    this.ngOnInit(this.selectedSprint);
   }
 
   resetDialogNew() {
@@ -245,8 +250,6 @@ export class CrudBacklogSprintComponent {
 
   async updateTasks(sprint: Sprint) {
     this.selectedSprint = sprint;
-    // console.log(this.selectedSprint);
-
     const a = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
 
     this.items = a;
