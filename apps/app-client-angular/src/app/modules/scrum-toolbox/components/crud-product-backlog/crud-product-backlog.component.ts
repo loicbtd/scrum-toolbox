@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { CurrentProjectState, MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, Project, Sprint, Task, TaskStatus, TaskType, UserModel } from '@libraries/lib-scrum-toolbox';
+import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
+import { appIpcs, Project, Sprint, Task, TaskStatus, TaskType } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Select, Store } from '@ngxs/store';
-import { MyProfileModel } from '../../../../global/models/my-profile.model';
 import { Observable, Subscription } from 'rxjs';
 import { CurrentProjectModel } from '../../../../global/models/current-project.model';
 
