@@ -49,8 +49,8 @@
         </td>
         <td>{{ item.label }}</td>
         <td>{{ item.description }}</td>
-        <td>{{ item.createdAt | date: 'd/MM/yyyy' }}</td>
-        <td>{{ item.updatedAt | date: 'd/MM/yyyy' }}</td>
+        <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
+        <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
 
         <td>
           <p-button pRipple icon="pi pi-users" styleClass="p-button-rounded" (click)="editAttendees(item)"></p-button>

@@ -1,17 +1,10 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <p-dropdown
-        (onChange)="updateTasks($event.value)"
-        class="sprint-dropdown"
-        [options]="sprints"
-        [(ngModel)]="selectedSprint"
-        optionLabel="label"
-      ></p-dropdown>
-      <p-button pRipple label="Add Tak(s)" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+      <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
       <p-button
         pRipple
-        label="Remove Selected Tasks"
+        label="Delete"
         icon="pi pi-trash"
         class="p-button-danger ml-2"
         (click)="deleteSelectedItems()"
@@ -45,9 +38,10 @@
         <th id="header-label" pSortableColumn="label" [ngStyle]="{ width: '10rem' }">
           Label <p-sortIcon field="label"></p-sortIcon>
         </th>
-        <th id="header-description" [ngStyle]="{ width: '35rem' }">Description</th>
+        <th id="header-description" [ngStyle]="{ width: '25rem' }">Description</th>
         <th id="header-creation-date">Creation Date</th>
         <th id="header-last-updated">Last Updated</th>
+        <th id="header-sprint">Sprint</th>
         <th id="header-status" pSortableColumn="status.label">Status <p-sortIcon field="status.label"></p-sortIcon></th>
         <th id="header-type" pSortableColumn="type.label">Type <p-sortIcon field="type.label"></p-sortIcon></th>
         <th id="header-assigned" [ngStyle]="{ width: '10rem' }">Assigned To</th>
@@ -63,6 +57,9 @@
         <td>{{ item.description }}</td>
         <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
         <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
+        <td>
+          <span class="custom-tag" [ngStyle]="setColorWithStatusForSprint(item)">{{ sprintName(item) }}</span>
+        </td>
         <td>
           <span class="custom-tag" [ngStyle]="selectColorStatus(item)">{{ item.status.label }}</span>
         </td>
@@ -104,39 +101,6 @@
     </div>
 
     <div class="field">
-      <label for="users">Assigned to</label>
-      <p-autoComplete
-        [(ngModel)]="selectedUsers"
-        [suggestions]="filteredUsers"
-        (completeMethod)="filterUsers(item)"
-        field="username"
-        [dropdown]="true"
-        [multiple]="true"
-        appendTo="body"
-        id="users"
-      >
-      </p-autoComplete>
-      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
-    </div>
-
-    <div class="field">
-      <label for="status">Status</label>
-      <p-dropdown [options]="taskStatus" [(ngModel)]="selectedStatus" optionLabel="label" appendTo="body">
-        <ng-template pTemplate="selectedItem">
-          <div *ngIf="selectedStatus">
-            <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{ selectedStatus.label }}</span>
-          </div>
-        </ng-template>
-        <ng-template let-status pTemplate="item">
-          <div class="test">
-            <span class="custom-tag" [ngStyle]="selectColorWithStatus(status)">{{ status.label }}</span>
-          </div>
-        </ng-template>
-      </p-dropdown>
-      <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
-    </div>
-
-    <div class="field">
       <label for="type">Type</label>
       <p-dropdown [options]="taskType" [(ngModel)]="selectedType" optionLabel="label" appendTo="body">
         <ng-template pTemplate="selectedItem">
@@ -150,6 +114,13 @@
           </div>
         </ng-template>
       </p-dropdown>
+      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+    </div>
+
+    <!-- TODO assign sprint to task -->
+    <div class="field">
+      <label for="sprint">Sprint</label>
+      <p-dropdown [options]="projectSprints" [(ngModel)]="selectedSprint" optionLabel="label" appendTo="body"></p-dropdown>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
 
@@ -190,36 +161,9 @@
 >
   <ng-template pTemplate="content">
     <div class="field">
-      <label for="tasks">Tasks</label>
-      <p-autoComplete
-        [(ngModel)]="selectedTasks"
-        [suggestions]="filteredTasks"
-        (completeMethod)="filterTasks()"
-        field="label"
-        [dropdown]="true"
-        [multiple]="true"
-        appendTo="body"
-        id="tasks"
-      >
-      </p-autoComplete>
-      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
-    </div>
-
-    <div class="field">
-      <label for="status">Status</label>
-      <p-dropdown [options]="taskStatus" [(ngModel)]="selectedStatus" optionLabel="label" appendTo="body">
-        <ng-template pTemplate="selectedItem">
-          <div *ngIf="selectedStatus">
-            <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{ selectedStatus.label }}</span>
-          </div>
-        </ng-template>
-        <ng-template let-status pTemplate="item">
-          <div class="test">
-            <span class="custom-tag" [ngStyle]="selectColorWithStatus(status)">{{ status.label }}</span>
-          </div>
-        </ng-template>
-      </p-dropdown>
-      <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
+      <label for="label">Label</label>
+      <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
+      <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
     </div>
 
     <div class="field">
@@ -238,6 +182,33 @@
       </p-dropdown>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
+
+    <div class="field">
+      <label for="sprint">Sprint</label>
+      <p-dropdown [options]="projectSprints" [(ngModel)]="selectedSprint" optionLabel="label" appendTo="body"></p-dropdown>
+      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+    </div>
+
+    <div class="field">
+      <label for="createdAt">Creation Date</label><br />
+      <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'dd/MM/yyyy' }}</label>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <textarea
+        pInputTextarea
+        type="text"
+        style="height: 5rem"
+        [rows]="5" 
+        [cols]="30"  
+        [autoResize]="true"
+        id="description"
+        [(ngModel)]="item.description"
+        required
+      ></textarea>
+      <small class="p-invalid" *ngIf="submitted && !item.description">Required field</small>
+    </div>
   </ng-template>
 
   <ng-template pTemplate="footer">
@@ -245,5 +216,6 @@
     <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
   </ng-template>
 </p-dialog>
+
 
 <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>
