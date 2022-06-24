@@ -54,6 +54,11 @@ import { RetrieveAllTasksBySprintHandler } from './app/ipc-request-handlers/task
 import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-project.handler';
 import { UnassignSprintTaskHandler } from './app/ipc-request-handlers/task/unassign-sprint-task.handler copy';
 import { RetrieveAllSprintsOfUser } from './app/ipc-request-handlers/user/retrieve-all-sprints-of-user.handler';
+import { CreateUserTypeHandler } from './app/ipc-request-handlers/user-type/create-user-type.handler';
+import { DeleteUserTypeHandler } from './app/ipc-request-handlers/user-type/delete-user-type.handler';
+import { RetrieveUserTypeHandler } from './app/ipc-request-handlers/user-type/retrieve-user-type.handler';
+import { RetrieveAllUserTypesHandler } from './app/ipc-request-handlers/user-type/retrieve-all-user-type.handler';
+import { UpdateUserTypeHandler } from './app/ipc-request-handlers/user-type/update-user-type.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -122,6 +127,12 @@ import { RetrieveAllSprintsOfUser } from './app/ipc-request-handlers/user/retrie
 
       LoadFixturesHandler,
       TruncateDatabaseHandler,
+
+      CreateUserTypeHandler,
+      DeleteUserTypeHandler,
+      RetrieveUserTypeHandler,
+      RetrieveAllUserTypesHandler,
+      UpdateUserTypeHandler,
     ],
     settingsDirectoryPath: [homedir(), '.scrum-toolbox'],
   });

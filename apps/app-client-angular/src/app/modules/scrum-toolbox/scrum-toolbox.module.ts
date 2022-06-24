@@ -28,6 +28,7 @@ import { CrudSprintStatusComponent } from './components/crud-sprint-status/crud-
 import { CrudTaskTypeComponent } from './components/crud-task-type/crud-task-type.component';
 import { ProjectTeamComponent } from './components/project-team/project-team.component';
 import { CrudProductBacklogComponent } from './components/crud-product-backlog/crud-product-backlog.component';
+import { CrudUserTypeComponent } from './components/crud-user-type/crud-user-type.component';
 
 @Component({
   template: `
@@ -160,6 +161,7 @@ export class ScrumToolboxComponent {
     CrudTaskTypeComponent,
     ProjectTeamComponent,
     CrudProductBacklogComponent,
+    CrudUserTypeComponent,
   ],
   providers: [ScrumToolboxModule],
   imports: [
@@ -216,6 +218,10 @@ export class ScrumToolboxComponent {
               {
                 component: CrudSprintStatusComponent,
                 path: appRoutes.scrumToolbox.administration.sprintStatus,
+              },
+              {
+                component: CrudUserTypeComponent,
+                path: appRoutes.scrumToolbox.administration.userType,
               },
               {
                 path: '**',

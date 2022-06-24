@@ -13,6 +13,7 @@ export const appRoutes = {
       taskStatus: 'taskStatus',
       sprintStatus: 'sprintStatus',
       taskType: 'taskType',
+      userType: 'userType',
     },
     mainMenu: 'mainMenu',
     sprintBacklog: 'sprintBacklog',

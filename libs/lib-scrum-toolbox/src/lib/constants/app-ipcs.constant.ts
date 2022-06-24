@@ -47,4 +47,9 @@ export const appIpcs = {
   retrieveAllTasksBySprint: 'retrieveAllTasksBySprint',
   retrieveAllTasksByProject: 'retrieveAllTasksByProject',
   retrieveAllSprintsOfUser: 'retrieveAllSprintsOfUser',
+  createUserType: 'createUserType',
+  updateUserType: 'updateUserType',
+  deleteUserType: 'deleteUserType',
+  retrieveUserType: 'retrieveUserType',
+  retrieveAllUsersType: 'retrieveAllsUserType',
 };
