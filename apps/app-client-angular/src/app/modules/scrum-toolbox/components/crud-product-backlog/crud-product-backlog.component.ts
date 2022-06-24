@@ -184,6 +184,8 @@ export class CrudProductBacklogComponent {
         } else {
           this.item.sprint = this.selectedSprint;
         }
+
+        await this._ipcService.query(appIpcs.updateTask, this.item);
         
         this._toastMessageService.showSuccess('Item Created', 'Successful');
         
