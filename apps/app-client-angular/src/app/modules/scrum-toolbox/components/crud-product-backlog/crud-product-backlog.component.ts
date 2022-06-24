@@ -92,16 +92,8 @@ export class CrudProductBacklogComponent {
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         for (const item of this.selectedItems) {
-          const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
-
-          if (myProfile.user.id == item.id) {
-            this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
-            continue;
-          }
-
           try {
-            await this._ipcService.query(appIpcs.deleteUser, item.id);
-            this.items = this.items.filter((_) => _.id !== item.id);
+            await this._ipcService.query(appIpcs.deleteTask, item.id);
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
           }
@@ -109,6 +101,7 @@ export class CrudProductBacklogComponent {
         this.selectedItems = [];
 
         this._toastMessageService.showSuccess('Items Deleted', 'Successful');
+        this.refresh();
       },
     });
   }
@@ -128,23 +121,19 @@ export class CrudProductBacklogComponent {
   }
 
   async deleteItem(item: Task) {
-    const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
-
-    if (myProfile.user.id == item.id) {
-      this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
-      return;
-    }
-
+    
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         try {
-          await this._ipcService.query(appIpcs.deleteUser, item.id);
-          this.items = this.items.filter((_) => _.id !== item.id);
-          // this.item = {};
+          await this._ipcService.query(appIpcs.deleteTask, item.id);
+
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
+
+          this.refresh();
+
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
         }
@@ -175,7 +164,8 @@ export class CrudProductBacklogComponent {
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
-        this.ngOnInit();
+        
+        this.refresh();
 
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
@@ -185,7 +175,6 @@ export class CrudProductBacklogComponent {
         
         this.item.type = this.selectedType;
         this.item.project = this.selectedProject
-        console.log(this.item);
         
         this.item = await this._ipcService.query<Task>(appIpcs.createTask, this.item);
 
@@ -197,7 +186,8 @@ export class CrudProductBacklogComponent {
         }
         
         this._toastMessageService.showSuccess('Item Created', 'Successful');
-        this.ngOnInit();
+        
+        this.refresh();
 
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while creating item`);
@@ -208,6 +198,11 @@ export class CrudProductBacklogComponent {
     this.dialogUpdate = false;
     this.dialogNew = false;
     // this.item = {};
+  }
+
+  refresh() {
+    this.sub.unsubscribe();
+    this.ngOnInit();
   }
 
   findIndexById(id: string): number {
