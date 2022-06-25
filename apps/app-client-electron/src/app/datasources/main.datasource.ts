@@ -17,6 +17,7 @@ import {
 import { AddTaskCapacity2 } from '../migrations/2-add-task-capacity';
 import { AddColosToSprintStatus3 } from '../migrations/3-add-colors-sprint-status';
 import { UpgradeToNewSchema4 } from '../migrations/4-UpgradeToNewSchema';
+import { RenameUserTable5 } from '../migrations/5-RenameUserTable';
 
 export const mainDataSource = {
   type: 'better-sqlite3',
@@ -34,5 +35,5 @@ export const mainDataSource = {
     SprintMemberEntity,
     ProjectMemberEntity,
   ],
-  migrations: [InitializeDatabase1, AddTaskCapacity2, AddColosToSprintStatus3, UpgradeToNewSchema4],
+  migrations: [InitializeDatabase1, AddTaskCapacity2, AddColosToSprintStatus3, UpgradeToNewSchema4, RenameUserTable5],
 } as ConnectionOptions;
