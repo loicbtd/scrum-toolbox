@@ -14,6 +14,10 @@ import { IpcService } from '../../../../global/services/ipc.service';
         color: blue;
         font-weight: normal !important;
       }
+
+      th {
+        white-space: nowrap;
+      }
     `,
   ],
 })

@@ -6,7 +6,13 @@ import { ConfirmationService } from 'primeng/api';
 
 @Component({
   templateUrl: './crud-user-type.component.html',
-  styles: [],
+  styles: [
+    `
+      th {
+        white-space: nowrap;
+      }
+    `,
+  ],
 })
 export class CrudUserTypeComponent implements OnInit {
   items: UserType[];

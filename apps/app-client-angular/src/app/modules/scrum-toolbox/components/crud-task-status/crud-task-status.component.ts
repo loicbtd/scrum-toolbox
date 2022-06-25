@@ -11,6 +11,9 @@ import { ConfirmationService } from 'primeng/api';
       .p-invalid {
         color: red !important;
       }
+      th {
+        white-space: nowrap;
+      }
     `,
   ],
 })
