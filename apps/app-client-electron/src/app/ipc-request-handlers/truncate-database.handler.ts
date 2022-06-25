@@ -20,17 +20,19 @@ export class TruncateDatabaseHandler implements IpcRequestHandlerInterface {
     const connection = Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main');
+
     const entities = [
       ProjectMemberEntity,
       SprintMemberEntity,
       TaskEntity,
-      SprintEntity,
-      ProjectEntity,
       UserEntity,
-      TaskTypeEntity,
-      TaskStatusEntity,
-      SprintStatusEntity,
+      ProjectEntity,
+      // SprintEntity,
+      // TaskTypeEntity,
+      // TaskStatusEntity,
+      // SprintStatusEntity,
     ];
+
     for (const entity of entities) {
       await connection.getRepository(entity).clear();
     }
