@@ -39,10 +39,9 @@ import { CrudUserTypeComponent } from './components/crud-user-type/crud-user-typ
       [username]="getFormattedUsername((myProfile$ | async)?.user?.firstname, (myProfile$ | async)?.user?.lastname)"
     >
       <div navigationBarContent class="flex align-content-center align-items-center">
-        <h2>Project :</h2>
+        <h2 class="mr-2">Current project :</h2>
         <p-dropdown
           #dropDownProject
-          class="ml-5"
           (onChange)="updateProject($event.value)"
           [options]="projects"
           optionLabel="label"
