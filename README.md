@@ -173,7 +173,7 @@ Il existe 5 types d'issues :
             {
                 "name": "default",
                 "type": "better-sqlite3",
-                "database": "dist/database.db",
+                "database": "dist/main.db",
                 "entities": ["libs/lib-scrum-toolbox/src/lib/entities/*.ts"],
                 "migrations": ["libs/lib-scrum-toolbox/src/lib/migrations/*.ts"],
                 "cli": {

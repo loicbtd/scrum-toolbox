@@ -16,6 +16,7 @@ import {
 } from '@libraries/lib-scrum-toolbox';
 import { AddTaskCapacity2 } from '../migrations/2-add-task-capacity';
 import { AddColosToSprintStatus3 } from '../migrations/3-add-colors-sprint-status';
+import { UpgradeToNewSchema4 } from '../migrations/4-UpgradeToNewSchema';
 
 export const mainDataSource = {
   type: 'better-sqlite3',
@@ -34,5 +35,5 @@ export const mainDataSource = {
     SprintMemberEntity,
     ProjectMemberEntity,
   ],
-  migrations: [InitializeDatabase1, AddTaskCapacity2, AddColosToSprintStatus3],
+  migrations: [InitializeDatabase1, AddTaskCapacity2, AddColosToSprintStatus3, UpgradeToNewSchema4],
 } as ConnectionOptions;
