@@ -52,4 +52,6 @@ export const appIpcs = {
   deleteUserType: 'deleteUserType',
   retrieveUserType: 'retrieveUserType',
   retrieveAllUsersType: 'retrieveAllsUserType',
+  retrieveAllUsersNotInProject: 'retrieveAllUsersNotInProject',
+  assignUserToProject: 'assignUserToProject',
 };
