@@ -1,6 +1,7 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
+      <span class="mr-2">Current sprint :</span>
       <p-dropdown
         (onChange)="updateTasks($event.value)"
         class="sprint-dropdown"
@@ -10,7 +11,7 @@
       ></p-dropdown>
       <p-button
         pRipple
-        label="Add Tak(s)"
+        label="Add Task"
         icon="pi pi-plus"
         class="p-button-success p-mr-2"
         (click)="openNew()"
