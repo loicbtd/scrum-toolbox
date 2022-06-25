@@ -54,4 +54,7 @@ export const appIpcs = {
   retrieveAllUsersType: 'retrieveAllsUserType',
   retrieveAllUsersNotInProject: 'retrieveAllUsersNotInProject',
   assignUserToProject: 'assignUserToProject',
+  retrieveProductOwnersOfProject: 'retrieveProductOwnersOfProject',
+  retrieveScrumMastersOfProject: 'retrieveProductOwnersOfProject',
+  retrieveDevelopersOfProject: 'retrieveProductOwnersOfProject',
 };

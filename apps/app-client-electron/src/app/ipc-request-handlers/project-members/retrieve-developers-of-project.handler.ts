@@ -1,11 +1,11 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
-import { appIpcs, ProjectMemberEntity } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, UserEntity, ProjectMemberEntity } from '@libraries/lib-scrum-toolbox';
 
-export class RetrieveAllUsersInProject implements IpcRequestHandlerInterface {
-  channel = appIpcs.retrieveAllUsersInProject;
+export class RetrieveDevelopersOfProjectHandler implements IpcRequestHandlerInterface {
+  channel = appIpcs.retrieveDevelopersOfProject;
 
-  async handle(projectId: string): Promise<ProjectMemberEntity[]> {
+  async handle(projectId: string): Promise<UserEntity[]> {
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main')

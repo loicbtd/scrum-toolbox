@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class InitializeDatabase implements MigrationInterface {
+export class InitializeDatabase1 implements MigrationInterface {
     name = 'UpdateDatabase1655826219431'
 
     public async up(queryRunner: QueryRunner): Promise<void> {

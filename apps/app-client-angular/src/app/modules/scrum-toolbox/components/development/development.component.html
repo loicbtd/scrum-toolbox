@@ -1,11 +1,11 @@
 <div>
   <p-button label="LOAD FIXTURES" (click)="loadFixtures()"></p-button>
-  <p-button label="LOAD CONSTITENTIALS FIXTURES" (click)="loadConstitentialsFixtures()"></p-button>
+  <!-- <p-button label="LOAD CONSTITENTIALS FIXTURES" (click)="loadConstitentialsFixtures()"></p-button> -->
   <p-button label="TRUNCATE DATABASE" (click)="truncateDatabase()"></p-button>
 </div>
 
 <div>
-  <p-button label="CREATE USER" (click)="createUser()"></p-button>
+  <!-- <p-button label="CREATE USER" (click)="createUser()"></p-button> -->
   <p-button label="UPDATE USER" (click)="updateUser()" *ngIf="currentUser"></p-button>
   <p-button label="DELETE USER" (click)="deleteUser()" *ngIf="currentUser"></p-button>
   <p-button label="GET ALL USER" (click)="retrieveAllUsers()"></p-button>

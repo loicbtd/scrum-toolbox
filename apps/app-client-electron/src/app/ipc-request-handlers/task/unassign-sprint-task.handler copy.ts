@@ -1,6 +1,6 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
-import { appIpcs, Task } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, TaskEntity } from '@libraries/lib-scrum-toolbox';
 
 export class UnassignSprintTaskHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.unassignTaskToSprint;
@@ -11,9 +11,9 @@ export class UnassignSprintTaskHandler implements IpcRequestHandlerInterface {
       .getConnection('main');
 
     await connection
-      .getRepository<Task>(Task)
+      .getRepository<TaskEntity>(TaskEntity)
       .createQueryBuilder()
-      .update(Task)
+      .update(TaskEntity)
       .set({ sprint: null })
       .where('id = :id', { id: taskId })
       .execute();

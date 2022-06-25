@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, User, UserModel } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, UserEntity, UserModel } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Store } from '@ngxs/store';
@@ -15,7 +15,7 @@ export class CrudUsersComponent {
 
   items: UserModel[];
 
-  item: User;
+  item: UserEntity;
 
   selectedItems: UserModel[];
 

@@ -2,16 +2,15 @@ import { Application, DatabasesService, dependencies } from '@libraries/lib-elec
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
 import {
   appIpcs,
-  UserSprint,
-  Task,
-  Sprint,
-  Project,
-  User,
-  UserType,
-  TaskType,
-  TaskStatus,
-  SprintStatus,
-  UserUserTypeProject,
+  SprintMemberEntity,
+  TaskEntity,
+  SprintEntity,
+  ProjectEntity,
+  UserEntity,
+  TaskTypeEntity,
+  TaskStatusEntity,
+  SprintStatusEntity,
+  ProjectMemberEntity,
 } from '@libraries/lib-scrum-toolbox';
 
 export class TruncateDatabaseHandler implements IpcRequestHandlerInterface {
@@ -22,16 +21,15 @@ export class TruncateDatabaseHandler implements IpcRequestHandlerInterface {
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main');
     const entities = [
-      UserUserTypeProject,
-      UserSprint,
-      Task,
-      Sprint,
-      Project,
-      User,
-      UserType,
-      TaskType,
-      TaskStatus,
-      SprintStatus,
+      ProjectMemberEntity,
+      SprintMemberEntity,
+      TaskEntity,
+      SprintEntity,
+      ProjectEntity,
+      UserEntity,
+      TaskTypeEntity,
+      TaskStatusEntity,
+      SprintStatusEntity,
     ];
     for (const entity of entities) {
       await connection.getRepository(entity).clear();

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MyProfileState, ProjectsUpdatedState, ToastMessageService, UpdateProjects } from '@libraries/lib-angular';
-import { appIpcs, Project, User } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, ProjectEntity, UserEntity } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Select, Store } from '@ngxs/store';
@@ -12,25 +12,25 @@ import { lastValueFrom, Observable } from 'rxjs';
   styleUrls: ['./crud-projects.component.scss'],
 })
 export class CrudProjectsComponent implements OnInit {
-  items: Project[];
+  items: ProjectEntity[];
 
-  item: Project;
+  item: ProjectEntity;
 
-  selectedItems: Project[];
+  selectedItems: ProjectEntity[];
 
   submitted: boolean;
 
   dialog: boolean;
   attendeesDialog: boolean;
 
-  productOwners: User[];
-  availableProductOwners: User[];
+  productOwners: UserEntity[];
+  availableProductOwners: UserEntity[];
 
-  scrumMasters: User[];
-  availableScrumMasters: User[];
+  scrumMasters: UserEntity[];
+  availableScrumMasters: UserEntity[];
 
-  developers: User[];
-  availableDevelopers: User[];
+  developers: UserEntity[];
+  availableDevelopers: UserEntity[];
 
   get isCreationMode() {
     return !this.item.id;
@@ -46,7 +46,7 @@ export class CrudProjectsComponent implements OnInit {
   ) {}
 
   async ngOnInit() {
-    this.items = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
+    this.items = await this._ipcService.query<ProjectEntity[]>(appIpcs.retrieveAllProjects);
   }
 
   openNew() {
@@ -84,12 +84,12 @@ export class CrudProjectsComponent implements OnInit {
     });
   }
 
-  editItem(item: Project) {
+  editItem(item: ProjectEntity) {
     this.item = { ...item };
     this.dialog = true;
   }
 
-  async deleteItem(item: Project) {
+  async deleteItem(item: ProjectEntity) {
     const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
 
     if (myProfile.user.id == item.id) {
@@ -133,7 +133,7 @@ export class CrudProjectsComponent implements OnInit {
       }
     } else {
       try {
-        this.item = await this._ipcService.query<Project>(appIpcs.createProject, this.item);
+        this.item = await this._ipcService.query<ProjectEntity>(appIpcs.createProject, this.item);
         this.items.push(this.item);
         this._toastMessageService.showSuccess('Item Created', 'Successful');
       } catch (error: any) {
@@ -159,10 +159,10 @@ export class CrudProjectsComponent implements OnInit {
     return index;
   }
 
-  editAttendees(item: Project) {
-    this.productOwners = [];
-    this.developers = [];
-    this.scrumMasters = [];
+  async editAttendees(item: ProjectEntity) {
+    this.productOwners = await this._ipcService.query<UserEntity[]>(appIpcs.retrieveProductOwnersOfProject, item.id);
+    this.scrumMasters = await this._ipcService.query<UserEntity[]>(appIpcs.retrieveScrumMastersOfProject, item.id);
+    this.developers = await this._ipcService.query<UserEntity[]>(appIpcs.retrieveDevelopersOfProject, item.id);
     this.attendeesDialog = true;
   }
 
@@ -177,7 +177,7 @@ export class CrudProjectsComponent implements OnInit {
     console.log();
   }
 
-  async triggerUpdateProject(action: string, project: Project) {
+  async triggerUpdateProject(action: string, project: ProjectEntity) {
     await lastValueFrom(this._store.dispatch(new UpdateProjects(action, project.label + '')));
   }
 }

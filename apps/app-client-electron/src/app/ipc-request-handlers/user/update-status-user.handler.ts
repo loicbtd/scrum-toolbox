@@ -1,6 +1,6 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
-import { appIpcs, User } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, UserEntity } from '@libraries/lib-scrum-toolbox';
 
 export class UpdateStatusUserHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.updateStatusUser;
@@ -10,7 +10,7 @@ export class UpdateStatusUserHandler implements IpcRequestHandlerInterface {
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main')
       .createQueryBuilder()
-      .update(User)
+      .update(UserEntity)
       .set({ isActivated: data.isActivated })
       .where('id = :id', { id: data.id })
       .execute();

@@ -1,6 +1,6 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
-import { appIpcs, User, UserModel } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, UserEntity, UserModel } from '@libraries/lib-scrum-toolbox';
 
 export class RetrieveAllUsersNotInProjectHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.retrieveAllUsersNotInProject;
@@ -9,7 +9,7 @@ export class RetrieveAllUsersNotInProjectHandler implements IpcRequestHandlerInt
     const users = await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main')
-      .getRepository<User>(User)
+      .getRepository<UserEntity>(UserEntity)
       .createQueryBuilder('u')
       .select('u.id as id')
       .addSelect('u.username as username')
@@ -23,7 +23,7 @@ export class RetrieveAllUsersNotInProjectHandler implements IpcRequestHandlerInt
       })
       .andWhere('u.isActivated = true')
       .execute();
-    return users.map((user: User) => {
+    return users.map((user: UserEntity) => {
       return {
         id: user.id,
         username: user.username,

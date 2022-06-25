@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
 import {
   appIpcs,
-  Project,
-  Sprint,
-  Task,
-  TaskStatus,
-  TaskType,
-  User,
-  UserUserTypeProject,
+  ProjectEntity,
+  SprintEntity,
+  TaskEntity,
+  TaskStatusEntity,
+  TaskTypeEntity,
+  UserEntity,
+  ProjectMemberEntity,
 } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
@@ -27,32 +27,32 @@ export class CrudBacklogSprintComponent {
 
   dialogNew: boolean;
 
-  sprints: Sprint[];
+  sprints: SprintEntity[];
 
-  selectedSprint: Sprint;
+  selectedSprint: SprintEntity;
 
-  items: Task[];
+  items: TaskEntity[];
 
-  item: Task;
+  item: TaskEntity;
 
-  selectedItems: Task[];
+  selectedItems: TaskEntity[];
 
   submitted: boolean;
 
-  taskStatus: TaskStatus[];
-  selectedStatus: TaskStatus;
+  taskStatus: TaskStatusEntity[];
+  selectedStatus: TaskStatusEntity;
 
-  taskType: TaskType[];
-  selectedType: TaskType;
+  taskType: TaskTypeEntity[];
+  selectedType: TaskTypeEntity;
 
-  selectedAllUsersForTask: User[];
-  selectedUsers: User[];
-  filteredUsers: User[];
+  selectedAllUsersForTask: UserEntity[];
+  selectedUsers: UserEntity[];
+  filteredUsers: UserEntity[];
 
-  selectedProject: Project;
+  selectedProject: ProjectEntity;
 
-  selectedTasks: Task[];
-  filteredTasks: Task[];
+  selectedTasks: TaskEntity[];
+  filteredTasks: TaskEntity[];
 
   sub: Subscription;
 
@@ -66,18 +66,18 @@ export class CrudBacklogSprintComponent {
     private readonly _ipcService: IpcService
   ) {}
 
-  async ngOnInit(sprint: Sprint | undefined) {
-    this.taskStatus = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
+  async ngOnInit(sprint: SprintEntity | undefined) {
+    this.taskStatus = await this._ipcService.query<TaskStatusEntity[]>(appIpcs.retrieveAllTasksStatus);
     this.selectedStatus = this.taskStatus[0];
 
-    this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
+    this.taskType = await this._ipcService.query<TaskTypeEntity[]>(appIpcs.retrieveAllTasksType);
     this.selectedType = this.taskType[0];
 
     this.sub = this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
       if (data) {
         this.selectedProject = data.project;
 
-        this.sprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
+        this.sprints = await this._ipcService.query<SprintEntity[]>(appIpcs.retrieveAllSprintsByProject, {
           id: this.selectedProject.id,
         });
 
@@ -94,8 +94,8 @@ export class CrudBacklogSprintComponent {
 
   openNew() {
     this.initDialogFieldsNew();
-    const tempStatus = this.item?.status as TaskStatus;
-    const tempType = this.item?.type as TaskType;
+    const tempStatus = this.item?.status as TaskStatusEntity;
+    const tempType = this.item?.type as TaskTypeEntity;
     this.item = { status: tempStatus, type: tempType };
     this.submitted = false;
     this.dialogNew = true;
@@ -110,27 +110,26 @@ export class CrudBacklogSprintComponent {
         for (const item of this.selectedItems) {
           try {
             await this._ipcService.query(appIpcs.unassignTaskToSprint, item.id);
-            
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
           }
         }
         this.selectedItems = [];
-        
+
         this._toastMessageService.showSuccess('Items Deleted', 'Successful');
         this.refresh();
       },
     });
   }
 
-  initDialogFieldsUpdate(item: Task) {
+  initDialogFieldsUpdate(item: TaskEntity) {
     this.selectedUsers = [];
     this.selectedStatus = item.status;
     this.selectedType = item.type;
     this.filterUsers(item);
   }
 
-  editItem(item: Task) {
+  editItem(item: TaskEntity) {
     this.initDialogFieldsUpdate(item);
     this.item = { ...item };
     this.dialogUpdate = true;
@@ -141,7 +140,7 @@ export class CrudBacklogSprintComponent {
     this.filterTasks();
   }
 
-  async deleteItem(task: Task) {
+  async deleteItem(task: TaskEntity) {
     this._confirmationService.confirm({
       message: 'Are you sure you want to remove this task from the sprint?',
       header: 'Confirm',
@@ -150,8 +149,8 @@ export class CrudBacklogSprintComponent {
         try {
           await this._ipcService.query(appIpcs.unassignTaskToSprint, task.id);
 
-          const tempStatus = this.item.status as TaskStatus;
-          const tempType = this.item.type as TaskType;
+          const tempStatus = this.item.status as TaskStatusEntity;
+          const tempType = this.item.type as TaskTypeEntity;
           this.item = { status: tempStatus, type: tempType };
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
 
@@ -183,7 +182,6 @@ export class CrudBacklogSprintComponent {
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
 
         this.refresh();
-        
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
@@ -193,8 +191,8 @@ export class CrudBacklogSprintComponent {
           task.status = this.selectedStatus;
           task.type = this.selectedType;
 
-          const t = await this._ipcService.query<Task>(appIpcs.updateTask, task);
-          await this._ipcService.query<Sprint>(appIpcs.assignTaskToSprint, {
+          const t = await this._ipcService.query<TaskEntity>(appIpcs.updateTask, task);
+          await this._ipcService.query<SprintEntity>(appIpcs.assignTaskToSprint, {
             taskId: t.id,
             sprintId: this.selectedSprint.id,
           });
@@ -205,7 +203,6 @@ export class CrudBacklogSprintComponent {
         this.hideDialog();
 
         this.refresh();
-
       } catch (error: any) {
         this.resetDialogNew();
         this.hideDialog();
@@ -216,8 +213,8 @@ export class CrudBacklogSprintComponent {
 
     this.items = [...this.items];
     this.dialogUpdate = false;
-    const tempStatus = this.item.status as TaskStatus;
-    const tempType = this.item.type as TaskType;
+    const tempStatus = this.item.status as TaskStatusEntity;
+    const tempType = this.item.type as TaskTypeEntity;
     this.item = { status: tempStatus, type: tempType };
   }
 
@@ -244,20 +241,20 @@ export class CrudBacklogSprintComponent {
     return { 'background-color': it.backgroundColor, color: it.textColor };
   }
 
-  getInitials(user: any): string {
-    return '' + user.firstname.charAt(0) + '' + user.lastname.charAt(0);
+  getInitials(user: UserEntity): string {
+    return `${user.firstname?.charAt(0)}${user.lastname?.charAt(0)}}`;
   }
 
-  async updateTasks(sprint: Sprint) {
+  async updateTasks(sprint: SprintEntity) {
     this.selectedSprint = sprint;
-    const a = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
+    const a = await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
 
     this.items = a;
     this.item = this.items[0];
   }
 
-  convertUserUserTypeProjectIntoUsers(usersTypeProject: UserUserTypeProject[]): User[] {
-    const result: User[] = [];
+  convertUserUserTypeProjectIntoUsers(usersTypeProject: ProjectMemberEntity[]): UserEntity[] {
+    const result: UserEntity[] = [];
 
     usersTypeProject.forEach((el) => {
       if (el.user) {
@@ -268,8 +265,8 @@ export class CrudBacklogSprintComponent {
     return result;
   }
 
-  async filterUsers(task: Task) {
-    const usersProject: UserUserTypeProject[] = await this._ipcService.query<UserUserTypeProject[]>(
+  async filterUsers(task: TaskEntity) {
+    const usersProject: ProjectMemberEntity[] = await this._ipcService.query<ProjectMemberEntity[]>(
       appIpcs.retrieveAllUsersInProject,
       this.selectedProject.id
     );
@@ -291,12 +288,12 @@ export class CrudBacklogSprintComponent {
   }
 
   async filterTasks() {
-    const tasksProject: Task[] = await this._ipcService.query<Task[]>(
+    const tasksProject = await this._ipcService.query<TaskEntity[]>(
       appIpcs.retrieveAllTasksByProject,
       this.selectedProject.id
     );
 
-    let tasksSprint: Task[] = await this._ipcService.query<Task[]>(
+    let tasksSprint = await this._ipcService.query<TaskEntity[]>(
       appIpcs.retrieveAllTasksBySprint,
       this.selectedSprint.id
     );

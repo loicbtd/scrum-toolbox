@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddColosToSprintStatus implements MigrationInterface {
+export class AddColosToSprintStatus3 implements MigrationInterface {
   name = 'AddColosToSprintStatus1655991726068';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

@@ -1,15 +1,15 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToMany } from 'typeorm';
-import { Task } from './task.entity';
+import { TaskEntity } from './task.entity';
 
 @Entity()
-export class User {
+export class UserEntity {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
   @Column({ unique: true })
   username?: string;
 
-  @Column()
+  @Column({ select: false })
   password?: string;
 
   @Column()
@@ -24,6 +24,6 @@ export class User {
   @Column({ default: true })
   isActivated?: boolean;
 
-  @ManyToMany(() => Task, (task) => task.users)
-  tasks?: Task[];
+  @ManyToMany(() => TaskEntity, (task) => task.users)
+  tasks?: TaskEntity[];
 }

@@ -184,7 +184,11 @@ Il existe 5 types d'issues :
         ```
 
 3. Réinstaller les drivers non-recompilés s'ils ont été recompilés dans un script de postinstall :
-    - Sqlite3 : `npm i better-sqlite3`
+    - Sqlite3 : 
+        ```shell
+        npm r typeorm better-sqlite3
+        npm i typeorm@^0.2.45 better-sqlite3
+        ```
 
 ## 4.2. Gérer les migrations
 

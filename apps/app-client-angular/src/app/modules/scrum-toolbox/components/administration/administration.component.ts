@@ -32,9 +32,9 @@ export class AdministrationComponent {
       routerLink: [appRoutes.scrumToolbox.administration.sprintStatus],
     },
     {
-      label: 'User Type',
-      icon: 'fa-solid fa-user-pen',
-      routerLink: [appRoutes.scrumToolbox.administration.userType],
+      label: 'Dev',
+      icon: 'fa-solid fa-code',
+      routerLink: [appRoutes.scrumToolbox.administration.development]
     },
   ];
 }

@@ -5,13 +5,13 @@ import { CurrentProjectModel } from '../../../../global/models/current-project.m
 import { Observable } from 'rxjs';
 import {
   appIpcs,
-  Sprint,
-  UserUserTypeProject,
-  Task,
-  User,
-  Project,
+  SprintEntity,
+  TaskEntity,
+  UserEntity,
   UserModel,
-  UserType,
+  ProjectEntity,
+  ProjectMemberEntity,
+  ProjectRoleEnumeration,
 } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 
@@ -34,18 +34,20 @@ import { IpcService } from '../../../../global/services/ipc.service';
 })
 export class ProjectTeamComponent implements OnInit {
   @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
-  projectSelected!: Project;
+
+  projectSelected!: ProjectEntity;
+
   dialog = false;
 
-  selectedItem: UserUserTypeProject;
+  selectedItem: ProjectMemberEntity;
 
-  userSprints!: Sprint[];
+  userSprints!: SprintEntity[];
 
   sprintsMapping: { [k: string]: string } = { '<2': 'Sprint', other: 'Sprints' };
 
-  userUserTypeProject!: UserUserTypeProject[];
+  projectMembers!: ProjectMemberEntity[];
 
-  usersTasks!: Task[];
+  usersTasks!: TaskEntity[];
 
   dialogNew = false;
 
@@ -55,9 +57,9 @@ export class ProjectTeamComponent implements OnInit {
 
   newUser!: UserModel;
 
-  usersPositions!: UserType[];
+  projectRoles!: ProjectRoleEnumeration[];
 
-  newUserPosition!: UserType;
+  newUserPosition!: ProjectRoleEnumeration;
 
   constructor(private readonly _ipcService: IpcService, private readonly _toastMessageService: ToastMessageService) {}
 
@@ -69,16 +71,16 @@ export class ProjectTeamComponent implements OnInit {
   }
 
   async updateUsers() {
-    this.userUserTypeProject = await this._ipcService.query<UserUserTypeProject[]>(
+    this.projectMembers = await this._ipcService.query<ProjectMemberEntity[]>(
       appIpcs.retrieveAllUsersInProject,
       this.projectSelected.id
     );
   }
 
-  async showDetails(item: UserUserTypeProject) {
+  async showDetails(item: ProjectMemberEntity) {
     this.selectedItem = item;
     this.dialog = true;
-    this.userSprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsOfUser, {
+    this.userSprints = await this._ipcService.query<SprintEntity[]>(appIpcs.retrieveAllSprintsOfUser, {
       userId: item.user?.id,
       projectId: item.project?.id,
     });
@@ -91,46 +93,19 @@ export class ProjectTeamComponent implements OnInit {
   }
 
   async displayTaskForSprint(index: number) {
-    const t = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.userSprints[index].id);
+    const t = await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksBySprint, this.userSprints[index].id);
     this.usersTasks = t.filter((_) => this.selectedItem.user && _.users?.includes(this.selectedItem.user));
   }
 
-  selectColorStatus(it: Task): object {
+  selectColorStatus(it: TaskEntity): object {
     return { 'background-color': it.status.backgroundColor, color: it.status.textColor };
   }
 
-  selectColorType(it: Task): object {
+  selectColorType(it: TaskEntity): object {
     return { 'background-color': it.type.backgroundColor, color: it.type.textColor };
   }
 
-  getInitials(user: User): string {
+  getInitials(user: UserEntity): string {
     return '' + user.firstname?.charAt(0) + '' + user.lastname?.charAt(0);
-  }
-
-  async openNew() {
-    this.dialogNew = true;
-    this.usersAvailables = await this._ipcService.query(appIpcs.retrieveAllUsersNotInProject, this.projectSelected.id);
-    this.usersPositions = await this._ipcService.query(appIpcs.retrieveAllUsersType);
-  }
-
-  hideNewDialog() {
-    this.newUser = {};
-    this.newUserPosition = new UserType();
-    this.dialogNew = false;
-    this.newSubmitted = false;
-  }
-
-  async saveNewItem() {
-    this.newSubmitted = true;
-    if (this.newUser && this.newUserPosition) {
-      const uutp = new UserUserTypeProject();
-      uutp.project = this.projectSelected;
-      uutp.user = this.newUser;
-      uutp.userType = this.newUserPosition;
-      await this._ipcService.query(appIpcs.assignUserToProject, uutp);
-      await this.updateUsers();
-      this._toastMessageService.showSuccess('Item Created', 'Successful');
-      this.hideNewDialog();
-    }
   }
 }

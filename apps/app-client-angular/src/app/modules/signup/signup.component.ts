@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ToastMessageService } from '@libraries/lib-angular';
-import { appRoutes, errorsName, User } from '@libraries/lib-scrum-toolbox';
+import { appRoutes, errorsName, UserEntity } from '@libraries/lib-scrum-toolbox';
 import { appIpcs } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../global/services/ipc.service';
 
@@ -42,7 +42,7 @@ export class SignUpComponent {
     }
 
     try {
-      const user = new User();
+      const user = new UserEntity();
       user.username = this.formUp.get('login')?.value;
       user.firstname = this.formUp.get('firstname')?.value;
       user.lastname = this.formUp.get('lastname')?.value;

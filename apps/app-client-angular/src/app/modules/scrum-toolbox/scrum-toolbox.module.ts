@@ -1,7 +1,6 @@
 import { NgModule, Component, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
-import { ProjectsComponent } from './components/projects/projects.component';
 import {
   AuthenticationService,
   CurrentProjectState,
@@ -10,8 +9,7 @@ import {
   CurrentProjectService,
   ProjectsUpdatedState,
 } from '@libraries/lib-angular';
-import { appIpcs, appRoutes, Project } from '@libraries/lib-scrum-toolbox';
-import { WebserviceTestComponent } from './components/webservice-test/webservice-test.component';
+import { appIpcs, appRoutes, ProjectEntity } from '@libraries/lib-scrum-toolbox';
 import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { MyProfileModel } from '../../global/models/my-profile.model';
@@ -26,8 +24,9 @@ import { CrudTaskStatusComponent } from './components/crud-task-status/crud-task
 import { CrudSprintStatusComponent } from './components/crud-sprint-status/crud-sprint-status.component';
 import { CrudTaskTypeComponent } from './components/crud-task-type/crud-task-type.component';
 import { ProjectTeamComponent } from './components/project-team/project-team.component';
-import { CrudProductBacklogComponent } from './components/crud-product-backlog/crud-product-backlog.component';
-import { CrudUserTypeComponent } from './components/crud-user-type/crud-user-type.component';
+import { CrudBacklogProductComponent } from './components/crud-backlog-product/crud-backlog-product.component';
+import { DevelopmentComponent } from './components/development/development.component';
+import { MetricsComponent } from './components/project-metrics/project-metrics.component';
 
 @Component({
   template: `
@@ -64,15 +63,10 @@ export class ScrumToolboxComponent {
     {
       label: 'Sprint backlog',
       iconClass: 'fa-solid fa-list-check',
-      routerLink: [appRoutes.scrumToolbox.sprintBacklog],
+      routerLink: [appRoutes.scrumToolbox.backlogSprint],
     },
     { label: 'Team', iconClass: 'fa-solid fa-user', routerLink: [appRoutes.scrumToolbox.projectTeam] },
-    { label: 'Metrics', iconClass: 'fa-solid fa-chart-line', routerLink: ['#'] },
-    {
-      label: 'TEST',
-      iconClass: 'fa-solid fa-flask-vial',
-      routerLink: [appRoutes.scrumToolbox.test],
-    },
+    { label: 'Metrics', iconClass: 'fa-solid fa-chart-line', routerLink: [appRoutes.scrumToolbox.metrics] },
   ];
 
   avatarNavigationItems: NavigationItemInterface[] = [
@@ -93,7 +87,7 @@ export class ScrumToolboxComponent {
 
   @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
 
-  projects!: Project[];
+  projects!: ProjectEntity[];
 
   @Select(ProjectsUpdatedState) projectsUdpated$: Observable<string>;
 
@@ -112,7 +106,7 @@ export class ScrumToolboxComponent {
   }
 
   async updateProject(projectId: string) {
-    const selected = this.projects.find((p: Project) => p.id == projectId);
+    const selected = this.projects.find((p: ProjectEntity) => p.id == projectId);
     if (selected) {
       await this._currentProjectService.refreshProject<CurrentProjectModel>({
         project: selected,
@@ -127,7 +121,7 @@ export class ScrumToolboxComponent {
   ) {}
 
   private async updateAllProjects() {
-    this.projects = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
+    this.projects = await this._ipcService.query<ProjectEntity[]>(appIpcs.retrieveAllProjects);
   }
 
   async ngOnInit(): Promise<void> {
@@ -147,8 +141,7 @@ export class ScrumToolboxComponent {
 @NgModule({
   declarations: [
     ScrumToolboxComponent,
-    ProjectsComponent,
-    WebserviceTestComponent,
+    DevelopmentComponent,
     CrudUsersComponent,
     CrudProjectsComponent,
     AdministrationComponent,
@@ -157,8 +150,8 @@ export class ScrumToolboxComponent {
     CrudSprintStatusComponent,
     CrudTaskTypeComponent,
     ProjectTeamComponent,
-    CrudProductBacklogComponent,
-    CrudUserTypeComponent,
+    CrudBacklogProductComponent,
+    MetricsComponent,
   ],
   providers: [ScrumToolboxModule],
   imports: [
@@ -169,19 +162,11 @@ export class ScrumToolboxComponent {
         component: ScrumToolboxComponent,
         children: [
           {
-            path: appRoutes.scrumToolbox.mainMenu,
-            component: ProjectsComponent,
+            path: appRoutes.scrumToolbox.root,
+            component: CrudBacklogProductComponent,
           },
           {
-            path: appRoutes.scrumToolbox.all,
-            component: ProjectsComponent,
-          },
-          {
-            path: appRoutes.scrumToolbox.test,
-            component: WebserviceTestComponent,
-          },
-          {
-            path: appRoutes.scrumToolbox.sprintBacklog,
+            path: appRoutes.scrumToolbox.backlogSprint,
             component: CrudBacklogSprintComponent,
           },
           {
@@ -189,8 +174,8 @@ export class ScrumToolboxComponent {
             component: ProjectTeamComponent,
           },
           {
-            path: appRoutes.scrumToolbox.root,
-            component: CrudProductBacklogComponent,
+            path: appRoutes.scrumToolbox.metrics,
+            component: MetricsComponent,
           },
           {
             path: appRoutes.scrumToolbox.administration.root,
@@ -217,8 +202,8 @@ export class ScrumToolboxComponent {
                 path: appRoutes.scrumToolbox.administration.sprintStatus,
               },
               {
-                component: CrudUserTypeComponent,
-                path: appRoutes.scrumToolbox.administration.userType,
+                path: appRoutes.scrumToolbox.administration.development,
+                component: DevelopmentComponent,
               },
               {
                 path: '**',
