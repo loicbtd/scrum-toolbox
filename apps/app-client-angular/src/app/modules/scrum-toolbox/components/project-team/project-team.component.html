@@ -1,6 +1,13 @@
+<p-button
+  class=""
+  pRipple
+  label="Add user"
+  icon="pi pi-plus"
+  class="p-button-success p-mr-2"
+  (click)="openNew()"
+></p-button>
 <div class="px-4 py-8 md:px-6 lg:px-8">
   <div class="grid">
-    <!-- BEGIN -->
     <div class="col" *ngFor="let item of userUserTypeProject">
       <div class="p-3 h-full">
         <p-card
@@ -49,7 +56,10 @@
   </ng-template>
   <ng-template pTemplate="body">
     <div *ngIf="userSprints">
-      <p>{{ userSprints.length | i18nPlural: sprintsMapping }}</p>
+      <p>
+        <strong>{{ userSprints.length | i18nPlural: sprintsMapping }}</strong>
+      </p>
+      <p *ngIf="userSprints.length === 0"><em>No sprint</em></p>
       <p-accordion (onOpen)="displayTaskForSprint($event.index)">
         <p-accordionTab [header]="sprint.label + ''" *ngFor="let sprint of userSprints">
           <p-table
@@ -123,4 +133,59 @@
   <ng-template pTemplate="footer"> </ng-template>
 </p-dialog>
 
-<ng-template userSprintsContainer> < </ng-template>
+<p-dialog
+  [(visible)]="dialogNew"
+  [style]="{ width: '450px', minHeight: '10rem' }"
+  header="User to add"
+  [modal]="true"
+  styleClass="p-fluid"
+>
+  <ng-template pTemplate="content">
+    <div class="field flex flex-column">
+      <label for="label">User</label>
+      <p-dropdown
+        [options]="usersAvailables"
+        [(ngModel)]="newUser"
+        [filter]="true"
+        [showClear]="true"
+        placeholder="Select user"
+        appendTo="body"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div class="country-item country-item-value" *ngIf="newUser">
+            <div>{{ newUser.firstname }} {{ newUser.lastname | titlecase }}</div>
+          </div>
+        </ng-template>
+        <ng-template let-u pTemplate="item">
+          <div>{{ u.firstname }} {{ u.lastname | titlecase }}</div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-invalid" *ngIf="newSubmitted && !newUser">Required field</small>
+    </div>
+    <div class="field flex flex-column">
+      <label for="label">Position</label>
+      <p-dropdown
+        [options]="usersPositions"
+        [(ngModel)]="newUserPosition"
+        [showClear]="true"
+        placeholder="Select position"
+        appendTo="body"
+      >
+        <ng-template pTemplate="selectedItem">
+          <div class="country-item country-item-value" *ngIf="newUserPosition">
+            <div>{{ newUserPosition.label }}</div>
+          </div>
+        </ng-template>
+        <ng-template let-position pTemplate="item">
+          <div>{{ position.label }}</div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-invalid" *ngIf="newSubmitted && !newUserPosition">Required field</small>
+    </div>
+  </ng-template>
+
+  <ng-template pTemplate="footer">
+    <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideNewDialog()"></button>
+    <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveNewItem()"></button>
+  </ng-template>
+</p-dialog>
