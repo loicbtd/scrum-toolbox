@@ -59,6 +59,8 @@ import { DeleteUserTypeHandler } from './app/ipc-request-handlers/user-type/dele
 import { RetrieveUserTypeHandler } from './app/ipc-request-handlers/user-type/retrieve-user-type.handler';
 import { RetrieveAllUserTypesHandler } from './app/ipc-request-handlers/user-type/retrieve-all-user-type.handler';
 import { UpdateUserTypeHandler } from './app/ipc-request-handlers/user-type/update-user-type.handler';
+import { RetrieveAllUsersNotInProjectHandler } from './app/ipc-request-handlers/project/retrieve-all-users-not-in-project.handler';
+import { AssignUserToProjectHandler } from './app/ipc-request-handlers/project/assign-user-to-project.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -90,6 +92,7 @@ import { UpdateUserTypeHandler } from './app/ipc-request-handlers/user-type/upda
       RetrieveTaskHandler,
       RetrieveAllTasksBySprintHandler,
       RetrieveAllTasksByProjectHandler,
+      AssignUserToProjectHandler,
 
       CreateTaskTypeHandler,
       DeleteTaskTypeHandler,
@@ -124,6 +127,7 @@ import { UpdateUserTypeHandler } from './app/ipc-request-handlers/user-type/upda
       RetrieveAllProjectsHandler,
       UpdateProjectHandler,
       RetrieveAllUsersInProject,
+      RetrieveAllUsersNotInProjectHandler,
 
       LoadFixturesHandler,
       TruncateDatabaseHandler,
