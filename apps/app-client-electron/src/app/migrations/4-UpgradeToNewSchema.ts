@@ -50,6 +50,10 @@ export class UpgradeToNewSchema4 implements MigrationInterface {
     await queryRunner.query(
       `CREATE INDEX "IDX_6393a6d1fa5fd2db6b8c9f1138" ON "task_users_user_entity" ("userEntityId") `
     );
+
+    await queryRunner.query(`DROP TABLE user_user_type_project`);
+
+    await queryRunner.query(`DROP TABLE user_type`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

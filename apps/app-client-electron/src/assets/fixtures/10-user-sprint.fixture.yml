@@ -1,6 +1,0 @@
-entity: user_sprint
-items:
-  user_sprint{1..20}:
-    capacity: '{{datatype.number(50)}}'
-    user: '@user*'
-    sprint: '@sprint*'

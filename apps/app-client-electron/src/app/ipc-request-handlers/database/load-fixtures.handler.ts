@@ -21,6 +21,7 @@ export class LoadFixturesHandler implements IpcRequestHandlerInterface {
 
     for (const fixture of fixturesIterator(fixtures)) {
       const entity = await builder.build(fixture);
+
       await connection.getRepository(entity.constructor.name).save(entity);
     }
   }

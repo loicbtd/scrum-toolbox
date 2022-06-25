@@ -23,7 +23,6 @@ export const mainDataSource = {
   database: environment.production
     ? join(homedir(), '.scrum-toolbox', 'databases', 'main.db')
     : join('dist', 'main.db'),
-  logging: false,
   entities: [
     ProjectEntity,
     SprintEntity,

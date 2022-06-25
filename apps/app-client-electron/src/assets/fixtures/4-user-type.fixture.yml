@@ -1,4 +1,0 @@
-entity: user_type
-items:
-  user_type{1..5}:
-    label: '{{name.jobType}}'

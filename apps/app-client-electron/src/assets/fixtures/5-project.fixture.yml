@@ -1,0 +1,9 @@
+entity: project
+items:
+  project0:
+    label: 'Agrid'
+    description: '{{lorem.paragraph}}'
+
+  project1:
+    label: 'Open Days with Alexa'
+    description: 'The Open days with Alexa solution aims to make the presentation of information about UTBM to visitors during open days autonomous. A visitor can make a request to an Alexa device to trigger the display of information on the Open days with Alexa desktop applications that are connected.'

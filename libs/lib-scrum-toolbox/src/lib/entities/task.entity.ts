@@ -47,12 +47,10 @@ export class TaskEntity {
   @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
   project?: ProjectEntity;
-  //TODO dropdown project
-  // project!: Project;
 
   @ManyToMany(() => UserEntity, (user) => user.tasks, { eager: true })
   @JoinTable()
-  users?: UserModel[];
+  users?: UserEntity[];
 
   @ManyToOne(() => SprintEntity, (sprint) => sprint.tasks, { nullable: true, eager: true })
   @JoinColumn({ name: 'sprintId' })

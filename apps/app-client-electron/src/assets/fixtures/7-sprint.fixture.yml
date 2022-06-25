@@ -1,8 +1,0 @@
-entity: sprint
-items:
-  sprint{1..10}:
-    label: '{{lorem.words}}'
-    start_date: '{{date.soon}}'
-    end_date: '{{date.future}}'
-    status: '@sprint_status*'
-    project: '@project*'

@@ -45,8 +45,8 @@ import { RetrieveProjectHandler } from './app/ipc-request-handlers/project/retri
 import { RetrieveAllProjectsHandler } from './app/ipc-request-handlers/project/retrieve-all-projects.handler';
 import { UpdateProjectHandler } from './app/ipc-request-handlers/project/update-project.handler';
 import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-project.handler';
-import { LoadFixturesHandler } from './app/ipc-request-handlers/fixtures/load-fixtures.handler';
-import { TruncateDatabaseHandler } from './app/ipc-request-handlers/truncate-database.handler';
+import { LoadFixturesHandler } from './app/ipc-request-handlers/database/load-fixtures.handler';
+import { TruncateDatabaseHandler } from './app/ipc-request-handlers/database/truncate-database.handler';
 import { mainDataSource } from './app/datasources/main.datasource';
 import { RetrieveAllUsersInProject } from './app/ipc-request-handlers/project/retrieve-users-in-project.handler';
 import { StartupWindow } from './app/windows/startup.window';
