@@ -26,6 +26,9 @@ import { IpcService } from '../../../../global/services/ipc.service';
       .p-invalid {
         color: red !important;
       }
+      th {
+        white-space: nowrap;
+      }
     `,
   ],
 })
