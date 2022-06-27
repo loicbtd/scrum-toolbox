@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
 import { ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, ProjectEntity } from '@libraries/lib-scrum-toolbox';
-import { Store } from '@ngxs/store';
-import { lastValueFrom } from 'rxjs';
+import { appIpcs } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
-import { RefreshAvailableProjects } from '../../store/actions/project-context.actions';
+import { ProjectContextService } from '../../services/project-context.service';
 
 @Component({
   template: `
@@ -31,7 +29,7 @@ export class DevelopmentComponent {
   constructor(
     private readonly _ipcService: IpcService,
     private readonly _toastMessageService: ToastMessageService,
-    private readonly _store: Store
+    private readonly _projectContextService: ProjectContextService
   ) {}
 
   async reloadFixtures() {
@@ -43,10 +41,6 @@ export class DevelopmentComponent {
       throw error;
     }
 
-    await lastValueFrom(
-      this._store.dispatch(
-        new RefreshAvailableProjects(await this._ipcService.query<ProjectEntity[]>(appIpcs.retrieveAllProjects))
-      )
-    );
+    await this._projectContextService.refreshAvailableProjects();
   }
 }
