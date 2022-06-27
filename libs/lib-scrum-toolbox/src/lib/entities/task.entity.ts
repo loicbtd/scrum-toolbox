@@ -35,7 +35,7 @@ export class TaskEntity {
   @UpdateDateColumn()
   updatedAt?: Date;
 
-  @ManyToOne(() => TaskStatusEntity, (taskStatus) => taskStatus.id, { eager: true, nullable: true })
+  @ManyToOne(() => TaskStatusEntity, (taskStatus) => taskStatus.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'statusId' })
   status?: TaskStatusEntity;
 

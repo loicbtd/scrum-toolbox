@@ -19,6 +19,7 @@ import { AddColosToSprintStatus3 } from '../migrations/3-add-colors-sprint-statu
 import { UpgradeToNewSchema4 } from '../migrations/4-UpgradeToNewSchema';
 import { RenameUserTable5 } from '../migrations/5-RenameUserTable';
 import { UpdateEntities6 } from '../migrations/6-UpdateEntities';
+import { UpdateTaskEntity7 } from '../migrations/7-UpdateTaskEntity';
 
 export const mainDataSource = {
   type: 'better-sqlite3',
@@ -43,5 +44,6 @@ export const mainDataSource = {
     UpgradeToNewSchema4,
     RenameUserTable5,
     UpdateEntities6,
+    UpdateTaskEntity7,
   ],
 } as ConnectionOptions;

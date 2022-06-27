@@ -1,6 +1,6 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class UpdateEntities1656331026641 implements MigrationInterface {
+export class UpdateEntities6 implements MigrationInterface {
     name = 'UpdateEntities1656331026641'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
