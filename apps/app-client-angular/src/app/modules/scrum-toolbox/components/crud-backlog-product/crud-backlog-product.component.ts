@@ -28,6 +28,8 @@ export class CrudBacklogProductComponent implements OnInit, OnDestroy {
   availableTaskTypes: TaskTypeEntity[];
   availableTaskStatuses: TaskStatusEntity[];
 
+  capa: number | undefined;
+
   get isCreationMode() {
     return !this.item.id;
   }
@@ -59,6 +61,8 @@ export class CrudBacklogProductComponent implements OnInit, OnDestroy {
 
   openNew() {
     this.item = { project: this._store.selectSnapshot<ProjectContextModel>(ProjectContextState).project };
+    this.capa = 5;
+    this.item = {  capacity: this.capa };
     this.submitted = false;
     this.dialog = true;
   }
@@ -114,6 +118,11 @@ export class CrudBacklogProductComponent implements OnInit, OnDestroy {
     this.submitted = true;
 
     if (this.item.id) {
+
+      if (this.item.label === '' || this.item.description === '') {
+        return;
+      }
+
       try {
         if (!this.item.sprint) {
           await this._ipcService.query(appIpcs.unassignTaskToSprint, this.item.id);
@@ -128,6 +137,7 @@ export class CrudBacklogProductComponent implements OnInit, OnDestroy {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
     } else {
+     
       try {
         this.item = await this._ipcService.query<TaskEntity>(appIpcs.createTask, this.item);
 

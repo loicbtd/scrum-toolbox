@@ -39,6 +39,8 @@ export class CrudBacklogSprintComponent implements OnInit, OnDestroy {
   availableTaskTypes: TaskTypeEntity[];
   availableTaskStatuses: TaskStatusEntity[];
 
+  capa: number | undefined;
+
   get isCreationMode() {
     return !this.item.id;
   }
@@ -128,6 +130,9 @@ export class CrudBacklogSprintComponent implements OnInit, OnDestroy {
     this.submitted = true;
 
     if (this.item.id) {
+      if (this.item.label === '' || this.item.description === '') {
+        return;
+      }
       try {
         if (!this.item.sprint) {
           await this._ipcService.query(appIpcs.unassignTaskToSprint, this.item.id);

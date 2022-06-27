@@ -18,5 +18,10 @@ export const appRoutes = {
       taskType: 'taskType',
       development: 'development',
     },
+    mainMenu: 'mainMenu',
+    sprintBacklog: 'sprintBacklog',
+    sprintsManagement: 'sprintsManagement',
+    all: 'all',
+    test: 'test',
   },
 };

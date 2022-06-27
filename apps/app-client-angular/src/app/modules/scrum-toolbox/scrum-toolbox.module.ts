@@ -19,6 +19,7 @@ import { DevelopmentComponent } from './components/development/development.compo
 import { MetricsComponent } from './components/project-metrics/project-metrics.component';
 import { ProjectContextState } from './store/states/project-context.state';
 import { ProjectContextService } from './services/project-context.service';
+import { CrudSprintComponent } from './components/crud-sprint/crud-sprint.component';
 
 @Component({
   template: `
@@ -54,6 +55,11 @@ export class ScrumToolboxComponent implements OnInit {
       routerLink: [appRoutes.scrumToolbox.root],
     },
     {
+      label: 'Sprints Management',
+      iconClass: 'fa-solid fa-bars-progress',
+      routerLink: [appRoutes.scrumToolbox.sprintsManagement],
+    },
+    {
       label: 'Sprint backlog',
       iconClass: 'fa-solid fa-list-check',
       routerLink: [appRoutes.scrumToolbox.backlogSprint],
@@ -69,7 +75,7 @@ export class ScrumToolboxComponent implements OnInit {
       routerLink: [appRoutes.scrumToolbox.administration.root],
     },
     {
-      label: 'Déconnexion',
+      label: 'Disconnect',
       iconClass: 'fa-solid fa-clipboard-list',
       separatorAbove: true,
       action: async () => await this._authenticationService.logout([appRoutes.login]),
@@ -121,6 +127,7 @@ export class ScrumToolboxComponent implements OnInit {
     CrudTaskTypeComponent,
     ProjectTeamComponent,
     CrudBacklogProductComponent,
+    CrudSprintComponent,
     MetricsComponent,
   ],
   providers: [ScrumToolboxModule],
@@ -147,6 +154,10 @@ export class ScrumToolboxComponent implements OnInit {
           {
             path: appRoutes.scrumToolbox.metrics,
             component: MetricsComponent,
+          },
+          {
+            path: appRoutes.scrumToolbox.sprintsManagement,
+            component: CrudSprintComponent,
           },
           {
             path: appRoutes.scrumToolbox.administration.root,

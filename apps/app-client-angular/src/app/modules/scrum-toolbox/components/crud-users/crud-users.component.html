@@ -1,12 +1,13 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+      <p-button pRipple label="New" icon="pi pi-plus" styleClass="p-button-success" (click)="openNew()"></p-button>
       <p-button
         pRipple
         label="Delete"
         icon="pi pi-trash"
-        class="p-button-danger ml-2"
+        styleClass="p-button-danger"
+        class="ml-2"
         (click)="deleteSelectedItems()"
         [disabled]="!selectedItems || !selectedItems.length"
       ></p-button>

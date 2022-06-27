@@ -1,12 +1,13 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
-      <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+      <p-button pRipple label="New" icon="pi pi-plus" styleClass="p-button-success" (click)="openNew()"></p-button>
       <p-button
         pRipple
         label="Delete"
         icon="pi pi-trash"
-        class="p-button-danger ml-2"
+        styleClass="p-button-danger"
+        class="ml-2"
         (click)="deleteSelectedItems()"
         [disabled]="!selectedItems || !selectedItems.length"
       ></p-button>
@@ -35,8 +36,10 @@
         <th id="header-table" style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th id="header-name" pSortableColumn="label">Name<p-sortIcon field="label"></p-sortIcon></th>
-        <th id="header-description">Description</th>
+        <th id="header-name" pSortableColumn="label" [ngStyle]="{ width: '15rem' }">
+          Name<p-sortIcon field="label"></p-sortIcon>
+        </th>
+        <th id="header-description" [ngStyle]="{ width: '35rem' }">Description</th>
         <th id="header-created-date">Creation date</th>
         <th id="header-update-date">Update date</th>
         <th id="header-empty"></th>
