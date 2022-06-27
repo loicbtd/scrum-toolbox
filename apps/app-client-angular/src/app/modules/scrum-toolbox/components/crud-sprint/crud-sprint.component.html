@@ -75,39 +75,63 @@
   </p-table>
 </div>
 
-<!-- <p-dialog [(visible)]="dialogUpdate" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">
+<p-dialog [(visible)]="dialogUpdate" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">
+
   <ng-template pTemplate="content">
     <div class="field">
-      <label for="username">Username</label>
-      <input type="text" pInputText id="username" [(ngModel)]="item.username" required autofocus />
-      <small class="p-invalid" *ngIf="submitted && !item.username">Required field</small>
+      <label for="label">Label</label>
+      <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
+      <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
     </div>
-    <div *ngIf="isCreationMode" class="field">
-      <label for="password">Password</label>
-      <input type="password" pPassword id="password" [(ngModel)]="item.password" required />
-      <small class="p-invalid" *ngIf="submitted && !item.password">Required field</small>
-    </div>
+
     <div class="field">
-      <label for="firstname">Firstname</label>
-      <input type="text" pInputText id="firstname" [(ngModel)]="item.firstname" required />
-      <small class="p-invalid" *ngIf="submitted && !item.firstname">Required field</small>
+      <label for="startDate">Start Date</label>
+      <p-calendar 
+        [ngClass]="{'ng-invalid ng-dirty': item.start_date}" 
+        id="startDate" 
+        [(ngModel)]="item.start_date"
+        [minDate]="minStartDate"
+        appendTo="body">
+      </p-calendar>
+      <small class="p-invalid" *ngIf="submitted && !item.start_date">Required field</small>
     </div>
+
+    <div class="field">
+      <label for="endDate">End Date</label>
+      <p-calendar 
+        [ngClass]="{'ng-invalid ng-dirty': item.end_date}" 
+        id="endDate" 
+        [(ngModel)]="item.end_date"
+        [minDate]="minStartDate"
+        appendTo="body">
+      </p-calendar>
+      <small class="p-invalid" *ngIf="submitted && !item.end_date">Required field</small>
+    </div>
+
     <div class="field">
       <label for="lastname">Lastname</label>
-      <input type="text" pInputText id="lastname" [(ngModel)]="item.lastname" required />
-      <small class="p-invalid" *ngIf="submitted && !item.lastname">Required field</small>
+      <p-dropdown [options]="sprintStatus" [(ngModel)]="selectedStatus" optionLabel="label" appendTo="body">
+        <ng-template pTemplate="selectedItem">
+          <div *ngIf="selectedStatus">
+            <span class="custom-tag" [ngStyle]="selectColorStatus(selectedStatus)">{{ selectedStatus.label }}</span>
+          </div>
+        </ng-template>
+        <ng-template let-status pTemplate="item">
+          <div class="test">
+            <span class="custom-tag" [ngStyle]="selectColorStatus(status)">{{ status.label }}</span>
+          </div>
+        </ng-template>
+      </p-dropdown>
+      <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
     </div>
-    <div class="field flex flex-column">
-      <label for="isActivated">Activation</label>
-      <p-inputSwitch inputId="isActivated" [(ngModel)]="item.isActivated"></p-inputSwitch>
-    </div>
-  </ng-template>
+   
+  </ng-template> 
 
   <ng-template pTemplate="footer">
     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
     <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
   </ng-template>
-</p-dialog> -->
+</p-dialog>
 
 
 <p-dialog [(visible)]="dialogNew" [style]="{ width: '450px' }" header="Item Details" [modal]="true" styleClass="p-fluid">

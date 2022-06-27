@@ -49,6 +49,7 @@ export class CrudSprintComponent {
   minEndDate : Date;
 
   sprintStatus: SprintStatus[];
+  selectedStatus: SprintStatus;
 
 
   get isCreationMode() {
@@ -66,7 +67,8 @@ export class CrudSprintComponent {
   async ngOnInit() {
 
     this.projects = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
-    this.sprintStatus = await this._ipcService.query<SprintStatus[]>(appIpcs.retrieveAllSprintsStatus);
+    this.sprintStatus = await this._ipcService.query<SprintStatus[]>(appIpcs.retrieveAllSprintsStatus);    
+    this.selectedStatus = this.sprintStatus[0];
 
     this.sub = this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
       if (data) {
@@ -118,7 +120,9 @@ export class CrudSprintComponent {
 
   editItem(item: Sprint) {
     this.item = { ...item };
-    this.selectedProjectForm = this.selectedProject;
+    if(item.status) {
+      this.selectedStatus = item.status;
+    }
     this.dialogUpdate = true;
   }
 
@@ -155,30 +159,20 @@ export class CrudSprintComponent {
 
     if (this.item.id) {
       try {
-        await this._ipcService.query(appIpcs.updateUser, this.item);
-        this.items[this.findIndexById(this.item.id)] = this.item;
+
+        this.item.status = this.selectedStatus;
+
+        await this._ipcService.query(appIpcs.updateSprint, this.item);
+        
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
+
+        this.refresh();
+        
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
-    } else {
-      try {
-
-        this.item.project = this.selectedProjectForm;
-
-        this.item = await this._ipcService.query<Sprint>(appIpcs.createSprint);
-        
-        this._toastMessageService.showSuccess('Item Created', 'Successful');
-
-        this.refresh();
-
-      } catch (error: any) {
-
-        this._toastMessageService.showError(error.message, `Error while creating item`);
-
-      }
     }
-
+    
     this.items = [...this.items];
     this.dialogUpdate = false;
     this.dialogNew = false;
