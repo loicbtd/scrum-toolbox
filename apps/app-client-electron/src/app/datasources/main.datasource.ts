@@ -31,6 +31,5 @@ export const mainDataSource = {
     SprintMemberEntity,
     ProjectMemberEntity,
   ],
-  synchronize: true,
   migrations: [InitializeDatabase1656373692189],
 } as ConnectionOptions;
