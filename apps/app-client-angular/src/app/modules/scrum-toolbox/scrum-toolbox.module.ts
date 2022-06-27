@@ -13,7 +13,6 @@ import { CrudBacklogSprintComponent } from './components/crud-backlog-sprint/cru
 import { CrudTaskStatusComponent } from './components/crud-task-status/crud-task-status.component';
 import { CrudSprintStatusComponent } from './components/crud-sprint-status/crud-sprint-status.component';
 import { CrudTaskTypeComponent } from './components/crud-task-type/crud-task-type.component';
-import { ProjectTeamComponent } from './components/project-team/project-team.component';
 import { CrudBacklogProductComponent } from './components/crud-backlog-product/crud-backlog-product.component';
 import { DevelopmentComponent } from './components/development/development.component';
 import { MetricsComponent } from './components/project-metrics/project-metrics.component';
@@ -64,7 +63,6 @@ export class ScrumToolboxComponent implements OnInit {
       iconClass: 'fa-solid fa-list-check',
       routerLink: [appRoutes.scrumToolbox.backlogSprint],
     },
-    { label: 'Team', iconClass: 'fa-solid fa-user', routerLink: [appRoutes.scrumToolbox.projectTeam] },
     { label: 'Metrics', iconClass: 'fa-solid fa-chart-line', routerLink: [appRoutes.scrumToolbox.metrics] },
   ];
 
@@ -125,7 +123,6 @@ export class ScrumToolboxComponent implements OnInit {
     CrudTaskStatusComponent,
     CrudSprintStatusComponent,
     CrudTaskTypeComponent,
-    ProjectTeamComponent,
     CrudBacklogProductComponent,
     CrudSprintComponent,
     MetricsComponent,
@@ -146,10 +143,6 @@ export class ScrumToolboxComponent implements OnInit {
           {
             path: appRoutes.scrumToolbox.backlogSprint,
             component: CrudBacklogSprintComponent,
-          },
-          {
-            path: appRoutes.scrumToolbox.projectTeam,
-            component: ProjectTeamComponent,
           },
           {
             path: appRoutes.scrumToolbox.metrics,

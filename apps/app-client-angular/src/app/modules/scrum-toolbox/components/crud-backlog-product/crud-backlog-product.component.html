@@ -38,6 +38,9 @@
           <th id="header-label" pSortableColumn="label" [ngStyle]="{ width: '10rem' }">
             Label <p-sortIcon field="label"></p-sortIcon>
           </th>
+          <th pSortableColumn="capacity" [ngStyle]="{ width: '10rem' }">
+            Story points <p-sortIcon field="capacity"></p-sortIcon>
+          </th>
           <th id="header-description" [ngStyle]="{ width: '25rem' }">Description</th>
           <th id="header-creation-date">Creation date</th>
           <th id="header-last-updated">Update date</th>
@@ -56,6 +59,7 @@
             <p-tableCheckbox [value]="item"></p-tableCheckbox>
           </td>
           <td>{{ item.label }}</td>
+          <td>{{ item.capacity }}</td>
           <td>{{ item.description }}</td>
           <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
@@ -157,6 +161,12 @@
           </ng-template>
         </p-dropdown>
         <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
+      </div>
+
+      <div class="field">
+        <label for="storyPoints">Story points</label>
+        <p-inputNumber [(ngModel)]="item.capacity" [showButtons]="true" [min]="0" inputId="storyPoints">
+        </p-inputNumber>
       </div>
 
       <div class="field">

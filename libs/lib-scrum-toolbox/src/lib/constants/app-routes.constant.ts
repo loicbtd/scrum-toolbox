@@ -7,7 +7,6 @@ export const appRoutes = {
   scrumToolbox: {
     root: 'scrumToolbox',
     backlogSprint: 'backlogSprint',
-    projectTeam: 'projectTeam',
     metrics: 'metrics',
     administration: {
       root: 'administration',

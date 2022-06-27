@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, UserEntity, UserModel } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, CreateUserRequest, UserEntity, UserModel } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Store } from '@ngxs/store';
@@ -122,7 +122,13 @@ export class CrudUsersComponent implements OnInit {
       }
     } else {
       try {
-        this.item = await this._ipcService.query<UserModel>(appIpcs.createUser, this.item);
+        this.item = await this._ipcService.query<UserModel>(appIpcs.createUser, {
+          firstname: this.item.firstname,
+          lastname: this.item.lastname,
+          username: this.item.username,
+          isActivated: this.item.isActivated,
+          password: this.password,
+        } as CreateUserRequest);
         this.items.push(this.item);
         this._toastMessageService.showSuccess('Item Created', 'Successful');
       } catch (error: any) {

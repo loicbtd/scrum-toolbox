@@ -39,12 +39,6 @@ export class CrudBacklogSprintComponent implements OnInit, OnDestroy {
   availableTaskTypes: TaskTypeEntity[];
   availableTaskStatuses: TaskStatusEntity[];
 
-  capa: number | undefined;
-
-  get isCreationMode() {
-    return !this.item.id;
-  }
-
   constructor(
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,

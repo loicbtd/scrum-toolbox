@@ -1,0 +1,21 @@
+entity: project_member
+items:
+  project_member0:
+    user: '@user12'
+    role: 'ProductOwner'
+    project: '@project0'
+
+  project_member1:
+    user: '@user13'
+    role: 'ScrumMaster'
+    project: '@project0'
+
+  project_member2:
+    user: '@user14'
+    role: 'Developer'
+    project: '@project0'
+
+  project_member3:
+    user: '@user15'
+    role: 'Developer'
+    project: '@project0'

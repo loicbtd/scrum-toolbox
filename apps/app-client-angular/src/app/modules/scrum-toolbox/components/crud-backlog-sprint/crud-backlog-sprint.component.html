@@ -2,27 +2,35 @@
   <div class="card">
     <p-toolbar #toolbar styleClass="p-mb-4">
       <ng-template pTemplate="left">
-        <p-dropdown
-          optionLabel="label"
-          [options]="context.availableSprints"
-          [ngModel]="context.sprint"
-          (ngModelChange)="refreshSelectedSprint($event)"
-        ></p-dropdown>
-        <p-button
-          pRipple
-          label="New"
-          icon="pi pi-plus"
-          styleClass="p-button-success ml-2"
-          (click)="openNew()"
-        ></p-button>
+        <p-button pRipple label="New" icon="pi pi-plus" styleClass="p-button-success" (click)="openNew()"></p-button>
         <p-button
           pRipple
           label="Delete"
           icon="pi pi-trash"
-          styleClass="p-button-danger ml-2"
+          styleClass="p-button-danger"
+          class="ml-2"
           (click)="deleteSelectedItems()"
           [disabled]="!selectedItems || !selectedItems.length"
         ></p-button>
+        <p-dropdown
+          optionLabel="label"
+          styleClass="ml-2"
+          [options]="context.availableSprints"
+          [ngModel]="context.sprint"
+          (ngModelChange)="refreshSelectedSprint($event)"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div>
+              {{ context.sprint?.label }} ({{ context.sprint?.startDate | date: 'dd/MM/yy' }} to
+              {{ context.sprint?.endDate | date: 'dd/MM/yy' }})
+            </div>
+          </ng-template>
+          <ng-template let-sprint pTemplate="item">
+            <div>
+              {{ sprint.label }} ({{ sprint.startDate | date: 'dd/MM/yy' }} to {{ sprint.endDate | date: 'dd/MM/yy' }})
+            </div>
+          </ng-template>
+        </p-dropdown>
       </ng-template>
     </p-toolbar>
 
@@ -50,6 +58,9 @@
           <th id="header-label" pSortableColumn="label" [ngStyle]="{ width: '10rem' }">
             Label <p-sortIcon field="label"></p-sortIcon>
           </th>
+          <th pSortableColumn="capacity" [ngStyle]="{ width: '10rem' }">
+            Story points <p-sortIcon field="capacity"></p-sortIcon>
+          </th>
           <th id="header-description" [ngStyle]="{ width: '25rem' }">Description</th>
           <th id="header-creation-date">Creation date</th>
           <th id="header-last-updated">Update date</th>
@@ -68,6 +79,7 @@
             <p-tableCheckbox [value]="item"></p-tableCheckbox>
           </td>
           <td>{{ item.label }}</td>
+          <td>{{ item.capacity }}</td>
           <td>{{ item.description }}</td>
           <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
@@ -123,7 +135,7 @@
         >
           <ng-template pTemplate="selectedItem">
             <div *ngIf="item.type">
-              <span class="custom-tag" [ngStyle]="getColorForTaskType(item.type)">{{ item.type.label }}</span>
+              <span class="custom-tag" [ngStyle]="getColorForTaskType(item.type)">{{ item.type?.label }}</span>
             </div>
           </ng-template>
           <ng-template let-type pTemplate="item">
@@ -132,6 +144,19 @@
             </div>
           </ng-template>
         </p-dropdown>
+        <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+      </div>
+
+      <div class="field">
+        <label for="sprint">Sprint</label>
+        <p-dropdown
+          [showClear]="true"
+          [options]="context.availableSprints"
+          [ngModel]="item.sprint"
+          optionLabel="label"
+          appendTo="body"
+          placeholder="Select a sprint"
+        ></p-dropdown>
         <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
       </div>
 
@@ -146,16 +171,22 @@
         >
           <ng-template pTemplate="selectedItem">
             <div *ngIf="item.status">
-              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(item.status)">{{ item.status.label }}</span>
+              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(item.status)">{{ item.status?.label }}</span>
             </div>
           </ng-template>
           <ng-template let-status pTemplate="item">
             <div class="test">
-              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(status)">{{ status.label }}</span>
+              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(status)">{{ status?.label }}</span>
             </div>
           </ng-template>
         </p-dropdown>
         <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
+      </div>
+
+      <div class="field">
+        <label for="storyPoints">Story points</label>
+        <p-inputNumber [(ngModel)]="item.capacity" [showButtons]="true" [min]="0" inputId="storyPoints">
+        </p-inputNumber>
       </div>
 
       <div class="field">
@@ -187,4 +218,3 @@
 <ng-template #noSelection>
   <div>No context selected</div>
 </ng-template>
-

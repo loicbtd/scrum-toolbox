@@ -1,14 +1,22 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ProjectContextModel } from '../../models/project-context.model';
-import { RefreshAvailableProjects, RefreshAvailableSprints, RefreshSelectedProject, RefreshSelectedSprint } from '../actions/project-context.actions';
+import {
+  RefreshAvailableProjects,
+  RefreshAvailableSprints,
+  RefreshSelectedProject,
+  RefreshSelectedProjectMembers,
+  RefreshSelectedSprint,
+  RefreshSelectedSprintMembers,
+} from '../actions/project-context.actions';
 
 @State<ProjectContextModel>({
   name: 'ProjectContextState',
   defaults: {
     availableProjects: [],
     availableSprints: [],
-    members: [],
+    projectMembers: [],
+    sprintMembers: [],
   },
 })
 @Injectable()
@@ -49,7 +57,17 @@ export class ProjectContextState {
   }
 
   @Action(RefreshAvailableSprints)
-  RefreshAvailableSprints(context: StateContext<ProjectContextModel>, action: RefreshAvailableSprints) {
+  refreshAvailableSprints(context: StateContext<ProjectContextModel>, action: RefreshAvailableSprints) {
     context.setState({ ...context.getState(), availableSprints: action.sprints });
+  }
+
+  @Action(RefreshSelectedProjectMembers)
+  refreshSelectedProjectMembers(context: StateContext<ProjectContextModel>, action: RefreshSelectedProjectMembers) {
+    context.setState({ ...context.getState(), projectMembers: action.projectMembers });
+  }
+
+  @Action(RefreshSelectedSprintMembers)
+  refreshSelectedSprintMembers(context: StateContext<ProjectContextModel>, action: RefreshSelectedSprintMembers) {
+    context.setState({ ...context.getState(), sprintMembers: action.sprintMembers });
   }
 }

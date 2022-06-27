@@ -1,0 +1,21 @@
+entity: sprint_member
+items:
+  sprint_member0:
+    capacity: 15
+    user: '@user12'
+    sprint: '@sprint0'
+
+  sprint_member1:
+    capacity: 15
+    user: '@user13'
+    sprint: '@sprint0'
+
+  sprint_member2:
+    capacity: 15
+    user: '@user14'
+    sprint: '@sprint0'
+
+  sprint_member3:
+    capacity: 15
+    user: '@user15'
+    sprint: '@sprint0'
