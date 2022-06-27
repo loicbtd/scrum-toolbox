@@ -32,11 +32,11 @@ export class SprintEntity {
   @UpdateDateColumn()
   updatedAt?: Date;
 
-  @ManyToOne(() => SprintStatusEntity, (sprintStatus) => sprintStatus.id, { eager: true, nullable: false })
+  @ManyToOne(() => SprintStatusEntity, (sprintStatus) => sprintStatus.id, { eager: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'statusId' })
   status?: SprintStatusEntity;
 
-  @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false })
+  @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })
   project?: ProjectEntity;
 

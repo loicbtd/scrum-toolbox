@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
+import { ToastMessageService } from '@libraries/lib-angular';
 import { appIpcs, ProjectEntity, UserEntity } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
-import { Select, Store } from '@ngxs/store';
-import { MyProfileModel } from '../../../../global/models/my-profile.model';
+import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { ProjectContextState } from '../../store/states/project-context.state';
 import { ProjectContextModel } from '../../models/project-context.model';
+import { ProjectContextService } from '../../services/project-context.service';
 
 @Component({
   templateUrl: './crud-projects.component.html',
@@ -44,7 +44,7 @@ export class CrudProjectsComponent implements OnInit {
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
     private readonly _ipcService: IpcService,
-    private readonly _store: Store
+    private readonly _projectContextService: ProjectContextService
   ) {}
 
   async ngOnInit() {
@@ -64,13 +64,6 @@ export class CrudProjectsComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         for (const item of this.selectedItems) {
-          const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
-
-          if (myProfile.user.id == item.id) {
-            this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
-            continue;
-          }
-
           try {
             await this._ipcService.query(appIpcs.deleteProject, item.id);
             this.items = this.items.filter((_) => _.id !== item.id);
@@ -91,13 +84,6 @@ export class CrudProjectsComponent implements OnInit {
   }
 
   async deleteItem(item: ProjectEntity) {
-    const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
-
-    if (myProfile.user.id == item.id) {
-      this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
-      return;
-    }
-
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
       header: 'Confirm',
@@ -109,6 +95,8 @@ export class CrudProjectsComponent implements OnInit {
           this.item = {};
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
         } catch (error) {
+          console.log(error);
+
           this._toastMessageService.showError(`Error while deleting item`);
         }
       },
@@ -127,6 +115,7 @@ export class CrudProjectsComponent implements OnInit {
       try {
         await this._ipcService.query(appIpcs.updateProject, this.item);
         this.items[this.findIndexById(this.item.id)] = this.item;
+        this._projectContextService.refreshAvailableProjects();
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
@@ -135,6 +124,7 @@ export class CrudProjectsComponent implements OnInit {
       try {
         this.item = await this._ipcService.query<ProjectEntity>(appIpcs.createProject, this.item);
         this.items.push(this.item);
+        this._projectContextService.refreshAvailableProjects();
         this._toastMessageService.showSuccess('Item Created', 'Successful');
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while creating item`);

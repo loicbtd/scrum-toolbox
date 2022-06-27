@@ -24,6 +24,6 @@ export class UserEntity {
   @Column({ default: true })
   isActivated?: boolean;
 
-  @ManyToMany(() => TaskEntity, (task) => task.users)
+  @ManyToMany(() => TaskEntity, (task) => task.users, { onDelete: 'SET NULL' })
   tasks?: TaskEntity[];
 }

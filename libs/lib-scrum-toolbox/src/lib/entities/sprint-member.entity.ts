@@ -8,11 +8,11 @@ export class SprintMemberEntity {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: false })
+  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user?: UserModel;
 
-  @ManyToOne(() => SprintEntity, (sprint) => sprint.id, { nullable: false })
+  @ManyToOne(() => SprintEntity, (sprint) => sprint.id, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'sprintId' })
   sprint?: SprintEntity;
 

@@ -8,14 +8,14 @@ export class ProjectMemberEntity {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.id, { eager: true, nullable: false })
+  @ManyToOne(() => UserEntity, (user) => user.id, { eager: true, nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'userId' })
   user?: UserEntity;
 
   @Column({ type: 'simple-enum', enum: ProjectRoleEnumeration })
   role?: ProjectRoleEnumeration;
 
-  @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false })
+  @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })
   project?: ProjectEntity;
 }

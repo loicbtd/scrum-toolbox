@@ -35,23 +35,26 @@ export class TaskEntity {
   @UpdateDateColumn()
   updatedAt?: Date;
 
-  @ManyToOne(() => TaskStatusEntity, (taskStatus) => taskStatus.id, { eager: true, nullable: false })
+  @ManyToOne(() => TaskStatusEntity, (taskStatus) => taskStatus.id, {
+    eager: true,
+    onDelete: 'SET NULL',
+  })
   @JoinColumn({ name: 'statusId' })
   status?: TaskStatusEntity;
 
-  @ManyToOne(() => TaskTypeEntity, (taskType) => taskType.id, { eager: true, nullable: false })
+  @ManyToOne(() => TaskTypeEntity, (taskType) => taskType.id, { eager: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'typeId' })
   type?: TaskTypeEntity;
 
-  @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false })
+  @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'projectId' })
   project?: ProjectEntity;
 
-  @ManyToMany(() => UserEntity, (user) => user.tasks, { eager: true })
+  @ManyToMany(() => UserEntity, (user) => user.tasks, { eager: true, onDelete: 'SET NULL' })
   @JoinTable()
   users?: UserEntity[];
 
-  @ManyToOne(() => SprintEntity, (sprint) => sprint.tasks, { nullable: true, eager: true })
+  @ManyToOne(() => SprintEntity, (sprint) => sprint.tasks, { eager: true, onDelete: 'SET NULL' })
   @JoinColumn({ name: 'sprintId' })
   sprint?: SprintEntity;
 }

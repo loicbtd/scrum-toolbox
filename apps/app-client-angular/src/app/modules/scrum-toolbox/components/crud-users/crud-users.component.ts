@@ -52,7 +52,7 @@ export class CrudUsersComponent implements OnInit {
         for (const item of this.selectedItems) {
           const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
 
-          if (myProfile.user.id == item.id) {
+          if (myProfile?.user?.id == item.id) {
             this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
             continue;
           }
@@ -79,7 +79,7 @@ export class CrudUsersComponent implements OnInit {
   async deleteItem(item: UserModel) {
     const myProfile = this._store.selectSnapshot<MyProfileModel>(MyProfileState);
 
-    if (myProfile.user.id == item.id) {
+    if (myProfile?.user?.id == item.id) {
       this._toastMessageService.showError('Impossible to self-suppress.', 'Error while deleting item');
       return;
     }
