@@ -16,6 +16,6 @@ export class ProjectMemberEntity {
   role?: ProjectRoleEnumeration;
 
   @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false })
-  @JoinColumn({ name: 'project_id' })
+  @JoinColumn({ name: 'projectId' })
   project?: ProjectEntity;
 }
