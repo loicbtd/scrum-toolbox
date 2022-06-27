@@ -49,7 +49,9 @@ export class CrudSprintComponent {
 
   sprintStatus: SprintStatusEntity[];
   selectedStatus: SprintStatusEntity;
-
+  
+  minDateSprint: Date;
+  maxDateSprint: Date;
 
   get isCreationMode() {
     return !this.item.id;
@@ -59,7 +61,6 @@ export class CrudSprintComponent {
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
     private readonly _ipcService: IpcService,
-    private readonly _store: Store,
     private readonly fb: UntypedFormBuilder
   ) {}
 
@@ -85,6 +86,12 @@ export class CrudSprintComponent {
   }
 
   openNew() {
+
+    this.minStartDate = new Date();
+    this.minDateSprint = this.minStartDate;
+    this.minEndDate = new Date(this.minStartDate.getTime() + (7*24*60*60*1000));
+    this.maxDateSprint = this.minEndDate;
+
     this.item = {};
     this.submitted = false;
     this.dialogNew = true;
@@ -119,6 +126,14 @@ export class CrudSprintComponent {
 
   editItem(item: SprintEntity) {
     this.item = { ...item };
+
+    if (this.item.start_date && this.item.end_date) {
+      this.minStartDate = new Date(this.item.start_date);
+      this.minDateSprint = this.minStartDate;
+      this.minEndDate = new Date(this.minStartDate.getTime() + (7*24*60*60*1000));
+      this.maxDateSprint = this.minEndDate;
+    }
+
     if(item.status) {
       this.selectedStatus = item.status;
     }
@@ -159,7 +174,17 @@ export class CrudSprintComponent {
     if (this.item.id) {
       try {
 
+        if (this.minDateSprint < new Date('dd/MM/yyyy') || this.maxDateSprint < this.minDateSprint){
+          throw new Error("Start Date or End Date invalid");
+        }
+
+        if (this.item.label === '') {
+          return;
+        }
+
         this.item.status = this.selectedStatus;
+        this.item.start_date = this.minDateSprint.toString();
+        this.item.end_date = this.maxDateSprint.toString();
 
         await this._ipcService.query(appIpcs.updateSprint, this.item);
         
@@ -197,6 +222,10 @@ export class CrudSprintComponent {
 
   selectColorStatus(it: any): object {
     return { 'background-color': it.status.backgroundColor, color: it.status.textColor };
+  }
+
+  selectColorWithStatus(it: any): object {
+    return { 'background-color': it.backgroundColor, color: it.textColor };
   }
 
   async saveSprint() {

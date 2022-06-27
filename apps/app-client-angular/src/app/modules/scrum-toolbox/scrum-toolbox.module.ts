@@ -61,7 +61,11 @@ export class ScrumToolboxComponent {
       iconClass: 'fa-solid fa-clipboard-list',
       routerLink: [appRoutes.scrumToolbox.root],
     },
-    { label: '', iconClass: 'fa-solid fa-bars-progress', routerLink: [appRoutes.scrumToolbox.sprintsManagement] },
+    { 
+      label: 'Sprints Management', 
+      iconClass: 'fa-solid fa-bars-progress', 
+      routerLink: [appRoutes.scrumToolbox.sprintsManagement] 
+    },
     {
       label: 'Sprint backlog',
       iconClass: 'fa-solid fa-list-check',

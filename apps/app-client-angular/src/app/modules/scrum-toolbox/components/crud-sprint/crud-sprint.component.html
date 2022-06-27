@@ -81,7 +81,7 @@
     <div class="field">
       <label for="label">Label</label>
       <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
-      <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.label">Required field</small>
     </div>
 
     <div class="field">
@@ -89,11 +89,12 @@
       <p-calendar 
         [ngClass]="{'ng-invalid ng-dirty': item.start_date}" 
         id="startDate" 
-        [(ngModel)]="item.start_date"
+        [(ngModel)]="minDateSprint"
         [minDate]="minStartDate"
+        dateFormat="dd/mm/yy"
         appendTo="body">
       </p-calendar>
-      <small class="p-invalid" *ngIf="submitted && !item.start_date">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.start_date">Required field</small>
     </div>
 
     <div class="field">
@@ -101,28 +102,29 @@
       <p-calendar 
         [ngClass]="{'ng-invalid ng-dirty': item.end_date}" 
         id="endDate" 
-        [(ngModel)]="item.end_date"
-        [minDate]="minStartDate"
+        [(ngModel)]="maxDateSprint"
+        [minDate]="minEndDate"
+        dateFormat="dd/mm/yy"
         appendTo="body">
       </p-calendar>
-      <small class="p-invalid" *ngIf="submitted && !item.end_date">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.end_date">Required field</small>
     </div>
 
     <div class="field">
-      <label for="lastname">Lastname</label>
+      <label for="status">Status</label>
       <p-dropdown [options]="sprintStatus" [(ngModel)]="selectedStatus" optionLabel="label" appendTo="body">
         <ng-template pTemplate="selectedItem">
           <div *ngIf="selectedStatus">
-            <span class="custom-tag" [ngStyle]="selectColorStatus(selectedStatus)">{{ selectedStatus.label }}</span>
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{ selectedStatus.label }}</span>
           </div>
         </ng-template>
         <ng-template let-status pTemplate="item">
           <div class="test">
-            <span class="custom-tag" [ngStyle]="selectColorStatus(status)">{{ status.label }}</span>
+            <span class="custom-tag" [ngStyle]="selectColorWithStatus(status)">{{ status.label }}</span>
           </div>
         </ng-template>
       </p-dropdown>
-      <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.status">Required field</small>
     </div>
    
   </ng-template> 
@@ -162,9 +164,10 @@
         <p-calendar 
           [ngClass]="{'ng-invalid ng-dirty': form.controls.startDate.touched && form.controls.startDate.invalid}" 
           inputId="startDate" 
-          [(ngModel)]="minEndDate" 
+          [(ngModel)]="minDateSprint"
           formControlName="startDate" 
           [minDate]="minStartDate"
+          dateFormat="dd/mm/yy"
           appendTo="body">
         </p-calendar>
         <small
@@ -184,7 +187,9 @@
           [ngClass]="{'ng-invalid ng-dirty': (form.controls.endDate.touched && form.controls.endDate.invalid) || endWrong}" 
           inputId="endDate" 
           formControlName="endDate" 
+          [(ngModel)]="maxDateSprint" 
           [minDate]="minEndDate"
+          dateFormat="dd/mm/yy"
           appendTo="body">
         </p-calendar>
         <small
@@ -207,7 +212,6 @@
           [(ngModel)]="selectedProjectForm"
           formControlName="selectedProjectForm" 
           optionLabel="label" 
-          [showClear]="true"
           appendTo="body">
         </p-dropdown>
         <small
