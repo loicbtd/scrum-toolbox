@@ -1,22 +1,22 @@
 import {MigrationInterface, QueryRunner} from "typeorm";
 
-export class InitializeDatabase1656359035473 implements MigrationInterface {
-    name = 'InitializeDatabase1656359035473'
+export class InitializeDatabase1656373692189 implements MigrationInterface {
+    name = 'InitializeDatabase1656373692189'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE "project" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "description" varchar NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')))`);
         await queryRunner.query(`CREATE TABLE "sprint_status" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "backgroundColor" varchar(7) NOT NULL, "textColor" varchar(7) NOT NULL)`);
-        await queryRunner.query(`CREATE TABLE "sprint" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "startDate" date NOT NULL, "endDate" date NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "statusId" varchar, "projectId" varchar NOT NULL)`);
+        await queryRunner.query(`CREATE TABLE "sprint" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "startDate" datetime NOT NULL, "endDate" datetime NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "statusId" varchar, "projectId" varchar NOT NULL)`);
         await queryRunner.query(`CREATE TABLE "task_status" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "backgroundColor" varchar(7) NOT NULL, "textColor" varchar(7) NOT NULL)`);
         await queryRunner.query(`CREATE TABLE "task_type" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "backgroundColor" varchar(7) NOT NULL, "textColor" varchar(7) NOT NULL)`);
         await queryRunner.query(`CREATE TABLE "task" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "description" varchar NOT NULL, "capacity" integer NOT NULL DEFAULT (5), "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "statusId" varchar, "typeId" varchar, "projectId" varchar NOT NULL, "sprintId" varchar)`);
-        await queryRunner.query(`CREATE TABLE "user" ("id" varchar PRIMARY KEY NOT NULL, "username" varchar NOT NULL, "password" varchar NOT NULL, "firstname" varchar NOT NULL, "lastname" varchar NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "isActivated" boolean NOT NULL DEFAULT (1), CONSTRAINT "UQ_78a916df40e02a9deb1c4b75edb" UNIQUE ("username"))`);
+        await queryRunner.query(`CREATE TABLE "user" ("id" varchar PRIMARY KEY NOT NULL, "username" varchar NOT NULL, "passwordHash" varchar NOT NULL, "firstname" varchar NOT NULL, "lastname" varchar NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "isActivated" boolean NOT NULL DEFAULT (1), CONSTRAINT "UQ_78a916df40e02a9deb1c4b75edb" UNIQUE ("username"))`);
         await queryRunner.query(`CREATE TABLE "project_member" ("id" varchar PRIMARY KEY NOT NULL, "role" varchar CHECK( "role" IN ('ProductOwner','Developer','ScrumMaster') ) NOT NULL, "userId" varchar NOT NULL, "projectId" varchar NOT NULL)`);
         await queryRunner.query(`CREATE TABLE "sprint_member" ("id" varchar PRIMARY KEY NOT NULL, "capacity" integer NOT NULL, "userId" varchar NOT NULL, "sprintId" varchar NOT NULL)`);
         await queryRunner.query(`CREATE TABLE "task_users_user" ("taskId" varchar NOT NULL, "userId" varchar NOT NULL, PRIMARY KEY ("taskId", "userId"))`);
         await queryRunner.query(`CREATE INDEX "IDX_cb749a4b0103a3bc2235beafc9" ON "task_users_user" ("taskId") `);
         await queryRunner.query(`CREATE INDEX "IDX_a70c8dbe2f96b5ed1bc4df33a4" ON "task_users_user" ("userId") `);
-        await queryRunner.query(`CREATE TABLE "temporary_sprint" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "startDate" date NOT NULL, "endDate" date NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "statusId" varchar, "projectId" varchar NOT NULL, CONSTRAINT "FK_6fa728969a4af8bb5682a4477a5" FOREIGN KEY ("statusId") REFERENCES "sprint_status" ("id") ON DELETE SET NULL ON UPDATE NO ACTION, CONSTRAINT "FK_0b512ef3fa72b5afa40db28e4b7" FOREIGN KEY ("projectId") REFERENCES "project" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`);
+        await queryRunner.query(`CREATE TABLE "temporary_sprint" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "startDate" datetime NOT NULL, "endDate" datetime NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "statusId" varchar, "projectId" varchar NOT NULL, CONSTRAINT "FK_6fa728969a4af8bb5682a4477a5" FOREIGN KEY ("statusId") REFERENCES "sprint_status" ("id") ON DELETE SET NULL ON UPDATE NO ACTION, CONSTRAINT "FK_0b512ef3fa72b5afa40db28e4b7" FOREIGN KEY ("projectId") REFERENCES "project" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`);
         await queryRunner.query(`INSERT INTO "temporary_sprint"("id", "label", "startDate", "endDate", "createdAt", "updatedAt", "statusId", "projectId") SELECT "id", "label", "startDate", "endDate", "createdAt", "updatedAt", "statusId", "projectId" FROM "sprint"`);
         await queryRunner.query(`DROP TABLE "sprint"`);
         await queryRunner.query(`ALTER TABLE "temporary_sprint" RENAME TO "sprint"`);
@@ -64,7 +64,7 @@ export class InitializeDatabase1656359035473 implements MigrationInterface {
         await queryRunner.query(`INSERT INTO "task"("id", "label", "description", "capacity", "createdAt", "updatedAt", "statusId", "typeId", "projectId", "sprintId") SELECT "id", "label", "description", "capacity", "createdAt", "updatedAt", "statusId", "typeId", "projectId", "sprintId" FROM "temporary_task"`);
         await queryRunner.query(`DROP TABLE "temporary_task"`);
         await queryRunner.query(`ALTER TABLE "sprint" RENAME TO "temporary_sprint"`);
-        await queryRunner.query(`CREATE TABLE "sprint" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "startDate" date NOT NULL, "endDate" date NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "statusId" varchar, "projectId" varchar NOT NULL)`);
+        await queryRunner.query(`CREATE TABLE "sprint" ("id" varchar PRIMARY KEY NOT NULL, "label" varchar NOT NULL, "startDate" datetime NOT NULL, "endDate" datetime NOT NULL, "createdAt" datetime NOT NULL DEFAULT (datetime('now')), "updatedAt" datetime NOT NULL DEFAULT (datetime('now')), "statusId" varchar, "projectId" varchar NOT NULL)`);
         await queryRunner.query(`INSERT INTO "sprint"("id", "label", "startDate", "endDate", "createdAt", "updatedAt", "statusId", "projectId") SELECT "id", "label", "startDate", "endDate", "createdAt", "updatedAt", "statusId", "projectId" FROM "temporary_sprint"`);
         await queryRunner.query(`DROP TABLE "temporary_sprint"`);
         await queryRunner.query(`DROP INDEX "IDX_a70c8dbe2f96b5ed1bc4df33a4"`);
