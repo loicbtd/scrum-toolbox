@@ -1,19 +1,23 @@
 entity: task
 items:
-  task{1..20}:
+  task{0..99}:
     label: '{{lorem.words}}'
     description: '{{lorem.paragraph}}'
     status: '@task_status*'
     type: '@task_type*'
-    project: '@project*'
-    sprint: '@sprint*'
+    project: '@project0'
+    sprint: '@sprint{0..3}'
     capacity: '{{datatype.number(10)}}'
     users:
-      - '@users*'
-  task{20..40}:
+      - '@user{12..14}'
+
+      
+  task{100..199}:
     label: '{{lorem.words}}'
     description: '{{lorem.paragraph}}'
     status: '@task_status*'
     type: '@task_type*'
-    project: '@project*'
+    project: '@sprint{4..9}'
     capacity: '{{datatype.number(10)}}'
+    users:
+      - '@user{12..15}'

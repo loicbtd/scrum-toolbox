@@ -8,12 +8,12 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
-import { Project } from './project.entity';
-import { SprintStatus } from './sprint-status.entity';
-import { Task } from './task.entity';
+import { ProjectEntity } from './project.entity';
+import { SprintStatusEntity } from './sprint-status.entity';
+import { TaskEntity } from './task.entity';
 
-@Entity()
-export class Sprint {
+@Entity({ name: 'sprint' })
+export class SprintEntity {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
@@ -32,14 +32,14 @@ export class Sprint {
   @UpdateDateColumn()
   updatedAt?: Date;
 
-  @ManyToOne(() => SprintStatus, (sprintStatus) => sprintStatus.id, { eager: true, nullable: false })
+  @ManyToOne(() => SprintStatusEntity, (sprintStatus) => sprintStatus.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'statusId' })
-  status?: SprintStatus;
+  status?: SprintStatusEntity;
 
-  @ManyToOne(() => Project, (project) => project.id, { eager: true, nullable: false })
+  @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
-  project?: Project;
+  project?: ProjectEntity;
 
-  @OneToMany(() => Task, (task) => task.sprint)
-  tasks?: Task[];
+  @OneToMany(() => TaskEntity, (task) => task.sprint)
+  tasks?: TaskEntity[];
 }

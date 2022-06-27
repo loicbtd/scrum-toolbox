@@ -1,9 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrentProjectState } from '@libraries/lib-angular';
+import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
 import { Select } from '@ngxs/store';
 import { CurrentProjectModel } from '../../../../global/models/current-project.model';
 import { Observable } from 'rxjs';
-import { appIpcs, Sprint, UserUserTypeProject, Task, User } from '@libraries/lib-scrum-toolbox';
+import {
+  appIpcs,
+  SprintEntity,
+  TaskEntity,
+  UserEntity,
+  UserModel,
+  ProjectEntity,
+  ProjectMemberEntity,
+  ProjectRoleEnumeration,
+} from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 
 @Component({
@@ -14,39 +23,64 @@ import { IpcService } from '../../../../global/services/ipc.service';
         color: blue;
         font-weight: normal !important;
       }
+      .p-invalid {
+        color: red !important;
+      }
+      th {
+        white-space: nowrap;
+      }
     `,
   ],
 })
 export class ProjectTeamComponent implements OnInit {
   @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
 
+  projectSelected!: ProjectEntity;
+
   dialog = false;
 
-  selectedItem: UserUserTypeProject;
+  selectedItem: ProjectMemberEntity;
 
-  userSprints!: Sprint[];
+  userSprints!: SprintEntity[];
 
   sprintsMapping: { [k: string]: string } = { '<2': 'Sprint', other: 'Sprints' };
 
-  userUserTypeProject!: UserUserTypeProject[];
+  projectMembers!: ProjectMemberEntity[];
 
-  usersTasks!: Task[];
+  usersTasks!: TaskEntity[];
 
-  constructor(private readonly _ipcService: IpcService) {}
+  dialogNew = false;
+
+  newSubmitted = false;
+
+  usersAvailables!: UserModel[];
+
+  newUser!: UserModel;
+
+  projectRoles!: ProjectRoleEnumeration[];
+
+  newUserPosition!: ProjectRoleEnumeration;
+
+  constructor(private readonly _ipcService: IpcService, private readonly _toastMessageService: ToastMessageService) {}
 
   async ngOnInit(): Promise<void> {
     this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
-      this.userUserTypeProject = await this._ipcService.query<UserUserTypeProject[]>(
-        appIpcs.retrieveAllUsersInProject,
-        data.project.id
-      );
+      this.projectSelected = data.project;
+      await this.updateUsers();
     });
   }
 
-  async showDetails(item: UserUserTypeProject) {
+  async updateUsers() {
+    this.projectMembers = await this._ipcService.query<ProjectMemberEntity[]>(
+      appIpcs.retrieveAllUsersInProject,
+      this.projectSelected.id
+    );
+  }
+
+  async showDetails(item: ProjectMemberEntity) {
     this.selectedItem = item;
     this.dialog = true;
-    this.userSprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsOfUser, {
+    this.userSprints = await this._ipcService.query<SprintEntity[]>(appIpcs.retrieveAllSprintsOfUser, {
       userId: item.user?.id,
       projectId: item.project?.id,
     });
@@ -59,19 +93,19 @@ export class ProjectTeamComponent implements OnInit {
   }
 
   async displayTaskForSprint(index: number) {
-    const t = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksBySprint, this.userSprints[index].id);
+    const t = await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksBySprint, this.userSprints[index].id);
     this.usersTasks = t.filter((_) => this.selectedItem.user && _.users?.includes(this.selectedItem.user));
   }
 
-  selectColorStatus(it: Task): object {
+  selectColorStatus(it: TaskEntity): object {
     return { 'background-color': it.status.backgroundColor, color: it.status.textColor };
   }
 
-  selectColorType(it: Task): object {
+  selectColorType(it: TaskEntity): object {
     return { 'background-color': it.type.backgroundColor, color: it.type.textColor };
   }
 
-  getInitials(user: User): string {
+  getInitials(user: UserEntity): string {
     return '' + user.firstname?.charAt(0) + '' + user.lastname?.charAt(0);
   }
 }

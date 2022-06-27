@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { CurrentProjectState, MyProfileState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, Project, Sprint, SprintStatus, User, UserModel } from '@libraries/lib-scrum-toolbox';
+import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
+import { appIpcs, ProjectEntity, SprintEntity, SprintStatusEntity } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Select, Store } from '@ngxs/store';
-import { MyProfileModel } from '../../../../global/models/my-profile.model';
 import { Observable, Subscription } from 'rxjs';
 import { CurrentProjectModel } from '../../../../global/models/current-project.model';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
@@ -19,12 +18,12 @@ export class CrudSprintComponent {
   dialogNew: boolean;
   dialogUpdate: boolean;
 
-  items: Sprint[];
-  item: Sprint;
+  items: SprintEntity[];
+  item: SprintEntity;
 
-  selectedItems: Sprint[];
+  selectedItems: SprintEntity[];
 
-  selectedProject: Project;
+  selectedProject: ProjectEntity;
 
   submitted: boolean;
 
@@ -38,18 +37,18 @@ export class CrudSprintComponent {
     selectedProjectForm: ['', [Validators.required]],
   });
 
-  sprint: Sprint;
+  sprint: SprintEntity;
 
-  projects: Project[];
-  selectedProjectForm: Project;
+  projects: ProjectEntity[];
+  selectedProjectForm: ProjectEntity;
 
   startWrong : boolean;
   endWrong : boolean;
   minStartDate : Date;
   minEndDate : Date;
 
-  sprintStatus: SprintStatus[];
-  selectedStatus: SprintStatus;
+  sprintStatus: SprintStatusEntity[];
+  selectedStatus: SprintStatusEntity;
 
 
   get isCreationMode() {
@@ -66,8 +65,8 @@ export class CrudSprintComponent {
 
   async ngOnInit() {
 
-    this.projects = await this._ipcService.query<Project[]>(appIpcs.retrieveAllProjects);
-    this.sprintStatus = await this._ipcService.query<SprintStatus[]>(appIpcs.retrieveAllSprintsStatus);    
+    this.projects = await this._ipcService.query<ProjectEntity[]>(appIpcs.retrieveAllProjects);
+    this.sprintStatus = await this._ipcService.query<SprintStatusEntity[]>(appIpcs.retrieveAllSprintsStatus);    
     this.selectedStatus = this.sprintStatus[0];
 
     this.sub = this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
@@ -75,7 +74,7 @@ export class CrudSprintComponent {
         
         this.selectedProject = data.project;
     
-        this.items = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
+        this.items = await this._ipcService.query<SprintEntity[]>(appIpcs.retrieveAllSprintsByProject, {
           id: this.selectedProject.id,
         });
         this.item = this.items[0];
@@ -118,7 +117,7 @@ export class CrudSprintComponent {
     });
   }
 
-  editItem(item: Sprint) {
+  editItem(item: SprintEntity) {
     this.item = { ...item };
     if(item.status) {
       this.selectedStatus = item.status;
@@ -126,7 +125,7 @@ export class CrudSprintComponent {
     this.dialogUpdate = true;
   }
 
-  async deleteItem(item: Sprint) {
+  async deleteItem(item: SprintEntity) {
     
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
@@ -210,7 +209,7 @@ export class CrudSprintComponent {
       return;
     }
 
-    this.sprint = new Sprint();
+    this.sprint = new SprintEntity();
     this.sprint.label = this.form.get('label')?.value
 
     if(this.form.get('startDate')?.value < new Date('dd/MM/yyyy')){
@@ -229,7 +228,7 @@ export class CrudSprintComponent {
       this.sprint.project = this.selectedProject;
       this.sprint.status = this.sprintStatus.find((status) => { return status.label === this.sprintStatus[0].label});
 
-      await this._ipcService.query<Sprint>(appIpcs.createSprint, this.sprint);
+      await this._ipcService.query<SprintEntity>(appIpcs.createSprint, this.sprint);
 
       this._toastMessageService.showSuccess('Sprint Created', 'Successful');
         

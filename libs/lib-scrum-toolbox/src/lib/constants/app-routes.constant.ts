@@ -6,6 +6,9 @@ export const appRoutes = {
   signup: 'signup',
   scrumToolbox: {
     root: 'scrumToolbox',
+    backlogSprint: 'backlogSprint',
+    projectTeam: 'projectTeam',
+    metrics: 'metrics',
     administration: {
       root: 'administration',
       users: 'users',
@@ -13,12 +16,12 @@ export const appRoutes = {
       taskStatus: 'taskStatus',
       sprintStatus: 'sprintStatus',
       taskType: 'taskType',
+      development: 'development',
     },
     mainMenu: 'mainMenu',
     sprintBacklog: 'sprintBacklog',
     sprintsManagement: 'sprintsManagement',
     all: 'all',
     test: 'test',
-    projectTeam: 'projectTeam',
   },
 };

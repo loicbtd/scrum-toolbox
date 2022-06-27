@@ -9,15 +9,15 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Sprint } from './sprint.entity';
-import { Project } from './project.entity';
-import { TaskStatus } from './task-status.entity';
-import { TaskType } from './task-type.entity';
-import { User } from './user.entity';
+import { SprintEntity } from './sprint.entity';
+import { ProjectEntity } from './project.entity';
+import { TaskStatusEntity } from './task-status.entity';
+import { TaskTypeEntity } from './task-type.entity';
+import { UserEntity } from './user.entity';
 import { UserModel } from '../models/user.model';
 
-@Entity()
-export class Task {
+@Entity({ name: 'task' })
+export class TaskEntity {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
@@ -36,25 +36,23 @@ export class Task {
   @UpdateDateColumn()
   updatedAt?: Date;
 
-  @ManyToOne(() => TaskStatus, (taskStatus) => taskStatus.id, { eager: true, nullable: false })
+  @ManyToOne(() => TaskStatusEntity, (taskStatus) => taskStatus.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'statusId' })
-  status!: TaskStatus;
+  status!: TaskStatusEntity;
 
-  @ManyToOne(() => TaskType, (taskType) => taskType.id, { eager: true, nullable: false })
+  @ManyToOne(() => TaskTypeEntity, (taskType) => taskType.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'typeId' })
-  type!: TaskType;
+  type!: TaskTypeEntity;
 
-  @ManyToOne(() => Project, (project) => project.id, { eager: true, nullable: false })
+  @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })
-  project?: Project;
-  //TODO dropdown project
-  // project!: Project;
+  project?: ProjectEntity;
 
-  @ManyToMany(() => User, (user) => user.tasks, { eager: true })
+  @ManyToMany(() => UserEntity, (user) => user.tasks, { eager: true })
   @JoinTable()
-  users?: UserModel[];
+  users?: UserEntity[];
 
-  @ManyToOne(() => Sprint, (sprint) => sprint.tasks, { nullable: true, eager: true })
+  @ManyToOne(() => SprintEntity, (sprint) => sprint.tasks, { nullable: true, eager: true })
   @JoinColumn({ name: 'sprintId' })
-  sprint?: Sprint;
+  sprint?: SprintEntity;
 }

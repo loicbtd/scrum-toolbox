@@ -1,0 +1,71 @@
+entity: sprint
+items:
+  sprint0:
+    label: 'Iteration 1'
+    start_date: '2022-01-03'
+    end_date: '2022-01-10'
+    status: '@sprint_status2'
+    project: '@project0'
+
+  sprint1:
+    label: 'Iteration 2'
+    start_date: '2022-01-11'
+    end_date: '2022-01-18'
+    status: '@sprint_status2'
+    project: '@project0'
+
+  sprint2:
+    label: 'Iteration 3'
+    start_date: '2022-01-19'
+    end_date: '2022-01-26'
+    status: '@sprint_status2'
+    project: '@project0'
+
+  sprint3:
+    label: 'Iteration 4'
+    start_date: '2022-02-01'
+    end_date: '2022-02-08'
+    status: '@sprint_status2'
+    project: '@project0'
+
+  sprint4:
+    label: 'Iteration 1'
+    start_date: '2022-05-03'
+    end_date: '2022-05-10'
+    status: '@sprint_status2'
+    project: '@project1'
+
+  sprint5:
+    label: 'Iteration 2'
+    start_date: '2022-05-11'
+    end_date: '2022-05-18'
+    status: '@sprint_status2'
+    project: '@project1'
+
+  sprint6:
+    label: 'Iteration 3'
+    start_date: '2022-05-19'
+    end_date: '2022-05-26'
+    status: '@sprint_status2'
+    project: '@project1'
+
+  sprint7:
+    label: 'Iteration 4'
+    start_date: '2022-06-01'
+    end_date: '2022-06-08'
+    status: '@sprint_status2'
+    project: '@project1'
+
+  sprint8:
+    label: 'Iteration 5'
+    start_date: '2022-06-09'
+    end_date: '2022-06-16'
+    status: '@sprint_status2'
+    project: '@project1'
+
+  sprint9:
+    label: 'Iteration 6'
+    start_date: '2022-06-09'
+    end_date: '2022-06-16'
+    status: '@sprint_status2'
+    project: '@project1'

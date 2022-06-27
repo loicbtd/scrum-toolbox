@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddTaskCapacity implements MigrationInterface {
+export class AddTaskCapacity2 implements MigrationInterface {
   name = 'AddTaskCapacity1655991512732';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

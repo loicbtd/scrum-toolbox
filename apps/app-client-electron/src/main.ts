@@ -45,8 +45,8 @@ import { RetrieveProjectHandler } from './app/ipc-request-handlers/project/retri
 import { RetrieveAllProjectsHandler } from './app/ipc-request-handlers/project/retrieve-all-projects.handler';
 import { UpdateProjectHandler } from './app/ipc-request-handlers/project/update-project.handler';
 import { DeleteProjectHandler } from './app/ipc-request-handlers/project/delete-project.handler';
-import { LoadFixturesHandler } from './app/ipc-request-handlers/fixtures/load-fixtures.handler';
-import { TruncateDatabaseHandler } from './app/ipc-request-handlers/truncate-database.handler';
+import { LoadFixturesHandler } from './app/ipc-request-handlers/database/load-fixtures.handler';
+import { TruncateDatabaseHandler } from './app/ipc-request-handlers/database/truncate-database.handler';
 import { mainDataSource } from './app/datasources/main.datasource';
 import { RetrieveAllUsersInProject } from './app/ipc-request-handlers/project/retrieve-users-in-project.handler';
 import { StartupWindow } from './app/windows/startup.window';
@@ -54,6 +54,11 @@ import { RetrieveAllTasksBySprintHandler } from './app/ipc-request-handlers/task
 import { RetrieveAllTasksByProjectHandler } from './app/ipc-request-handlers/task/retrieve-all-tasks-by-project.handler';
 import { UnassignSprintTaskHandler } from './app/ipc-request-handlers/task/unassign-sprint-task.handler copy';
 import { RetrieveAllSprintsOfUser } from './app/ipc-request-handlers/user/retrieve-all-sprints-of-user.handler';
+import { RetrieveAllUsersNotInProjectHandler } from './app/ipc-request-handlers/project/retrieve-all-users-not-in-project.handler';
+import { AssignUserToProjectHandler } from './app/ipc-request-handlers/project/assign-user-to-project.handler';
+import { RetrieveScrumMastersOfProjectHandler } from './app/ipc-request-handlers/project-members/retrieve-scrum-masters-of-project.handler';
+import { RetrieveProductOwnersOfProjectHandler } from './app/ipc-request-handlers/project-members/retrieve-product-owners-of-project.handler';
+import { RetrieveDevelopersOfProjectHandler } from './app/ipc-request-handlers/project-members/retrieve-developers-of-project.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -85,6 +90,7 @@ import { RetrieveAllSprintsOfUser } from './app/ipc-request-handlers/user/retrie
       RetrieveTaskHandler,
       RetrieveAllTasksBySprintHandler,
       RetrieveAllTasksByProjectHandler,
+      AssignUserToProjectHandler,
 
       CreateTaskTypeHandler,
       DeleteTaskTypeHandler,
@@ -119,6 +125,11 @@ import { RetrieveAllSprintsOfUser } from './app/ipc-request-handlers/user/retrie
       RetrieveAllProjectsHandler,
       UpdateProjectHandler,
       RetrieveAllUsersInProject,
+      RetrieveAllUsersNotInProjectHandler,
+
+      RetrieveDevelopersOfProjectHandler,
+      RetrieveProductOwnersOfProjectHandler,
+      RetrieveScrumMastersOfProjectHandler,
 
       LoadFixturesHandler,
       TruncateDatabaseHandler,

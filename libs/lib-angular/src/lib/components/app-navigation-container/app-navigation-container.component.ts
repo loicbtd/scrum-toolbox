@@ -144,7 +144,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         >
           <ng-container *ngFor="let item of avatarNavigationItems">
             <hr *ngIf="item.separatorAbove" class="separator" />
-            <a [routerLink]="item.routerLink" (click)="act(item.action)">
+            <a [routerLink]="item.routerLink" (click)="act(item.action)" routerLinkActive="active">
               <div *ngIf="item.iconClass" class="icon-container">
                 <i [class]="item.iconClass"></i>
               </div>
@@ -161,7 +161,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         collapsed: !desktopNavigationExpanded
       }"
     >
-      <a [routerLink]="item.routerLink" *ngFor="let item of navigationItems" (click)="act()">
+      <a [routerLink]="item.routerLink" *ngFor="let item of navigationItems" (click)="act()" routerLinkActive="active">
         <div *ngIf="item.iconClass" class="icon-container">
           <i [class]="item.iconClass"></i>
         </div>
@@ -388,7 +388,8 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         cursor: pointer;
       }
 
-      .avatar-navigation a:hover {
+      .avatar-navigation a:hover,
+      .avatar-navigation a.active {
         background-color: #007bc0;
         color: #fff;
       }

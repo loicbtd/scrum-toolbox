@@ -53,12 +53,18 @@
         <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
 
         <td>
-          <p-button pRipple icon="pi pi-users" styleClass="p-button-rounded" (click)="editAttendees(item)"></p-button>
-          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded ml-2" (click)="editItem(item)"></p-button>
+          <p-button
+            pTooltip="Manage attendees"
+            pRipple
+            icon="pi pi-users"
+            styleClass="p-button-rounded m-1"
+            (click)="editAttendees(item)"
+          ></p-button>
+          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded m-1" (click)="editItem(item)"></p-button>
           <p-button
             pRipple
             icon="pi pi-trash"
-            styleClass="p-button-rounded p-button-outlined ml-2"
+            styleClass="p-button-rounded p-button-outlined m-1"
             (click)="deleteItem(item)"
           ></p-button>
         </td>
@@ -102,17 +108,17 @@
 <p-dialog
   [(visible)]="attendeesDialog"
   [style]="{ width: '450px' }"
-  header="Project attendeees"
+  header="Project attendees"
   [modal]="true"
   styleClass="p-fluid"
 >
   <ng-template pTemplate="content">
     <div class="field">
-      <label for="projectOnwners">Product owners</label>
+      <label for="productOwners">Product owners</label>
       <p-multiSelect
         [options]="availableProductOwners"
         [(ngModel)]="productOwners"
-        defaultLabel="Select the product owners"
+        defaultLabel="Select product owners"
         optionLabel="name"
         class="multiselect-custom"
       >
@@ -122,6 +128,57 @@
           </div>
           <div *ngIf="!availableProductOwners || availableProductOwners.length === 0" class="country-placeholder">
             Select product owner
+          </div>
+        </ng-template>
+        <ng-template let-user pTemplate="item">
+          <div class="country-item">
+            <div>{{ user.username }}</div>
+          </div>
+        </ng-template>
+      </p-multiSelect>
+    </div>
+
+    <div class="field">
+      <label for="productOwners">Scrum masters</label>
+      <p-multiSelect
+        [options]="availableScrumMasters"
+        [(ngModel)]="scrumMasters"
+        defaultLabel="Select scrum masters"
+        optionLabel="name"
+        class="multiselect-custom"
+      >
+        <ng-template let-value pTemplate="selectedItems">
+          <div class="country-item country-item-value" *ngFor="let option of availableScrumMasters">
+            <div>{{ option.username }}</div>
+          </div>
+          <div *ngIf="!availableScrumMasters || availableScrumMasters.length === 0" class="country-placeholder">
+            Select scrum masters
+          </div>
+        </ng-template>
+        <ng-template let-user pTemplate="item">
+          <div class="country-item">
+            <div>{{ user.username }}</div>
+          </div>
+        </ng-template>
+      </p-multiSelect>
+    </div>
+
+    <div class="field mb-5">
+      <label for="productOwners">Developers</label>
+      <p-multiSelect
+        [options]="availableDevelopers"
+        [(ngModel)]="developers"
+        defaultLabel="Select developers"
+        optionLabel="name"
+        class="multiselect-custom"
+        appendTo="body"
+      >
+        <ng-template let-value pTemplate="selectedItems">
+          <div class="country-item country-item-value" *ngFor="let option of availableDevelopers">
+            <div>{{ option.username }}</div>
+          </div>
+          <div *ngIf="!availableDevelopers || availableDevelopers.length === 0" class="country-placeholder">
+            Select developers
           </div>
         </ng-template>
         <ng-template let-user pTemplate="item">

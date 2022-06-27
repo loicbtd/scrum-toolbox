@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, errorsName, TaskStatus } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, errorsName, TaskStatusEntity } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 
@@ -11,15 +11,18 @@ import { ConfirmationService } from 'primeng/api';
       .p-invalid {
         color: red !important;
       }
+      th {
+        white-space: nowrap;
+      }
     `,
   ],
 })
 export class CrudTaskStatusComponent {
-  items: TaskStatus[];
+  items: TaskStatusEntity[];
 
-  item: TaskStatus;
+  item: TaskStatusEntity;
 
-  selectedItems: TaskStatus[];
+  selectedItems: TaskStatusEntity[];
 
   submitted: boolean;
 
@@ -34,11 +37,11 @@ export class CrudTaskStatusComponent {
   ) {}
 
   async ngOnInit() {
-    this.items = await this._ipcService.query<TaskStatus[]>(appIpcs.retrieveAllTasksStatus);
+    this.items = await this._ipcService.query<TaskStatusEntity[]>(appIpcs.retrieveAllTasksStatus);
   }
 
   openNew() {
-    this.item = new TaskStatus();
+    this.item = new TaskStatusEntity();
     this.submitted = this.labelDisabled = false;
     this.dialog = true;
   }
@@ -57,25 +60,25 @@ export class CrudTaskStatusComponent {
     });
   }
 
-  editItem(item: TaskStatus) {
+  editItem(item: TaskStatusEntity) {
     this.item = { ...item };
     this.labelDisabled = true;
     this.dialog = true;
   }
 
-  async deleteItem(item: TaskStatus) {
+  async deleteItem(item: TaskStatusEntity) {
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         await this.validateDeleteItem(item);
-        this.item = new TaskStatus();
+        this.item = new TaskStatusEntity();
       },
     });
   }
 
-  async validateDeleteItem(item: TaskStatus) {
+  async validateDeleteItem(item: TaskStatusEntity) {
     try {
       await this._ipcService.query(appIpcs.deleteTaskStatus, item.id);
       this.items = this.items.filter((_) => _.id !== item.id);
@@ -112,7 +115,7 @@ export class CrudTaskStatusComponent {
           this._toastMessageService.showError('This label already exists', `Error`);
         } else {
           try {
-            this.item = await this._ipcService.query<TaskStatus>(appIpcs.createTaskStatus, this.item);
+            this.item = await this._ipcService.query<TaskStatusEntity>(appIpcs.createTaskStatus, this.item);
             this.items.push(this.item);
             this._toastMessageService.showSuccess('Item Created', 'Successful');
           } catch (error: any) {
@@ -122,7 +125,7 @@ export class CrudTaskStatusComponent {
       }
       this.items = [...this.items];
       this.dialog = false;
-      this.item = new TaskStatus();
+      this.item = new TaskStatusEntity();
     }
   }
 

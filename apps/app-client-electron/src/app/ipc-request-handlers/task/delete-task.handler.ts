@@ -1,6 +1,6 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
-import { appIpcs, Task } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, TaskEntity } from '@libraries/lib-scrum-toolbox';
 
 export class DeleteTaskHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.deleteTask;
@@ -9,7 +9,7 @@ export class DeleteTaskHandler implements IpcRequestHandlerInterface {
     await Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main')
-      .getRepository<Task>(Task)
+      .getRepository<TaskEntity>(TaskEntity)
       .delete(id);
   }
 }

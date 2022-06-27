@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
-@Entity()
-export class SprintStatus {
+@Entity({ name: 'sprint_status' })
+export class SprintStatusEntity {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 

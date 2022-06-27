@@ -1,14 +1,22 @@
 <div class="card">
   <p-toolbar styleClass="p-mb-4">
     <ng-template pTemplate="left">
+      <span class="mr-2">Current sprint :</span>
       <p-dropdown
         (onChange)="updateTasks($event.value)"
         class="sprint-dropdown"
         [options]="sprints"
         [(ngModel)]="selectedSprint"
         optionLabel="label"
+        placeholder="Select a sprint"
       ></p-dropdown>
-      <p-button pRipple label="Add Tak(s)" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+      <p-button
+        pRipple
+        label="Add Task"
+        icon="pi pi-plus"
+        class="p-button-success p-mr-2"
+        (click)="openNew()"
+      ></p-button>
       <p-button
         pRipple
         label="Remove Selected Tasks"
@@ -73,11 +81,11 @@
           <span *ngFor="let user of item.users" class="user-initials">{{ getInitials(user) }}</span>
         </td>
         <td>
-          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded" (click)="editItem(item)"></p-button>
+          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded m-1" (click)="editItem(item)"></p-button>
           <p-button
             pRipple
             icon="pi pi-trash"
-            styleClass="p-button-rounded p-button-outlined ml-2"
+            styleClass="p-button-rounded p-button-outlined m-1"
             (click)="deleteItem(item)"
           ></p-button>
         </td>
@@ -164,8 +172,8 @@
         pInputTextarea
         type="text"
         style="height: 5rem"
-        [rows]="5" 
-        [cols]="30"  
+        [rows]="5"
+        [cols]="30"
         [autoResize]="true"
         id="description"
         [(ngModel)]="item.description"

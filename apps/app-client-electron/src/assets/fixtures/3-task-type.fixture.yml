@@ -1,18 +1,21 @@
 entity: task_type
 items:
-  task_type1:
+  task_type0:
     label: 'Bug'
     backgroundColor: '#FF0000'
     textColor: '#FFFFFF'
-  task_type2:
+
+  task_type1:
     label: 'Feature'
     backgroundColor: '#CCA9DD'
     textColor: '#000000'
-  task_type3:
+
+  task_type2:
     label: 'Documentation'
     backgroundColor: '#ADD8E6'
     textColor: '#000000'
-  task_type4:
+
+  task_type3:
     label: 'User Story'
     backgroundColor: '#072F5F'
     textColor: '#FFFFFF'

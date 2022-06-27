@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
 import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, Project, Sprint, Task, TaskStatus, TaskType } from '@libraries/lib-scrum-toolbox';
+import {
+  appIpcs,
+  ProjectEntity,
+  SprintEntity,
+  TaskEntity,
+  TaskStatusEntity,
+  TaskTypeEntity,
+} from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Select, Store } from '@ngxs/store';
@@ -8,34 +15,34 @@ import { Observable, Subscription } from 'rxjs';
 import { CurrentProjectModel } from '../../../../global/models/current-project.model';
 
 @Component({
-  templateUrl: './crud-product-backlog.component.html',
-  styleUrls: ['./crud-product-backlog.component.scss'],
+  templateUrl: './crud-backlog-product.component.html',
+  styleUrls: ['./crud-backlog-product.component.scss'],
 })
-export class CrudProductBacklogComponent {
+export class CrudBacklogProductComponent {
   @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
 
   dialogUpdate: boolean;
   dialogNew: boolean;
 
-  items: Task[];
-  item: Task;
+  items: TaskEntity[];
+  item: TaskEntity;
 
-  selectedItems: Task[];
+  selectedItems: TaskEntity[];
 
   submitted: boolean;
-  
-  selectedProject: Project;
-  
-  tasks: Task[];
 
-  taskType: TaskType[];
-  selectedType: TaskType;
+  selectedProject: ProjectEntity;
 
-  selectedSprint: Sprint | undefined;
-  projectSprints: Sprint[];
+  tasks: TaskEntity[];
+
+  taskType: TaskTypeEntity[];
+  selectedType: TaskTypeEntity;
+
+  selectedSprint: SprintEntity | undefined;
+  projectSprints: SprintEntity[];
 
   sub: Subscription;
-  sprintNull: Sprint;
+  sprintNull: SprintEntity;
 
   get isCreationMode() {
     return !this.item.id;
@@ -49,35 +56,34 @@ export class CrudProductBacklogComponent {
   ) {}
 
   async ngOnInit() {
-
-    this.taskType = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
+    this.taskType = await this._ipcService.query<TaskTypeEntity[]>(appIpcs.retrieveAllTasksType);
     this.selectedType = this.taskType[0];
-    
-    this.sprintNull = new Sprint();
-    this.sprintNull.label = 'not assigned';    
-    
+
+    this.sprintNull = new SprintEntity();
+    this.sprintNull.label = 'not assigned';
+
     this.sub = this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
       if (data) {
-        
         this.selectedProject = data.project;
 
-        this.items = await this._ipcService.query<Task[]>(appIpcs.retrieveAllTasksByProject, this.selectedProject.id);
+        this.items = await this._ipcService.query<TaskEntity[]>(
+          appIpcs.retrieveAllTasksByProject,
+          this.selectedProject.id
+        );
         this.item = this.items[0];
-        
-        this.projectSprints = await this._ipcService.query<Sprint[]>(appIpcs.retrieveAllSprintsByProject, {
+
+        this.projectSprints = await this._ipcService.query<SprintEntity[]>(appIpcs.retrieveAllSprintsByProject, {
           id: this.selectedProject.id,
         });
         this.selectedSprint = this.projectSprints[0];
         this.projectSprints.push(this.sprintNull);
-
       }
     });
-    
   }
 
   openNew() {
-    const tempStatus = this.item?.status as TaskStatus;
-    const tempType = this.item?.type as TaskType;
+    const tempStatus = this.item?.status as TaskStatusEntity;
+    const tempType = this.item?.type as TaskTypeEntity;
     this.item = { status: tempStatus, type: tempType };
     this.selectedSprint = this.sprintNull;
     this.submitted = false;
@@ -105,7 +111,7 @@ export class CrudProductBacklogComponent {
     });
   }
 
-  editItem(item: Task) {  
+  editItem(item: TaskEntity) {
     this.item = { ...item };
     this.selectedType = item.type;
 
@@ -116,11 +122,9 @@ export class CrudProductBacklogComponent {
     }
 
     this.dialogUpdate = true;
-    
   }
 
-  async deleteItem(item: Task) {
-    
+  async deleteItem(item: TaskEntity) {
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
       header: 'Confirm',
@@ -132,7 +136,6 @@ export class CrudProductBacklogComponent {
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
 
           this.refresh();
-
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
         }
@@ -153,31 +156,29 @@ export class CrudProductBacklogComponent {
       try {
         this.item.type = this.selectedType;
 
-        if (this.selectedSprint?.label === this.sprintNull.label) {          
+        if (this.selectedSprint?.label === this.sprintNull.label) {
           await this._ipcService.query(appIpcs.unassignTaskToSprint, this.item.id);
           this.item.sprint = undefined;
         } else {
           this.item.sprint = this.selectedSprint;
         }
-        
+
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
-        
-        this.refresh();
 
+        this.refresh();
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
     } else {
       try {
-        
         this.item.type = this.selectedType;
-        this.item.project = this.selectedProject
-        
-        this.item = await this._ipcService.query<Task>(appIpcs.createTask, this.item);
+        this.item.project = this.selectedProject;
 
-        if (this.selectedSprint?.label === this.sprintNull.label) {          
+        this.item = await this._ipcService.query<TaskEntity>(appIpcs.createTask, this.item);
+
+        if (this.selectedSprint?.label === this.sprintNull.label) {
           await this._ipcService.query(appIpcs.unassignTaskToSprint, this.item.id);
           this.item.sprint = undefined;
         } else {
@@ -185,11 +186,10 @@ export class CrudProductBacklogComponent {
         }
 
         await this._ipcService.query(appIpcs.updateTask, this.item);
-        
-        this._toastMessageService.showSuccess('Item Created', 'Successful');
-        
-        this.refresh();
 
+        this._toastMessageService.showSuccess('Item Created', 'Successful');
+
+        this.refresh();
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while creating item`);
       }
@@ -198,7 +198,6 @@ export class CrudProductBacklogComponent {
     this.items = [...this.items];
     this.dialogUpdate = false;
     this.dialogNew = false;
-    // this.item = {};
   }
 
   refresh() {
@@ -238,18 +237,17 @@ export class CrudProductBacklogComponent {
     return '' + user.firstname.charAt(0) + '' + user.lastname.charAt(0);
   }
 
-  sprintName(task: Task) {
+  sprintName(task: TaskEntity) {
     if (task.sprint?.label) {
       return '' + task.sprint.label;
     }
     return 'not assigned';
   }
 
-  setColorWithStatusForSprint(task: Task): any {
+  setColorWithStatusForSprint(task: TaskEntity): any {
     if (!task.sprint?.label) {
       return { 'background-color': '#6fa8dc', color: '#ffffff' };
     }
     return;
   }
-
 }

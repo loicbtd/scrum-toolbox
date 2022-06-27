@@ -1,4 +1,4 @@
-import { Task } from '../entities/task.entity';
+import { TaskEntity } from '../entities/task.entity';
 
 export class UserModel {
   id?: string;
@@ -13,5 +13,5 @@ export class UserModel {
 
   isActivated?: boolean;
 
-  tasks?: Task[];
+  tasks?: TaskEntity[];
 }

@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, errorsName, TaskType } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, errorsName, TaskTypeEntity } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 
@@ -11,15 +11,19 @@ import { ConfirmationService } from 'primeng/api';
       .p-invalid {
         color: red !important;
       }
+
+      th {
+        white-space: nowrap;
+      }
     `,
   ],
 })
 export class CrudTaskTypeComponent {
-  items: TaskType[];
+  items: TaskTypeEntity[];
 
-  item: TaskType;
+  item: TaskTypeEntity;
 
-  selectedItems: TaskType[];
+  selectedItems: TaskTypeEntity[];
 
   submitted: boolean;
 
@@ -34,11 +38,11 @@ export class CrudTaskTypeComponent {
   ) {}
 
   async ngOnInit() {
-    this.items = await this._ipcService.query<TaskType[]>(appIpcs.retrieveAllTasksType);
+    this.items = await this._ipcService.query<TaskTypeEntity[]>(appIpcs.retrieveAllTasksType);
   }
 
   openNew() {
-    this.item = new TaskType();
+    this.item = new TaskTypeEntity();
     this.submitted = this.labelDisabled = false;
     this.dialog = true;
   }
@@ -57,25 +61,25 @@ export class CrudTaskTypeComponent {
     });
   }
 
-  editItem(item: TaskType) {
+  editItem(item: TaskTypeEntity) {
     this.item = { ...item };
     this.labelDisabled = true;
     this.dialog = true;
   }
 
-  async deleteItem(item: TaskType) {
+  async deleteItem(item: TaskTypeEntity) {
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         await this.validateDeleteItem(item);
-        this.item = new TaskType();
+        this.item = new TaskTypeEntity();
       },
     });
   }
 
-  async validateDeleteItem(item: TaskType) {
+  async validateDeleteItem(item: TaskTypeEntity) {
     try {
       await this._ipcService.query(appIpcs.deleteTaskType, item.id);
       this.items = this.items.filter((_) => _.id !== item.id);
@@ -112,7 +116,7 @@ export class CrudTaskTypeComponent {
           this._toastMessageService.showError('This label already exists', `Error`);
         } else {
           try {
-            this.item = await this._ipcService.query<TaskType>(appIpcs.createTaskType, this.item);
+            this.item = await this._ipcService.query<TaskTypeEntity>(appIpcs.createTaskType, this.item);
             this.items.push(this.item);
             this._toastMessageService.showSuccess('Item Created', 'Successful');
           } catch (error: any) {
@@ -122,7 +126,7 @@ export class CrudTaskTypeComponent {
       }
       this.items = [...this.items];
       this.dialog = false;
-      this.item = new TaskType();
+      this.item = new TaskTypeEntity();
     }
   }
 

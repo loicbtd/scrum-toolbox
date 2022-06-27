@@ -1,6 +1,6 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
-import { appIpcs, Sprint, Task } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, SprintEntity, TaskEntity } from '@libraries/lib-scrum-toolbox';
 
 export class AssignSprintTaskHandler implements IpcRequestHandlerInterface {
   channel = appIpcs.assignTaskToSprint;
@@ -10,12 +10,12 @@ export class AssignSprintTaskHandler implements IpcRequestHandlerInterface {
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main');
 
-    const sprint = await connection.getRepository(Sprint).findOneOrFail({ id: data.sprintId });
+    const sprint = await connection.getRepository(SprintEntity).findOneOrFail({ id: data.sprintId });
 
     await connection
-      .getRepository<Task>(Task)
+      .getRepository<TaskEntity>(TaskEntity)
       .createQueryBuilder()
-      .update(Task)
+      .update(TaskEntity)
       .set({ sprint: sprint })
       .where('id = :id', { id: data.taskId })
       .execute();

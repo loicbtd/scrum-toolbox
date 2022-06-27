@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ToastMessageService } from '@libraries/lib-angular';
-import { appIpcs, errorsName, SprintStatus } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, errorsName, SprintStatusEntity } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 
@@ -11,15 +11,19 @@ import { ConfirmationService } from 'primeng/api';
       .p-invalid {
         color: red !important;
       }
+
+      th {
+        white-space: nowrap;
+      }
     `,
   ],
 })
 export class CrudSprintStatusComponent {
-  items: SprintStatus[];
+  items: SprintStatusEntity[];
 
-  item: SprintStatus;
+  item: SprintStatusEntity;
 
-  selectedItems: SprintStatus[];
+  selectedItems: SprintStatusEntity[];
 
   submitted: boolean;
 
@@ -34,11 +38,11 @@ export class CrudSprintStatusComponent {
   ) {}
 
   async ngOnInit() {
-    this.items = await this._ipcService.query<SprintStatus[]>(appIpcs.retrieveAllSprintsStatus);
+    this.items = await this._ipcService.query<SprintStatusEntity[]>(appIpcs.retrieveAllSprintsStatus);
   }
 
   openNew() {
-    this.item = new SprintStatus();
+    this.item = new SprintStatusEntity();
     this.submitted = this.labelDisabled = false;
     this.dialog = true;
   }
@@ -57,25 +61,25 @@ export class CrudSprintStatusComponent {
     });
   }
 
-  editItem(item: SprintStatus) {
+  editItem(item: SprintStatusEntity) {
     this.item = { ...item };
     this.labelDisabled = true;
     this.dialog = true;
   }
 
-  async deleteItem(item: SprintStatus) {
+  async deleteItem(item: SprintStatusEntity) {
     this._confirmationService.confirm({
       message: 'Are you sure you want to delete the item ?',
       header: 'Confirm',
       icon: 'pi pi-exclamation-triangle',
       accept: async () => {
         await this.validateDeleteItem(item);
-        this.item = new SprintStatus();
+        this.item = new SprintStatusEntity();
       },
     });
   }
 
-  async validateDeleteItem(item: SprintStatus) {
+  async validateDeleteItem(item: SprintStatusEntity) {
     try {
       await this._ipcService.query(appIpcs.deleteSprintStatus, item.id);
       this.items = this.items.filter((_) => _.id !== item.id);
@@ -112,7 +116,7 @@ export class CrudSprintStatusComponent {
           this._toastMessageService.showError('This label already exists', `Error`);
         } else {
           try {
-            this.item = await this._ipcService.query<SprintStatus>(appIpcs.createSprintStatus, this.item);
+            this.item = await this._ipcService.query<SprintStatusEntity>(appIpcs.createSprintStatus, this.item);
             this.items.push(this.item);
             this._toastMessageService.showSuccess('Item Created', 'Successful');
           } catch (error: any) {
@@ -122,7 +126,7 @@ export class CrudSprintStatusComponent {
       }
       this.items = [...this.items];
       this.dialog = false;
-      this.item = new SprintStatus();
+      this.item = new SprintStatusEntity();
     }
   }
 

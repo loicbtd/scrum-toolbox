@@ -70,11 +70,11 @@
           <span *ngFor="let user of item.users" class="user-initials">{{ getInitials(user) }}</span>
         </td>
         <td>
-          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded" (click)="editItem(item)"></p-button>
+          <p-button pRipple icon="pi pi-pencil" styleClass="p-button-rounded m-1" (click)="editItem(item)"></p-button>
           <p-button
             pRipple
             icon="pi pi-trash"
-            styleClass="p-button-rounded p-button-outlined ml-2"
+            styleClass="p-button-rounded p-button-outlined m-1"
             (click)="deleteItem(item)"
           ></p-button>
         </td>
@@ -120,7 +120,12 @@
     <!-- TODO assign sprint to task -->
     <div class="field">
       <label for="sprint">Sprint</label>
-      <p-dropdown [options]="projectSprints" [(ngModel)]="selectedSprint" optionLabel="label" appendTo="body"></p-dropdown>
+      <p-dropdown
+        [options]="projectSprints"
+        [(ngModel)]="selectedSprint"
+        optionLabel="label"
+        appendTo="body"
+      ></p-dropdown>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
 
@@ -135,8 +140,8 @@
         pInputTextarea
         type="text"
         style="height: 5rem"
-        [rows]="5" 
-        [cols]="30"  
+        [rows]="5"
+        [cols]="30"
         [autoResize]="true"
         id="description"
         [(ngModel)]="item.description"
@@ -185,7 +190,12 @@
 
     <div class="field">
       <label for="sprint">Sprint</label>
-      <p-dropdown [options]="projectSprints" [(ngModel)]="selectedSprint" optionLabel="label" appendTo="body"></p-dropdown>
+      <p-dropdown
+        [options]="projectSprints"
+        [(ngModel)]="selectedSprint"
+        optionLabel="label"
+        appendTo="body"
+      ></p-dropdown>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
 
@@ -200,8 +210,8 @@
         pInputTextarea
         type="text"
         style="height: 5rem"
-        [rows]="5" 
-        [cols]="30"  
+        [rows]="5"
+        [cols]="30"
         [autoResize]="true"
         id="description"
         [(ngModel)]="item.description"
@@ -216,6 +226,5 @@
     <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
   </ng-template>
 </p-dialog>
-
 
 <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

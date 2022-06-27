@@ -1,20 +1,20 @@
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 import { Entity, Column, ManyToOne, PrimaryGeneratedColumn, JoinColumn } from 'typeorm';
-import { Sprint } from './sprint.entity';
+import { SprintEntity } from './sprint.entity';
 import { UserModel } from '../models/user.model';
 
-@Entity()
-export class UserSprint {
+@Entity({ name: 'sprint_member' })
+export class SprintMemberEntity {
   @PrimaryGeneratedColumn('uuid')
   id?: string;
 
-  @ManyToOne(() => User, (user) => user.id, { nullable: false })
+  @ManyToOne(() => UserEntity, (user) => user.id, { nullable: false })
   @JoinColumn({ name: 'userId' })
   user: UserModel;
 
-  @ManyToOne(() => Sprint, (sprint) => sprint.id, { nullable: false })
+  @ManyToOne(() => SprintEntity, (sprint) => sprint.id, { nullable: false })
   @JoinColumn({ name: 'sprintId' })
-  sprint: Sprint;
+  sprint: SprintEntity;
 
   @Column({ nullable: false })
   capacity?: number;

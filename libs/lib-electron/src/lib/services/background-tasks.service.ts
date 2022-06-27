@@ -25,7 +25,7 @@ export class BackgroundTasksService {
           task.id,
           async () => {
             try {
-              task.handle();
+              await task.handle();
             } catch (error: any) {
               throw new ElectronApplicationError(error?.message);
             }

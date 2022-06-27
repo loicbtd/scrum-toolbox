@@ -1,5 +1,0 @@
-entity: project
-items:
-  project{1..5}:
-    label: '{{animal.cetacean}}'
-    description: '{{lorem.paragraph}}'

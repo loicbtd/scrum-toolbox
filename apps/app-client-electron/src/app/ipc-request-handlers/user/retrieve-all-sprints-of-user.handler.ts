@@ -1,11 +1,11 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
-import { appIpcs, Sprint } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, SprintEntity } from '@libraries/lib-scrum-toolbox';
 
 export class RetrieveAllSprintsOfUser implements IpcRequestHandlerInterface {
   channel = appIpcs.retrieveAllSprintsOfUser;
 
-  async handle(data: { userId: string; projectId: string }): Promise<Sprint[]> {
+  async handle(data: { userId: string; projectId: string }): Promise<SprintEntity[]> {
     return Application.getInstance()
       .dependencies.get<DatabasesService>(dependencies.databases)
       .getConnection('main')
