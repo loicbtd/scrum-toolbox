@@ -1,7 +1,7 @@
-<!-- <ng-container *ngIf="projectContext$ | async as projectContext; else noSelection">
+<ng-container *ngIf="context$ | async as context; else noSelection">
   <div class="px-4 py-8 md:px-6 lg:px-8">
     <div class="grid">
-      <div class="col" *ngFor="let item of projectContext.members">
+      <div class="col" *ngFor="let item of context.members">
         <div class="p-3 h-full">
           <p-card
             header="{{ item.user?.firstname }} {{ item.user?.lastname | titlecase }}"
@@ -44,7 +44,7 @@
     <ng-template pTemplate="header">
       <div>
         <h2>{{ selectedItem.user?.firstname }} {{ selectedItem.user?.lastname | titlecase }}</h2>
-        <h3 class="user-type" [innerText]="selectedItem.userType?.label"></h3>
+        <!-- <h3 class="user-type" [innerText]="selectedItem.userType?.label"></h3> -->
       </div>
     </ng-template>
     <ng-template pTemplate="body">
@@ -159,22 +159,22 @@
       </div>
       <div class="field flex flex-column">
         <label for="label">Position</label>
-        <p-dropdown
-        [options]="usersPositions"
-        [(ngModel)]="newUserPosition"
-        [showClear]="true"
-        placeholder="Select position"
-        appendTo="body"
-      >
-        <ng-template pTemplate="selectedItem">
-          <div class="country-item country-item-value" *ngIf="newUserPosition">
-            <div>{{ newUserPosition.label }}</div>
-          </div>
-        </ng-template>
-        <ng-template let-position pTemplate="item">
-          <div>{{ position.label }}</div>
-        </ng-template>
-      </p-dropdown>
+        <!-- <p-dropdown
+          [options]="usersPositions"
+          [(ngModel)]="newUserPosition"
+          [showClear]="true"
+          placeholder="Select position"
+          appendTo="body"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div class="country-item country-item-value" *ngIf="newUserPosition">
+              <div>{{ newUserPosition }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-position pTemplate="item">
+            <div>{{ position.label }}</div>
+          </ng-template>
+        </p-dropdown> -->
         <small class="p-invalid" *ngIf="newSubmitted && !newUserPosition">Required field</small>
       </div>
     </ng-template>
@@ -183,4 +183,4 @@
 
 <ng-template #noSelection>
   <div>No project selected</div>
-</ng-template> -->
+</ng-template>

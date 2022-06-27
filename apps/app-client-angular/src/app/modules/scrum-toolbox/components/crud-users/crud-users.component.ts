@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
 import { appIpcs, UserEntity, UserModel } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
@@ -10,7 +10,7 @@ import { MyProfileModel } from '../../../../global/models/my-profile.model';
   templateUrl: './crud-users.component.html',
   styleUrls: ['./crud-users.component.scss'],
 })
-export class CrudUsersComponent {
+export class CrudUsersComponent implements OnInit {
   dialog: boolean;
 
   items: UserModel[];

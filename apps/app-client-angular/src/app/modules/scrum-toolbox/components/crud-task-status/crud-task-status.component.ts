@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ToastMessageService } from '@libraries/lib-angular';
 import { appIpcs, errorsName, TaskStatusEntity } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
@@ -17,7 +17,7 @@ import { ConfirmationService } from 'primeng/api';
     `,
   ],
 })
-export class CrudTaskStatusComponent {
+export class CrudTaskStatusComponent implements OnInit {
   items: TaskStatusEntity[];
 
   item: TaskStatusEntity;

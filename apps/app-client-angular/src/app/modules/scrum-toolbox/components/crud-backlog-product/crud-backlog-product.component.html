@@ -138,6 +138,29 @@
       </div>
 
       <div class="field">
+        <label for="type">Status</label>
+        <p-dropdown
+          placeholder="Select a status"
+          [options]="availableTaskStatuses"
+          [(ngModel)]="item.status"
+          optionLabel="label"
+          appendTo="body"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div *ngIf="item.status">
+              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(item.status)">{{ item.status.label }}</span>
+            </div>
+          </ng-template>
+          <ng-template let-status pTemplate="item">
+            <div class="test">
+              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(status)">{{ status.label }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        <small class="p-invalid" *ngIf="submitted && !item.status">Required field</small>
+      </div>
+
+      <div class="field">
         <label for="description">Description</label>
         <textarea
           pInputTextarea

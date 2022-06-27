@@ -7,7 +7,6 @@ import {
   SprintEntity,
   TaskEntity,
   UserEntity,
-  UserModel,
   ProjectMemberEntity,
   ProjectRoleEnumeration,
 } from '@libraries/lib-scrum-toolbox';
@@ -33,7 +32,7 @@ import { ProjectContextModel } from '../../models/project-context.model';
   ],
 })
 export class ProjectTeamComponent {
-  @Select(ProjectContextState) projectContext$: Observable<ProjectContextModel>;
+  @Select(ProjectContextState) context$: Observable<ProjectContextModel>;
 
   dialog = false;
 
@@ -51,11 +50,11 @@ export class ProjectTeamComponent {
 
   newSubmitted = false;
 
-  usersAvailables!: UserModel[];
+  usersAvailables!: UserEntity[];
 
-  newUser!: UserModel;
+  newUser!: UserEntity;
 
-  projectRoles!: ProjectRoleEnumeration[];
+  availableProjectRoles: ProjectRoleEnumeration[];
 
   newUserPosition!: ProjectRoleEnumeration;
 

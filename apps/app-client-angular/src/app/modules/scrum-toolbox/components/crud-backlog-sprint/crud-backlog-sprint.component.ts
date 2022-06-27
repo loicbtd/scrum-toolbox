@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ToastMessageService } from '@libraries/lib-angular';
 import {
   appIpcs,
-  ProjectEntity,
   SprintEntity,
   TaskEntity,
   TaskStatusEntity,
