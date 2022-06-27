@@ -35,16 +35,16 @@ export class TaskEntity {
   @UpdateDateColumn()
   updatedAt?: Date;
 
-  @ManyToOne(() => TaskStatusEntity, (taskStatus) => taskStatus.id, { eager: true, nullable: false })
-  @JoinColumn({ name: 'statusId' })
+  @ManyToOne(() => TaskStatusEntity, (taskStatus) => taskStatus.id, { eager: true, nullable: true })
+  @JoinColumn({ name: 'status_id' })
   status?: TaskStatusEntity;
 
   @ManyToOne(() => TaskTypeEntity, (taskType) => taskType.id, { eager: true, nullable: false })
-  @JoinColumn({ name: 'typeId' })
+  @JoinColumn({ name: 'type_id' })
   type?: TaskTypeEntity;
 
   @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false })
-  @JoinColumn({ name: 'projectId' })
+  @JoinColumn({ name: 'project_id' })
   project?: ProjectEntity;
 
   @ManyToMany(() => UserEntity, (user) => user.tasks, { eager: true })
@@ -52,6 +52,6 @@ export class TaskEntity {
   users?: UserEntity[];
 
   @ManyToOne(() => SprintEntity, (sprint) => sprint.tasks, { nullable: true, eager: true })
-  @JoinColumn({ name: 'sprintId' })
+  @JoinColumn({ name: 'sprint_id' })
   sprint?: SprintEntity;
 }

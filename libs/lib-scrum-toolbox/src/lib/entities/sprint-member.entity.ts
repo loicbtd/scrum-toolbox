@@ -9,12 +9,12 @@ export class SprintMemberEntity {
   id?: string;
 
   @ManyToOne(() => UserEntity, (user) => user.id, { nullable: false })
-  @JoinColumn({ name: 'userId' })
-  user: UserModel;
+  @JoinColumn({ name: 'user_id' })
+  user?: UserModel;
 
   @ManyToOne(() => SprintEntity, (sprint) => sprint.id, { nullable: false })
-  @JoinColumn({ name: 'sprintId' })
-  sprint: SprintEntity;
+  @JoinColumn({ name: 'sprint_id' })
+  sprint?: SprintEntity;
 
   @Column({ nullable: false })
   capacity?: number;
