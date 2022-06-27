@@ -85,11 +85,7 @@ export class CrudSprintStatusComponent implements OnInit {
       this.items = this.items.filter((_) => _.id !== item.id);
       this._toastMessageService.showSuccess('Item Deleted', 'Successful');
     } catch (error: any) {
-      let errorText = 'Error while deleting item';
-      if (error.message === errorsName.statusIsCurrentlyUsed) {
-        errorText = 'This status is currently used by item';
-      }
-      this._toastMessageService.showError(errorText);
+      this._toastMessageService.showError('Unable to delete item', 'Error');
     }
   }
 

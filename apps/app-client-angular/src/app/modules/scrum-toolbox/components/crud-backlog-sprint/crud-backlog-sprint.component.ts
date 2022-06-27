@@ -87,7 +87,7 @@ export class CrudBacklogSprintComponent implements OnInit, OnDestroy {
           try {
             await this._ipcService.query(appIpcs.deleteTask, item.id);
           } catch (error) {
-            this._toastMessageService.showError('Error while deleting item');
+            this._toastMessageService.showError('Unable to delete item', 'Error');
           }
         }
         this.selectedItems = [];
@@ -113,7 +113,7 @@ export class CrudBacklogSprintComponent implements OnInit, OnDestroy {
 
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
         } catch (error) {
-          this._toastMessageService.showError(`Error while deleting item`);
+          this._toastMessageService.showError('Unable to delete item', 'Error');
         }
       },
     });

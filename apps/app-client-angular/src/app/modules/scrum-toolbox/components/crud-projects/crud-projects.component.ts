@@ -95,9 +95,7 @@ export class CrudProjectsComponent implements OnInit {
           this.item = {};
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
         } catch (error) {
-          console.log(error);
-
-          this._toastMessageService.showError(`Error while deleting item`);
+          this._toastMessageService.showError('Unable to delete item', 'Error');
         }
       },
     });

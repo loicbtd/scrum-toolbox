@@ -66,10 +66,10 @@
             }}</span>
           </td>
           <td>
-            <span class="custom-tag" [ngStyle]="getColorForTaskStatus(item.status)">{{ item.status.label }}</span>
+            <span class="custom-tag" [ngStyle]="getColorForTaskStatus(item.status)">{{ item.status?.label }}</span>
           </td>
           <td>
-            <span class="custom-tag" [ngStyle]="getColorForTaskType(item.type)">{{ item.type.label }}</span>
+            <span class="custom-tag" [ngStyle]="getColorForTaskType(item.type)">{{ item.type?.label }}</span>
           </td>
           <td>
             <span *ngFor="let user of item.users" class="user-initials" [pTooltip]="getName(user)">{{
@@ -112,7 +112,7 @@
         >
           <ng-template pTemplate="selectedItem">
             <div *ngIf="item.type">
-              <span class="custom-tag" [ngStyle]="getColorForTaskType(item.type)">{{ item.type.label }}</span>
+              <span class="custom-tag" [ngStyle]="getColorForTaskType(item.type)">{{ item.type?.label }}</span>
             </div>
           </ng-template>
           <ng-template let-type pTemplate="item">
@@ -148,12 +148,12 @@
         >
           <ng-template pTemplate="selectedItem">
             <div *ngIf="item.status">
-              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(item.status)">{{ item.status.label }}</span>
+              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(item.status)">{{ item.status?.label }}</span>
             </div>
           </ng-template>
           <ng-template let-status pTemplate="item">
             <div class="test">
-              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(status)">{{ status.label }}</span>
+              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(status)">{{ status?.label }}</span>
             </div>
           </ng-template>
         </p-dropdown>

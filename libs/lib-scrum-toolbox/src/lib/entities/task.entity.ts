@@ -50,7 +50,7 @@ export class TaskEntity {
   @JoinColumn({ name: 'projectId' })
   project?: ProjectEntity;
 
-  @ManyToMany(() => UserEntity, (user) => user.tasks, { eager: true, onDelete: 'SET NULL' })
+  @ManyToMany(() => UserEntity, (user) => user.tasks, { eager: true, onDelete: 'CASCADE' })
   @JoinTable()
   users?: UserEntity[];
 
