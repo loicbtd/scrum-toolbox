@@ -1,20 +1,20 @@
 import { Application, DatabasesService, dependencies } from '@libraries/lib-electron';
 import { IpcRequestHandlerInterface } from '@libraries/lib-electron-web';
-import { appIpcs, CreateUserRequest, errorsName, UserEntity, UserModel } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, errorsName, SignupRequest, UserEntity } from '@libraries/lib-scrum-toolbox';
 import * as bcrypt from 'bcrypt';
 import { QueryFailedError } from 'typeorm';
 
-export class CreateUserHandler implements IpcRequestHandlerInterface {
-  channel = appIpcs.createUser;
+export class SignupHandler implements IpcRequestHandlerInterface {
+  channel = appIpcs.signup;
 
-  async handle(data: CreateUserRequest): Promise<UserModel> {
+  async handle(data: SignupRequest): Promise<UserEntity> {
     try {
       const user: UserEntity = {
         username: data.username,
         passwordHash: await bcrypt.hash(data.password, bcrypt.genSaltSync()),
         firstname: data.firstname,
         lastname: data.lastname,
-        isActivated: data.isActivated,
+        isActivated: true,
       };
 
       await Application.getInstance()
@@ -28,7 +28,6 @@ export class CreateUserHandler implements IpcRequestHandlerInterface {
       if (error instanceof QueryFailedError) {
         throw new Error(errorsName.usernameAlreadyExists);
       }
-
       throw error;
     }
   }

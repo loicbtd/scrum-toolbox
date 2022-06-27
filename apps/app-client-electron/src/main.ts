@@ -58,6 +58,7 @@ import { AssignUserToProjectHandler } from './app/ipc-request-handlers/project/a
 import { RetrieveScrumMastersOfProjectHandler } from './app/ipc-request-handlers/project-members/retrieve-scrum-masters-of-project.handler';
 import { RetrieveProductOwnersOfProjectHandler } from './app/ipc-request-handlers/project-members/retrieve-product-owners-of-project.handler';
 import { RetrieveDevelopersOfProjectHandler } from './app/ipc-request-handlers/project-members/retrieve-developers-of-project.handler';
+import { SignupHandler } from './app/ipc-request-handlers/identities/signup.handler';
 
 (async () => {
   const application = Application.getInstance();
@@ -77,6 +78,7 @@ import { RetrieveDevelopersOfProjectHandler } from './app/ipc-request-handlers/p
       RetrieveUserHandler,
       UpdateStatusUserHandler,
       LoginHandler,
+      SignupHandler,
       RetrieveAllSprintsOfUser,
 
       AssignSprintTaskHandler,

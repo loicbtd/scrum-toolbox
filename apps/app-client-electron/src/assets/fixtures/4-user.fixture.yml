@@ -4,40 +4,40 @@ items:
     firstname: '{{name.firstName}}'
     lastname: '{{name.lastName}}'
     username: '{{name.lastName}}'
-    password: '$2b$10$ddSQ./kMhAWhsLCXt7j6LedMHg/2cAh8L4sbuq691J.z/xVHYDueq' #Azertyuiop90?
+    passwordHash: '$2b$10$ddSQ./kMhAWhsLCXt7j6LedMHg/2cAh8L4sbuq691J.z/xVHYDueq' #Azertyuiop90?
     isActivated: '{{datatype.boolean}}'
 
   user11:
     firstname: 'Abderrafiaa'
     lastname: 'Koukam'
     username: 'akoukam'
-    password: '$2a$12$dtg88v49RJkgwLFSFhh9mumNk//E7lokpo/mO99qFIGjBOe/Eh26y' #password
+    passwordHash: '$2a$12$dtg88v49RJkgwLFSFhh9mumNk//E7lokpo/mO99qFIGjBOe/Eh26y' #password
     isActivated: true
 
   user12:
     firstname: 'Loïc'
     lastname: 'BERTRAND'
     username: 'lbertrand'
-    password: '$2a$12$dtg88v49RJkgwLFSFhh9mumNk//E7lokpo/mO99qFIGjBOe/Eh26y' #password
+    passwordHash: '$2a$12$dtg88v49RJkgwLFSFhh9mumNk//E7lokpo/mO99qFIGjBOe/Eh26y' #password
     isActivated: true
 
   user13:
     firstname: 'Anthony'
     lastname: 'DUPORT'
     username: 'aduport'
-    password: '$2a$12$dtg88v49RJkgwLFSFhh9mumNk//E7lokpo/mO99qFIGjBOe/Eh26y' #password
+    passwordHash: '$2a$12$dtg88v49RJkgwLFSFhh9mumNk//E7lokpo/mO99qFIGjBOe/Eh26y' #password
     isActivated: true
 
   user14:
     firstname: 'Estevan'
     lastname: 'GAY'
     username: 'gestevan'
-    password: '$2a$12$dtg88v49RJkgwLFSFhh9mumNk//E7lokpo/mO99qFIGjBOe/Eh26y' #password
+    passwordHash: '$2a$12$dtg88v49RJkgwLFSFhh9mumNk//E7lokpo/mO99qFIGjBOe/Eh26y' #password
     isActivated: true
 
   user15:
     firstname: 'Matthis'
     lastname: 'PINON'
     username: 'pmatthis'
-    password: '$2a$12$dtg88v49RJkgwLFSFhh9mumNk//E7lokpo/mO99qFIGjBOe/Eh26y' #password
+    passwordHash: '$2a$12$dtg88v49RJkgwLFSFhh9mumNk//E7lokpo/mO99qFIGjBOe/Eh26y' #password
     isActivated: true

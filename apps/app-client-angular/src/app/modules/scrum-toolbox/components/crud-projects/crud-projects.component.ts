@@ -15,9 +15,7 @@ import { ProjectContextService } from '../../services/project-context.service';
 })
 export class CrudProjectsComponent implements OnInit {
   items: ProjectEntity[];
-
   item: ProjectEntity;
-
   selectedItems: ProjectEntity[];
 
   submitted: boolean;
@@ -33,10 +31,6 @@ export class CrudProjectsComponent implements OnInit {
 
   developers: UserEntity[];
   availableDevelopers: UserEntity[];
-
-  get isCreationMode() {
-    return !this.item.id;
-  }
 
   @Select(ProjectContextState) projectContext$: Observable<ProjectContextModel>;
 
@@ -129,7 +123,6 @@ export class CrudProjectsComponent implements OnInit {
       }
     }
 
-    this.items = [...this.items];
     this.dialog = false;
     this.item = {};
   }

@@ -21,6 +21,8 @@ export class CrudUsersComponent implements OnInit {
 
   submitted: boolean;
 
+  password: string;
+
   get isCreationMode() {
     return !this.item.id;
   }
@@ -39,6 +41,7 @@ export class CrudUsersComponent implements OnInit {
 
   openNew() {
     this.item = {};
+    this.password = '';
     this.submitted = false;
     this.dialog = true;
   }

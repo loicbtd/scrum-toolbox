@@ -84,8 +84,8 @@
     </div>
     <div *ngIf="isCreationMode" class="field">
       <label for="password">Password</label>
-      <input type="password" pPassword id="password" [(ngModel)]="item.password" required />
-      <small class="p-invalid" *ngIf="submitted && !item.password">Required field</small>
+      <input type="password" pPassword id="password" [(ngModel)]="password" required />
+      <small class="p-invalid" *ngIf="submitted && !password">Required field</small>
     </div>
     <div class="field">
       <label for="firstname">Firstname</label>

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { UntypedFormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationService, ToastMessageService } from '@libraries/lib-angular';
-import { appRoutes, errorsName, UserEntity } from '@libraries/lib-scrum-toolbox';
+import { appRoutes, errorsName, SigninRequest, UserEntity } from '@libraries/lib-scrum-toolbox';
 import { appIpcs } from '@libraries/lib-scrum-toolbox';
 import { MyProfileModel } from '../../global/models/my-profile.model';
 import { IpcService } from '../../global/services/ipc.service';
@@ -34,11 +34,13 @@ export class LoginComponent {
       return;
     }
 
+    const request: SigninRequest = {
+      username: this.form.get('login')?.value,
+      password: this.form.get('password')?.value,
+    };
+
     try {
-      const user = await this._ipcService.query<UserEntity>(appIpcs.login, {
-        login: this.form.get('login')?.value,
-        password: this.form.get('password')?.value,
-      });
+      const user = await this._ipcService.query<UserEntity>(appIpcs.login, request);
 
       await this._authenticationService.login<MyProfileModel>({ isLoggedIn: true, user: user }, [
         appRoutes.scrumToolbox.root,

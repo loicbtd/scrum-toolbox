@@ -5,7 +5,7 @@
         <p-button pRipple label="New" icon="pi pi-plus" styleClass="p-button-success" (click)="openNew()"></p-button>
         <p-button
           pRipple
-          label="Delete Sprint"
+          label="Delete"
           icon="pi pi-trash"
           styleClass="p-button-danger"
           class="ml-2"
@@ -20,7 +20,6 @@
       [value]="items"
       [rows]="10"
       [paginator]="true"
-      [globalFilterFields]="['firstname', 'lastname']"
       [(selection)]="selectedItems"
       [rowHover]="true"
       dataKey="id"
@@ -45,7 +44,7 @@
           <th id="header-status" pSortableColumn="status.label">
             Status <p-sortIcon field="status.label"></p-sortIcon>
           </th>
-          <th id="header-empty">Edit/Delete</th>
+          <th id="header-empty"></th>
         </tr>
       </ng-template>
       <ng-template pTemplate="body" let-item>
@@ -56,10 +55,10 @@
           <td>{{ item.label }}</td>
           <td>{{ item.createdAt | date: 'dd/MM/yyyy' }}</td>
           <td>{{ item.updatedAt | date: 'dd/MM/yyyy' }}</td>
-          <td>{{ item.start_date | date: 'dd/MM/yyyy' }}</td>
-          <td>{{ item.end_date | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ item.startDate | date: 'dd/MM/yyyy' }}</td>
+          <td>{{ item.endDate | date: 'dd/MM/yyyy' }}</td>
           <td>
-            <span class="custom-tag" [ngStyle]="selectColorStatus(item)">{{ item.status.label }}</span>
+            <span class="custom-tag" [ngStyle]="getColorForSprintStatus(item.status)">{{ item.status?.label }}</span>
           </td>
 
           <td>
@@ -79,13 +78,7 @@
     </p-table>
   </div>
 
-  <p-dialog
-    [(visible)]="dialogUpdate"
-    [style]="{ width: '450px' }"
-    header="Item Details"
-    [modal]="true"
-    styleClass="p-fluid"
-  >
+  <p-dialog [(visible)]="dialog" [style]="{ width: '450px' }" header="Sprint" [modal]="true" styleClass="p-fluid">
     <ng-template pTemplate="content">
       <div class="field">
         <label for="label">Label</label>
@@ -94,46 +87,38 @@
       </div>
 
       <div class="field">
-        <label for="startDate">Start Date</label>
+        <label>Start Date</label>
         <p-calendar
-          [ngClass]="{ 'ng-invalid ng-dirty': item.start_date }"
-          id="startDate"
-          [(ngModel)]="minDateSprint"
-          [minDate]="minStartDate"
+          [(ngModel)]="item.startDate"
           dateFormat="dd/mm/yy"
           appendTo="body"
         >
         </p-calendar>
-        <small class="p-error" *ngIf="submitted && !item.start_date">Required field</small>
+        <small class="p-error" *ngIf="submitted && !item.startDate">Required field</small>
       </div>
 
       <div class="field">
-        <label for="endDate">End Date</label>
+        <label>End Date</label>
         <p-calendar
-          [ngClass]="{ 'ng-invalid ng-dirty': item.end_date }"
-          id="endDate"
-          [(ngModel)]="maxDateSprint"
-          [minDate]="minEndDate"
+          [(ngModel)]="item.endDate"
           dateFormat="dd/mm/yy"
           appendTo="body"
         >
         </p-calendar>
-        <small class="p-error" *ngIf="submitted && !item.end_date">Required field</small>
+        <small class="p-error" *ngIf="submitted && !item.endDate">Required field</small>
       </div>
 
       <div class="field">
         <label for="status">Status</label>
-        <p-dropdown [options]="sprintStatus" [(ngModel)]="selectedStatus" optionLabel="label" appendTo="body">
+        <p-dropdown placeholder="Select a status" [options]="availableSprintStatus" [(ngModel)]="item.status" optionLabel="label" appendTo="body">
           <ng-template pTemplate="selectedItem">
-            <div *ngIf="selectedStatus">
-              <span class="custom-tag" [ngStyle]="selectColorWithStatus(selectedStatus)">{{
-                selectedStatus.label
-              }}</span>
+            <div *ngIf="item.status">
+              <span class="custom-tag" [ngStyle]="getColorForSprintStatus(item.status)">{{ item.status.label }}</span>
             </div>
           </ng-template>
           <ng-template let-status pTemplate="item">
             <div class="test">
-              <span class="custom-tag" [ngStyle]="selectColorWithStatus(status)">{{ status.label }}</span>
+              <span class="custom-tag" [ngStyle]="getColorForSprintStatus(status)">{{ status.label }}</span>
             </div>
           </ng-template>
         </p-dropdown>
@@ -145,98 +130,6 @@
       <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
       <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveItem()"></button>
     </ng-template>
-  </p-dialog>
-
-  <p-dialog
-    [(visible)]="dialogNew"
-    [style]="{ width: '450px' }"
-    header="Item Details"
-    [modal]="true"
-    styleClass="p-fluid"
-  >
-    <form [formGroup]="form" novalidate class="form-group">
-      <div class="flex align-items-center justify-content-center flex-column">
-        <div class="field w-6">
-          <label for="label" class="block">Label*</label>
-          <input
-            id="label"
-            [ngClass]="{ 'ng-invalid ng-dirty': form.controls.label.touched && form.controls.label.invalid }"
-            type="username"
-            aria-describedby="label-help"
-            pInputText
-            formControlName="label"
-          />
-          <small class="p-error" *ngIf="form.controls.label.touched && form.controls.label.errors?.required">
-            Label is required
-          </small>
-        </div>
-
-        <div class="field w-6">
-          <label for="startDate">Start date*</label>
-          <p-calendar
-            [ngClass]="{ 'ng-invalid ng-dirty': form.controls.startDate.touched && form.controls.startDate.invalid }"
-            inputId="startDate"
-            [(ngModel)]="minDateSprint"
-            formControlName="startDate"
-            [minDate]="minStartDate"
-            dateFormat="dd/mm/yy"
-            appendTo="body"
-          >
-          </p-calendar>
-          <small class="p-error" *ngIf="form.controls.startDate.touched && form.controls.startDate.errors?.required">
-            A Start Date is required
-          </small>
-        </div>
-
-        <div class="field w-6">
-          <label for="endDate">End date*</label>
-          <p-calendar
-            [ngClass]="{
-              'ng-invalid ng-dirty': (form.controls.endDate.touched && form.controls.endDate.invalid) || endWrong
-            }"
-            inputId="endDate"
-            formControlName="endDate"
-            [(ngModel)]="maxDateSprint"
-            [minDate]="minEndDate"
-            dateFormat="dd/mm/yy"
-            appendTo="body"
-          >
-          </p-calendar>
-          <small class="p-error" *ngIf="form.controls.endDate.touched && form.controls.endDate.errors?.required">
-            An End Date is required
-          </small>
-        </div>
-
-        <div class="field w-6">
-          <label for="project">Select a project*</label>
-          <p-dropdown
-            [ngClass]="{ 'ng-invalid ng-dirty': submitted && form.controls.selectedProjectForm.invalid }"
-            inputId="project"
-            [options]="projects"
-            [(ngModel)]="selectedProjectForm"
-            formControlName="selectedProjectForm"
-            optionLabel="label"
-            appendTo="body"
-          >
-          </p-dropdown>
-          <small
-            class="p-error"
-            *ngIf="form.controls.selectedProjectForm.touched && form.controls.selectedProjectForm.errors?.required"
-          >
-            Project is required
-          </small>
-        </div>
-
-        <button
-          pButton
-          pRipple
-          type="button"
-          label="Create Sprint"
-          class="p-button-raised w-3 h-3rem mt-3"
-          (click)="saveSprint()"
-        ></button>
-      </div>
-    </form>
   </p-dialog>
 
   <p-confirmDialog [style]="{ width: '450px' }"></p-confirmDialog>

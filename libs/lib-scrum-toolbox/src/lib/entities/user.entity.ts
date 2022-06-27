@@ -10,7 +10,7 @@ export class UserEntity {
   username?: string;
 
   @Column({ select: false })
-  password?: string;
+  passwordHash?: string;
 
   @Column()
   firstname?: string;

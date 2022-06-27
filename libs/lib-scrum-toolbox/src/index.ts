@@ -18,3 +18,7 @@ export * from './lib/enumerations/global-role.enumeration';
 export * from './lib/enumerations/project-role.enumeration';
 
 export * from './lib/models/user.model';
+
+export * from './lib/requests/create-user.request';
+export * from './lib/requests/signup.request';
+export * from './lib/requests/signin.request';

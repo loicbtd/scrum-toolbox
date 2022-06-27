@@ -20,10 +20,10 @@ export class SprintEntity {
   @Column()
   label?: string;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'datetime' })
   startDate?: Date;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'datetime' })
   endDate?: Date;
 
   @CreateDateColumn()

@@ -1,5 +1,6 @@
 export const appIpcs = {
   login: 'login',
+  signup: 'signup',
   createUser: 'createUser',
   updateUser: 'updateUser',
   deleteUser: 'deleteUser',

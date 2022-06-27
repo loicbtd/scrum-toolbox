@@ -2,7 +2,7 @@ import { NgModule, Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { AuthenticationService, MyProfileState, NavigationItemInterface } from '@libraries/lib-angular';
-import { appRoutes, ProjectEntity } from '@libraries/lib-scrum-toolbox';
+import { appIpcs, appRoutes, ProjectEntity } from '@libraries/lib-scrum-toolbox';
 import { NgxsModule, Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { MyProfileModel } from '../../global/models/my-profile.model';
@@ -55,7 +55,7 @@ export class ScrumToolboxComponent implements OnInit {
       routerLink: [appRoutes.scrumToolbox.root],
     },
     {
-      label: 'Sprints Management',
+      label: 'Sprints',
       iconClass: 'fa-solid fa-bars-progress',
       routerLink: [appRoutes.scrumToolbox.sprintsManagement],
     },

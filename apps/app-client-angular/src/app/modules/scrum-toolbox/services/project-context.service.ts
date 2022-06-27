@@ -38,13 +38,13 @@ export class ProjectContextService {
     );
 
     availableSprints.sort((sprint1, sprint2) => {
-      if (!sprint1.end_date || !sprint2.end_date) {
+      if (!sprint1.endDate || !sprint2.endDate) {
         return 0;
       }
 
       return (
-        Math.abs(Date.now().valueOf() - sprint1.end_date.valueOf()) -
-        Math.abs(Date.now().valueOf() - sprint2.end_date.valueOf())
+        Math.abs(Date.now().valueOf() - sprint1.endDate.valueOf()) -
+        Math.abs(Date.now().valueOf() - sprint2.endDate.valueOf())
       );
     });
 
