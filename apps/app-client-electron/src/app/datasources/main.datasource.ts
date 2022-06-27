@@ -20,6 +20,7 @@ import { UpgradeToNewSchema4 } from '../migrations/4-UpgradeToNewSchema';
 import { RenameUserTable5 } from '../migrations/5-RenameUserTable';
 import { UpdateEntities6 } from '../migrations/6-UpdateEntities';
 import { UpdateTaskEntity7 } from '../migrations/7-UpdateTaskEntity';
+import { InitializeDatabase1656337596981 } from '../migrations/1656337596981-InitializeDatabase';
 
 export const mainDataSource = {
   type: 'better-sqlite3',
@@ -37,13 +38,5 @@ export const mainDataSource = {
     SprintMemberEntity,
     ProjectMemberEntity,
   ],
-  migrations: [
-    InitializeDatabase1,
-    AddTaskCapacity2,
-    AddColosToSprintStatus3,
-    UpgradeToNewSchema4,
-    RenameUserTable5,
-    UpdateEntities6,
-    UpdateTaskEntity7,
-  ],
+  migrations: [InitializeDatabase1656337596981],
 } as ConnectionOptions;
