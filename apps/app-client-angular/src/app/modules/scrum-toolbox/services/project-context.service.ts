@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { appIpcs, ProjectEntity, SprintEntity } from '@libraries/lib-scrum-toolbox';
 import { Store } from '@ngxs/store';
-import { lastValueFrom } from 'rxjs';
 import { IpcService } from '../../../global/services/ipc.service';
 import {
+  RefreshAvailableProjects,
   RefreshAvailableSprints,
   RefreshSelectedProject,
   RefreshSelectedSprint,
@@ -15,8 +15,22 @@ import {
 export class ProjectContextService {
   constructor(private readonly _store: Store, private readonly _ipcService: IpcService) {}
 
+  async refreshAvailableProjects() {
+    const projects = await this._ipcService.query<ProjectEntity[]>(appIpcs.retrieveAllProjects);
+
+    this._store.dispatch(new RefreshAvailableProjects(projects));
+
+    if (projects.length > 0) {
+      await this.refreshSelectedProject(projects[0]);
+    }
+  }
+
   async refreshSelectedProject(project: ProjectEntity): Promise<void> {
-    await lastValueFrom(this._store.dispatch(new RefreshSelectedProject(project)));
+    if (!project) {
+      return;
+    }
+
+    this._store.dispatch(new RefreshSelectedProject(project));
 
     const availableSprints = await this._ipcService.query<SprintEntity[]>(
       appIpcs.retrieveAllSprintsByProject,
@@ -34,10 +48,10 @@ export class ProjectContextService {
       );
     });
 
-    await lastValueFrom(this._store.dispatch(new RefreshAvailableSprints(availableSprints)));
+    this._store.dispatch(new RefreshAvailableSprints(availableSprints));
 
     if (availableSprints.length > 0) {
-      await lastValueFrom(this._store.dispatch(new RefreshSelectedSprint(availableSprints[0])));
+      this._store.dispatch(new RefreshSelectedSprint(availableSprints[0]));
     }
   }
 }

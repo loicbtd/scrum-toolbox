@@ -1,13 +1,13 @@
-<ng-container *ngIf="project$ | async; else noSelection">
+<ng-container *ngIf="context$ | async as context; else noSelection">
   <div class="card">
     <p-toolbar #toolbar styleClass="p-mb-4">
       <ng-template pTemplate="left">
-        <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+        <p-button pRipple label="New" icon="pi pi-plus" styleClass="p-button-success" (click)="openNew()"></p-button>
         <p-button
           pRipple
           label="Delete"
           icon="pi pi-trash"
-          class="p-button-danger ml-2"
+          styleClass="p-button-danger ml-2"
           (click)="deleteSelectedItems()"
           [disabled]="!selectedItems || !selectedItems.length"
         ></p-button>
@@ -128,18 +128,13 @@
         <label for="sprint">Sprint</label>
         <p-dropdown
           [showClear]="true"
-          [options]="(availableSprints$ | async) || []"
-          [ngModel]="sprint$ | async"
+          [options]="context.availableSprints"
+          [ngModel]="item.sprint"
           optionLabel="label"
           appendTo="body"
           placeholder="Select a sprint"
         ></p-dropdown>
         <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
-      </div>
-
-      <div class="field">
-        <label for="createdAt">Creation Date</label><br />
-        <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'dd/MM/yyyy' }}</label>
       </div>
 
       <div class="field">
@@ -169,5 +164,5 @@
 </ng-container>
 
 <ng-template #noSelection>
-  <div>No project selected</div>
+  <div>No context selected</div>
 </ng-template>

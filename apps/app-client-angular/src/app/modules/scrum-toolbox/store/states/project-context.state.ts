@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { ProjectContextModel } from '../../models/project-context.model';
-import { RefreshAvailableProjects, RefreshSelectedProject } from '../actions/project-context.actions';
+import { RefreshAvailableProjects, RefreshAvailableSprints, RefreshSelectedProject, RefreshSelectedSprint } from '../actions/project-context.actions';
 
 @State<ProjectContextModel>({
   name: 'ProjectContextState',
@@ -41,5 +41,15 @@ export class ProjectContextState {
   @Action(RefreshAvailableProjects)
   refreshAvailableProjects(context: StateContext<ProjectContextModel>, action: RefreshAvailableProjects) {
     context.setState({ ...context.getState(), availableProjects: action.projects });
+  }
+
+  @Action(RefreshSelectedSprint)
+  refreshSelectedSprint(context: StateContext<ProjectContextModel>, action: RefreshSelectedSprint) {
+    context.setState({ ...context.getState(), sprint: action.sprint });
+  }
+
+  @Action(RefreshAvailableSprints)
+  RefreshAvailableSprints(context: StateContext<ProjectContextModel>, action: RefreshAvailableSprints) {
+    context.setState({ ...context.getState(), availableSprints: action.sprints });
   }
 }

@@ -1,32 +1,21 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ToastMessageService } from '@libraries/lib-angular';
-import {
-  appIpcs,
-  ProjectEntity,
-  SprintEntity,
-  TaskEntity,
-  TaskStatusEntity,
-  TaskTypeEntity,
-  UserEntity,
-} from '@libraries/lib-scrum-toolbox';
+import { appIpcs, TaskEntity, TaskStatusEntity, TaskTypeEntity, UserEntity } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
-import { Select } from '@ngxs/store';
+import { Select, Store } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
 import { ProjectContextState } from '../../store/states/project-context.state';
+import { ProjectContextModel } from '../../models/project-context.model';
 
 @Component({
   templateUrl: './crud-backlog-product.component.html',
   styleUrls: ['./crud-backlog-product.component.scss'],
 })
 export class CrudBacklogProductComponent implements OnInit, OnDestroy {
-  @Select(ProjectContextState.project) project$: Observable<ProjectEntity>;
+  @Select(ProjectContextState) context$: Observable<ProjectContextModel>;
 
-  @Select(ProjectContextState.sprint) sprint$: Observable<SprintEntity>;
-
-  @Select(ProjectContextState.availableSprints) availableSprints$: Observable<SprintEntity[]>;
-
-  projectChangeSubscription: Subscription;
+  contextChangeSubscription: Subscription;
 
   dialog: boolean;
 
@@ -37,8 +26,7 @@ export class CrudBacklogProductComponent implements OnInit, OnDestroy {
   submitted: boolean;
 
   availableTaskTypes: TaskTypeEntity[];
-
-  availableSprints: SprintEntity[];
+  availableTaskStatuses: TaskStatusEntity[];
 
   get isCreationMode() {
     return !this.item.id;
@@ -47,32 +35,30 @@ export class CrudBacklogProductComponent implements OnInit, OnDestroy {
   constructor(
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
-    private readonly _ipcService: IpcService
+    private readonly _ipcService: IpcService,
+    private readonly _store: Store
   ) {}
 
   async ngOnInit() {
     this.availableTaskTypes = await this._ipcService.query<TaskTypeEntity[]>(appIpcs.retrieveAllTasksType);
 
-    this.projectChangeSubscription = this.project$.subscribe(async (project) => {
-      if (!project) {
+    this.availableTaskStatuses = await this._ipcService.query<TaskStatusEntity[]>(appIpcs.retrieveAllTasksStatus);
+
+    this.contextChangeSubscription = this.context$.subscribe(async (context) => {
+      if (!context.project) {
         return;
       }
 
-      this.items = await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksByProject, project.id);
-
-      this.availableSprints = await this._ipcService.query<TaskEntity[]>(
-        appIpcs.retrieveAllSprintsByProject,
-        project.id
-      );
+      this.items = await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksByProject, context.project.id);
     });
   }
 
   ngOnDestroy(): void {
-    this.projectChangeSubscription.unsubscribe();
+    this.contextChangeSubscription.unsubscribe();
   }
 
   openNew() {
-    this.item = {};
+    this.item = { project: this._store.selectSnapshot<ProjectContextModel>(ProjectContextState).project };
     this.submitted = false;
     this.dialog = true;
   }

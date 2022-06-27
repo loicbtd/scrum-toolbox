@@ -1,21 +1,25 @@
-<ng-container *ngIf="sprint$ | async; else noSelection">
+<ng-container *ngIf="context$ | async as context; else noSelection">
   <div class="card">
     <p-toolbar #toolbar styleClass="p-mb-4">
       <ng-template pTemplate="left">
         <p-dropdown
-          #dropdown
           optionLabel="label"
-          [options]="(availableSprints$ | async) || []"
-          [ngModel]="sprint$ | async"
+          [options]="context.availableSprints"
+          [ngModel]="context.sprint"
           (ngModelChange)="refreshSelectedSprint($event)"
-          placeholder="Select a sprint"
         ></p-dropdown>
-        <p-button pRipple label="New" icon="pi pi-plus" class="p-button-success p-mr-2" (click)="openNew()"></p-button>
+        <p-button
+          pRipple
+          label="New"
+          icon="pi pi-plus"
+          styleClass="p-button-success ml-2"
+          (click)="openNew()"
+        ></p-button>
         <p-button
           pRipple
           label="Delete"
           icon="pi pi-trash"
-          class="p-button-danger ml-2"
+          styleClass="p-button-danger ml-2"
           (click)="deleteSelectedItems()"
           [disabled]="!selectedItems || !selectedItems.length"
         ></p-button>
@@ -133,21 +137,26 @@
       </div>
 
       <div class="field">
-        <label for="sprint">Sprint</label>
+        <label for="type">Status</label>
         <p-dropdown
-          [showClear]="true"
-          [options]="(availableSprints$ | async) || []"
-          [ngModel]="sprint$ | async"
+          placeholder="Select a status"
+          [options]="availableTaskStatuses"
+          [(ngModel)]="item.status"
           optionLabel="label"
           appendTo="body"
-          placeholder="Select a sprint"
-        ></p-dropdown>
+        >
+          <ng-template pTemplate="selectedItem">
+            <div *ngIf="item.status">
+              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(item.status)">{{ item.status.label }}</span>
+            </div>
+          </ng-template>
+          <ng-template let-status pTemplate="item">
+            <div class="test">
+              <span class="custom-tag" [ngStyle]="getColorForTaskStatus(status)">{{ status.label }}</span>
+            </div>
+          </ng-template>
+        </p-dropdown>
         <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
-      </div>
-
-      <div class="field">
-        <label for="createdAt">Creation Date</label><br />
-        <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'dd/MM/yyyy' }}</label>
       </div>
 
       <div class="field">
@@ -177,5 +186,5 @@
 </ng-container>
 
 <ng-template #noSelection>
-  <div>No sprint selected</div>
+  <div>No context selected</div>
 </ng-template>

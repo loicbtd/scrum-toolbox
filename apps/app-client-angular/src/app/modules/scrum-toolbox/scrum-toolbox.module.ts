@@ -1,16 +1,15 @@
-import { NgModule, Component, OnInit, ViewChild } from '@angular/core';
+import { NgModule, Component, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
 import { AuthenticationService, MyProfileState, NavigationItemInterface } from '@libraries/lib-angular';
-import { appIpcs, appRoutes, ProjectEntity } from '@libraries/lib-scrum-toolbox';
-import { NgxsModule, Select, Store } from '@ngxs/store';
-import { lastValueFrom, Observable } from 'rxjs';
+import { appRoutes, ProjectEntity } from '@libraries/lib-scrum-toolbox';
+import { NgxsModule, Select } from '@ngxs/store';
+import { Observable } from 'rxjs';
 import { MyProfileModel } from '../../global/models/my-profile.model';
 import { CrudUsersComponent } from './components/crud-users/crud-users.component';
 import { AdministrationComponent } from './components/administration/administration.component';
 import { CrudProjectsComponent } from './components/crud-projects/crud-projects.component';
 import { CrudBacklogSprintComponent } from './components/crud-backlog-sprint/crud-backlog-sprint.component';
-import { IpcService } from '../../global/services/ipc.service';
 import { CrudTaskStatusComponent } from './components/crud-task-status/crud-task-status.component';
 import { CrudSprintStatusComponent } from './components/crud-sprint-status/crud-sprint-status.component';
 import { CrudTaskTypeComponent } from './components/crud-task-type/crud-task-type.component';
@@ -19,8 +18,7 @@ import { CrudBacklogProductComponent } from './components/crud-backlog-product/c
 import { DevelopmentComponent } from './components/development/development.component';
 import { MetricsComponent } from './components/project-metrics/project-metrics.component';
 import { ProjectContextState } from './store/states/project-context.state';
-import { RefreshAvailableProjects, RefreshSelectedProject } from './store/actions/project-context.actions';
-import { Dropdown } from 'primeng/dropdown';
+import { ProjectContextService } from './services/project-context.service';
 
 @Component({
   template: `
@@ -84,27 +82,17 @@ export class ScrumToolboxComponent implements OnInit {
 
   @Select(ProjectContextState.project) project$: Observable<ProjectEntity>;
 
-  @ViewChild('dropdown') dropdown: Dropdown;
-
   constructor(
     private readonly _authenticationService: AuthenticationService,
-    private readonly _ipcService: IpcService,
-    private readonly _store: Store
+    private readonly _projectContextService: ProjectContextService
   ) {}
 
   async ngOnInit(): Promise<void> {
-    const availableProjects = await this._ipcService.query<ProjectEntity[]>(appIpcs.retrieveAllProjects);
-
-    await lastValueFrom(this._store.dispatch(new RefreshAvailableProjects(availableProjects)));
-
-    if (availableProjects.length > 0) {
-      this.dropdown.value = availableProjects[0];
-      await lastValueFrom(this._store.dispatch(new RefreshSelectedProject(availableProjects[0])));
-    }
+    await this._projectContextService.refreshAvailableProjects();
   }
 
   async refreshSelectedProject(project: ProjectEntity) {
-    await lastValueFrom(this._store.dispatch(new RefreshSelectedProject(project)));
+    await this._projectContextService.refreshSelectedProject(project);
   }
 
   getFormattedUsername(firstname?: string, lastname?: string): string {

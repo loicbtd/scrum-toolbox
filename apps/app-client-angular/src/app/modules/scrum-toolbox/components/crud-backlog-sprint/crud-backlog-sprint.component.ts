@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ToastMessageService } from '@libraries/lib-angular';
 import {
   appIpcs,
+  ProjectEntity,
   SprintEntity,
   TaskEntity,
   TaskStatusEntity,
@@ -11,10 +12,11 @@ import {
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Select, Store } from '@ngxs/store';
-import { lastValueFrom, Observable, Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { ProjectContextState } from '../../store/states/project-context.state';
 import { Dropdown } from 'primeng/dropdown';
 import { RefreshSelectedSprint } from '../../store/actions/project-context.actions';
+import { ProjectContextModel } from '../../models/project-context.model';
 
 @Component({
   templateUrl: './crud-backlog-sprint.component.html',
@@ -23,11 +25,9 @@ import { RefreshSelectedSprint } from '../../store/actions/project-context.actio
 export class CrudBacklogSprintComponent implements OnInit, OnDestroy {
   @ViewChild('dropdown') dropdown: Dropdown;
 
-  @Select(ProjectContextState.sprint) sprint$: Observable<SprintEntity>;
+  @Select(ProjectContextState) context$: Observable<ProjectContextModel>;
 
-  @Select(ProjectContextState.availableSprints) availableSprints$: Observable<SprintEntity[]>;
-
-  sprintChangeSubscription: Subscription;
+  contextChangeSubscription: Subscription;
 
   dialog: boolean;
 
@@ -38,6 +38,7 @@ export class CrudBacklogSprintComponent implements OnInit, OnDestroy {
   submitted: boolean;
 
   availableTaskTypes: TaskTypeEntity[];
+  availableTaskStatuses: TaskStatusEntity[];
 
   get isCreationMode() {
     return !this.item.id;
@@ -53,21 +54,26 @@ export class CrudBacklogSprintComponent implements OnInit, OnDestroy {
   async ngOnInit() {
     this.availableTaskTypes = await this._ipcService.query<TaskTypeEntity[]>(appIpcs.retrieveAllTasksType);
 
-    this.sprintChangeSubscription = this.sprint$.subscribe(async (sprint) => {
-      if (!sprint) {
+    this.availableTaskStatuses = await this._ipcService.query<TaskStatusEntity[]>(appIpcs.retrieveAllTasksStatus);
+
+    this.contextChangeSubscription = this.context$.subscribe(async (context) => {
+      if (!context.sprint) {
         return;
       }
 
-      this.items = await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksBySprint, sprint.id);
+      this.items = await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksBySprint, context.sprint.id);
     });
   }
 
   ngOnDestroy(): void {
-    this.sprintChangeSubscription.unsubscribe();
+    this.contextChangeSubscription.unsubscribe();
   }
 
   openNew() {
-    this.item = {};
+    const context = this._store.selectSnapshot<ProjectContextModel>(ProjectContextState);
+
+    this.item = { project: context.project, sprint: context.sprint };
+
     this.submitted = false;
     this.dialog = true;
   }
@@ -188,6 +194,6 @@ export class CrudBacklogSprintComponent implements OnInit, OnDestroy {
   }
 
   async refreshSelectedSprint(sprint: SprintEntity) {
-    await lastValueFrom(this._store.dispatch(new RefreshSelectedSprint(sprint)));
+    this._store.dispatch(new RefreshSelectedSprint(sprint));
   }
 }

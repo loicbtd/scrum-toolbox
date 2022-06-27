@@ -11,11 +11,11 @@ export class RefreshAvailableProjects {
 }
 
 export class RefreshSelectedSprint {
-  static readonly type = '[Project Context] Refresh selected project';
+  static readonly type = '[Project Context] Refresh selected sprint';
   constructor(public sprint?: SprintEntity) {}
 }
 
 export class RefreshAvailableSprints {
-  static readonly type = '[Project Context] Refresh available projects';
+  static readonly type = '[Project Context] Refresh available sprints';
   constructor(public sprints: SprintEntity[]) {}
 }
