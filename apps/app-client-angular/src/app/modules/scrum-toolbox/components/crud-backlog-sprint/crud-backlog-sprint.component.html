@@ -3,12 +3,11 @@
     <ng-template pTemplate="left">
       <span class="mr-2">Current sprint :</span>
       <p-dropdown
-        (onChange)="updateTasks()"
+        (onChange)="updateTasks($event.value)"
         class="sprint-dropdown"
         [options]="sprints"
         [(ngModel)]="selectedSprint"
         optionLabel="label"
-        placeholder="Select a sprint"
       ></p-dropdown>
       <p-button
         pRipple

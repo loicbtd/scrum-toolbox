@@ -89,10 +89,7 @@ export class CrudBacklogSprintComponent {
           this.selectedSprint = this.sprints[0];
         }
 
-        console.log(this.selectedSprint);
-        
-
-        this.updateTasks();
+        this.updateTasks(this.selectedSprint);
       }
     });
   }
@@ -257,10 +254,8 @@ export class CrudBacklogSprintComponent {
     return `${user.firstname?.charAt(0)}${user.lastname?.charAt(0)}}`;
   }
 
-  async updateTasks() {
-    const a = await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
-
-    this.items = a;
+  async updateTasks(sprint: SprintEntity) {
+    await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
     this.item = this.items[0];
   }
 

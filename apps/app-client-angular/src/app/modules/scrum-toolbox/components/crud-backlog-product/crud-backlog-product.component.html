@@ -131,6 +131,12 @@
     </div>
 
     <div class="field">
+      <label for="capacity">Capacity</label>
+      <p-inputNumber inputId="integeronly" [(ngModel)]="capa">
+      </p-inputNumber>
+    </div>
+
+    <div class="field">
       <label for="createdAt">Creation Date</label><br />
       <label for="createdAt" class="creation-date">{{ item.createdAt | date: 'dd/MM/yyyy' }}</label>
     </div>
@@ -198,6 +204,12 @@
         appendTo="body"
       ></p-dropdown>
       <small class="p-error" *ngIf="submitted && !item.type">Required field</small>
+    </div>
+
+    <div class="field">
+      <label for="capacity">Capacity</label>
+      <p-inputNumber inputId="integeronly" [(ngModel)]="capa">
+      </p-inputNumber>
     </div>
 
     <div class="field">

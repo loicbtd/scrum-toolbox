@@ -86,7 +86,8 @@ export class CrudBacklogProductComponent {
   openNew() {
     const tempStatus = this.item?.status as TaskStatusEntity;
     const tempType = this.item?.type as TaskTypeEntity;
-    this.item = { status: tempStatus, type: tempType };
+    this.capa = 5;
+    this.item = { status: tempStatus, type: tempType, capacity: this.capa };
     this.selectedSprint = this.sprintNull;
     this.submitted = false;
     this.dialogNew = true;
@@ -116,6 +117,8 @@ export class CrudBacklogProductComponent {
   editItem(item: TaskEntity) {
     this.item = { ...item };
     this.selectedType = item.type;
+    this.capa = item.capacity;
+
 
     if (item.sprint) {
       this.selectedSprint = item.sprint;
@@ -162,6 +165,7 @@ export class CrudBacklogProductComponent {
 
       try {
         this.item.type = this.selectedType;
+        this.item.capacity = this.capa;
 
         if (this.selectedSprint?.label === this.sprintNull.label) {
           await this._ipcService.query(appIpcs.unassignTaskToSprint, this.item.id);
@@ -183,6 +187,7 @@ export class CrudBacklogProductComponent {
       try {
         this.item.type = this.selectedType;
         this.item.project = this.selectedProject;
+        this.item.capacity = this.capa;
 
         this.item = await this._ipcService.query<TaskEntity>(appIpcs.createTask, this.item);
 
