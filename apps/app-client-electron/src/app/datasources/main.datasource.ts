@@ -13,7 +13,7 @@ import {
   SprintMemberEntity,
   ProjectMemberEntity,
 } from '@libraries/lib-scrum-toolbox';
-import { InitializeDatabase1656356856529 } from '../migrations/1656356856529-InitializeDatabase';
+import { InitializeDatabase1656359035473 } from '../migrations/1656359035473-InitializeDatabase';
 
 export const mainDataSource = {
   type: 'better-sqlite3',
@@ -31,5 +31,5 @@ export const mainDataSource = {
     SprintMemberEntity,
     ProjectMemberEntity,
   ],
-  migrations: [InitializeDatabase1656356856529],
+  migrations: [InitializeDatabase1656359035473],
 } as ConnectionOptions;
