@@ -35,8 +35,8 @@
         <th id="header-table" style="width: 3rem">
           <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
         </th>
-        <th id="header-name" pSortableColumn="label">Name<p-sortIcon field="label"></p-sortIcon></th>
-        <th id="header-description">Description</th>
+        <th id="header-name" pSortableColumn="label" [ngStyle]="{ width: '15rem' }">Name<p-sortIcon field="label"></p-sortIcon></th>
+        <th id="header-description" [ngStyle]="{ width: '35rem' }">Description</th>
         <th id="header-created-date">Creation date</th>
         <th id="header-update-date">Update date</th>
         <th id="header-empty"></th>
