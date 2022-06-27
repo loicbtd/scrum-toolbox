@@ -127,9 +127,7 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
       <a class="logo-container" [routerLink]="['/']">
         <img [src]="logoImageSource" alt="application logo" />
       </a>
-      <div class="navigation-bar-content">
-        <ng-content select="[navigationBarContent]"></ng-content>
-      </div>
+      <ng-content select="[navigationBarContent]"></ng-content>
       <div class="avatar-container" (click)="avatarNavigationExpanded = !avatarNavigationExpanded">
         <div class="username">{{ username | slice: 0:43 }}</div>
         <div class="avatar">
@@ -181,7 +179,6 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         'navigation-expanded': desktopNavigationExpanded,
         'navigation-collapsed': !desktopNavigationExpanded
       }"
-      [ngStyle]="{ maxHeight: '90%', overflow: 'auto' }"
     >
       <ng-content></ng-content>
     </div>
@@ -212,23 +209,11 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
         padding-left: 10px;
         height: 100%;
         display: flex;
-        margin-right: auto;
       }
 
       .navigation-bar .logo-container img {
         margin: auto;
         height: calc(var(--navigation-bar-height) - 20px);
-      }
-
-      .navigation-bar-content {
-        margin: auto;
-      }
-
-      .navigation {
-        display: flex;
-        flex-direction: column;
-        background-color: #575e6a;
-        height: calc(100% - calc(var(--navigation-bar-height) + var(--navigation-bar-bottom-border-size)));
       }
 
       .avatar-container {
@@ -268,22 +253,11 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
       }
 
       .navigation {
+        display: flex;
+        flex-direction: column;
         background-color: #575e6a;
         width: 60px;
         height: calc(100% - calc(var(--navigation-bar-height) + var(--navigation-bar-bottom-border-size)));
-      }
-
-      .navigation {
-        background-color: #575e6a;
-        height: calc(100% - calc(var(--navigation-bar-height) + var(--navigation-bar-bottom-border-size)));
-      }
-
-      .navigation.collapsed {
-        width: var(--navigation-collapsed-width);
-      }
-
-      .navigation.expanded {
-        width: var(--navigation-expanded-width);
       }
 
       .navigation a {
@@ -321,6 +295,11 @@ export class AppNavigationContainerMobileComponent extends AppNavigationContaine
 
       .navigation i {
         font-size: 25px;
+      }
+
+      .app-container {
+        height: calc(100% - calc(var(--navigation-bar-height) + var(--navigation-bar-bottom-border-size)));
+        overflow-y: auto;
       }
 
       .app-container.navigation-collapsed {

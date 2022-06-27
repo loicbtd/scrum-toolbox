@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ToastMessageService } from '@libraries/lib-angular';
 import {
   appIpcs,
   ProjectEntity,
@@ -7,42 +7,38 @@ import {
   TaskEntity,
   TaskStatusEntity,
   TaskTypeEntity,
+  UserEntity,
 } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
-import { Select, Store } from '@ngxs/store';
+import { Select } from '@ngxs/store';
 import { Observable, Subscription } from 'rxjs';
-import { CurrentProjectModel } from '../../../../global/models/current-project.model';
+import { ProjectContextState } from '../../store/states/project-context.state';
 
 @Component({
   templateUrl: './crud-backlog-product.component.html',
   styleUrls: ['./crud-backlog-product.component.scss'],
 })
-export class CrudBacklogProductComponent {
-  @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
+export class CrudBacklogProductComponent implements OnInit, OnDestroy {
+  @Select(ProjectContextState.project) project$: Observable<ProjectEntity>;
 
-  dialogUpdate: boolean;
-  dialogNew: boolean;
+  @Select(ProjectContextState.sprint) sprint$: Observable<SprintEntity>;
 
+  @Select(ProjectContextState.availableSprints) availableSprints$: Observable<SprintEntity[]>;
+
+  projectChangeSubscription: Subscription;
+
+  dialog: boolean;
+
+  selectedItems: TaskEntity[];
   items: TaskEntity[];
   item: TaskEntity;
 
-  selectedItems: TaskEntity[];
-
   submitted: boolean;
 
-  selectedProject: ProjectEntity;
+  availableTaskTypes: TaskTypeEntity[];
 
-  tasks: TaskEntity[];
-
-  taskType: TaskTypeEntity[];
-  selectedType: TaskTypeEntity;
-
-  selectedSprint: SprintEntity | undefined;
-  projectSprints: SprintEntity[];
-
-  sub: Subscription;
-  sprintNull: SprintEntity;
+  availableSprints: SprintEntity[];
 
   get isCreationMode() {
     return !this.item.id;
@@ -51,43 +47,34 @@ export class CrudBacklogProductComponent {
   constructor(
     private readonly _toastMessageService: ToastMessageService,
     private readonly _confirmationService: ConfirmationService,
-    private readonly _ipcService: IpcService,
-    private readonly _store: Store
+    private readonly _ipcService: IpcService
   ) {}
 
   async ngOnInit() {
-    this.taskType = await this._ipcService.query<TaskTypeEntity[]>(appIpcs.retrieveAllTasksType);
-    this.selectedType = this.taskType[0];
+    this.availableTaskTypes = await this._ipcService.query<TaskTypeEntity[]>(appIpcs.retrieveAllTasksType);
 
-    this.sprintNull = new SprintEntity();
-    this.sprintNull.label = 'not assigned';
-
-    this.sub = this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
-      if (data) {
-        this.selectedProject = data.project;
-
-        this.items = await this._ipcService.query<TaskEntity[]>(
-          appIpcs.retrieveAllTasksByProject,
-          this.selectedProject.id
-        );
-        this.item = this.items[0];
-
-        this.projectSprints = await this._ipcService.query<SprintEntity[]>(appIpcs.retrieveAllSprintsByProject, {
-          id: this.selectedProject.id,
-        });
-        this.selectedSprint = this.projectSprints[0];
-        this.projectSprints.push(this.sprintNull);
+    this.projectChangeSubscription = this.project$.subscribe(async (project) => {
+      if (!project) {
+        return;
       }
+
+      this.items = await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksByProject, project.id);
+
+      this.availableSprints = await this._ipcService.query<TaskEntity[]>(
+        appIpcs.retrieveAllSprintsByProject,
+        project.id
+      );
     });
   }
 
+  ngOnDestroy(): void {
+    this.projectChangeSubscription.unsubscribe();
+  }
+
   openNew() {
-    const tempStatus = this.item?.status as TaskStatusEntity;
-    const tempType = this.item?.type as TaskTypeEntity;
-    this.item = { status: tempStatus, type: tempType };
-    this.selectedSprint = this.sprintNull;
+    this.item = {};
     this.submitted = false;
-    this.dialogNew = true;
+    this.dialog = true;
   }
 
   deleteSelectedItems() {
@@ -106,22 +93,13 @@ export class CrudBacklogProductComponent {
         this.selectedItems = [];
 
         this._toastMessageService.showSuccess('Items Deleted', 'Successful');
-        this.refresh();
       },
     });
   }
 
-  editItem(item: TaskEntity) {
+  async editItem(item: TaskEntity) {
     this.item = { ...item };
-    this.selectedType = item.type;
-
-    if (item.sprint) {
-      this.selectedSprint = item.sprint;
-    } else {
-      this.selectedSprint = this.sprintNull;
-    }
-
-    this.dialogUpdate = true;
+    this.dialog = true;
   }
 
   async deleteItem(item: TaskEntity) {
@@ -134,8 +112,6 @@ export class CrudBacklogProductComponent {
           await this._ipcService.query(appIpcs.deleteTask, item.id);
 
           this._toastMessageService.showSuccess('Item Deleted', 'Successful');
-
-          this.refresh();
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
         }
@@ -144,8 +120,7 @@ export class CrudBacklogProductComponent {
   }
 
   hideDialog() {
-    this.dialogUpdate = false;
-    this.dialogNew = false;
+    this.dialog = false;
     this.submitted = false;
   }
 
@@ -154,55 +129,33 @@ export class CrudBacklogProductComponent {
 
     if (this.item.id) {
       try {
-        this.item.type = this.selectedType;
-
-        if (this.selectedSprint?.label === this.sprintNull.label) {
+        if (!this.item.sprint) {
           await this._ipcService.query(appIpcs.unassignTaskToSprint, this.item.id);
-          this.item.sprint = undefined;
-        } else {
-          this.item.sprint = this.selectedSprint;
         }
 
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
         this._toastMessageService.showSuccess('Item Updated', 'Successful');
 
-        this.refresh();
+        this.items[this.findIndexById(this.item.id)] = this.item;
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
     } else {
       try {
-        this.item.type = this.selectedType;
-        this.item.project = this.selectedProject;
-
         this.item = await this._ipcService.query<TaskEntity>(appIpcs.createTask, this.item);
-
-        if (this.selectedSprint?.label === this.sprintNull.label) {
-          await this._ipcService.query(appIpcs.unassignTaskToSprint, this.item.id);
-          this.item.sprint = undefined;
-        } else {
-          this.item.sprint = this.selectedSprint;
-        }
 
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
         this._toastMessageService.showSuccess('Item Created', 'Successful');
 
-        this.refresh();
+        this.items = [...this.items, this.item];
       } catch (error: any) {
         this._toastMessageService.showError(error.message, `Error while creating item`);
       }
     }
 
-    this.items = [...this.items];
-    this.dialogUpdate = false;
-    this.dialogNew = false;
-  }
-
-  refresh() {
-    this.sub.unsubscribe();
-    this.ngOnInit();
+    this.dialog = false;
   }
 
   findIndexById(id: string): number {
@@ -217,37 +170,25 @@ export class CrudBacklogProductComponent {
     return index;
   }
 
-  selectColorStatus(it: any): object {
-    return { 'background-color': it.status.backgroundColor, color: it.status.textColor };
+  getColorForTaskStatus(taskStatus: TaskStatusEntity): object {
+    return taskStatus ? { 'background-color': taskStatus?.backgroundColor, color: taskStatus?.textColor } : {};
   }
 
-  selectColorWithStatus(it: any): object {
-    return { 'background-color': it.backgroundColor, color: it.textColor };
+  getColorForTaskType(taskType: TaskTypeEntity): object {
+    return taskType ? { 'background-color': taskType.backgroundColor, color: taskType?.textColor } : {};
   }
 
-  selectColorType(it: any): object {
-    return { 'background-color': it.type.backgroundColor, color: it.type.textColor };
+  getColorForSprint(task: TaskEntity): object {
+    return task.sprint ? {} : { 'background-color': '#6fa8dc', color: '#ffffff' };
   }
 
-  selectColorWithType(it: any): object {
-    return { 'background-color': it.backgroundColor, color: it.textColor };
+  getInitials(user: UserEntity): string {
+    return `${user.firstname?.charAt(0)}${user.lastname?.charAt(0)}`;
   }
 
-  getInitials(user: any): string {
-    return '' + user.firstname.charAt(0) + '' + user.lastname.charAt(0);
-  }
-
-  sprintName(task: TaskEntity) {
-    if (task.sprint?.label) {
-      return '' + task.sprint.label;
-    }
-    return 'not assigned';
-  }
-
-  setColorWithStatusForSprint(task: TaskEntity): any {
-    if (!task.sprint?.label) {
-      return { 'background-color': '#6fa8dc', color: '#ffffff' };
-    }
-    return;
+  getName(user: UserEntity) {
+    return `${
+      user.firstname?.charAt(0).toUpperCase() + (user.firstname || '').slice(1)
+    } ${user.lastname?.toUpperCase()}`;
   }
 }

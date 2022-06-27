@@ -1,7 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { CurrentProjectState, ToastMessageService } from '@libraries/lib-angular';
+import { Component } from '@angular/core';
+import { ToastMessageService } from '@libraries/lib-angular';
 import { Select } from '@ngxs/store';
-import { CurrentProjectModel } from '../../../../global/models/current-project.model';
 import { Observable } from 'rxjs';
 import {
   appIpcs,
@@ -9,11 +8,12 @@ import {
   TaskEntity,
   UserEntity,
   UserModel,
-  ProjectEntity,
   ProjectMemberEntity,
   ProjectRoleEnumeration,
 } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
+import { ProjectContextState } from '../../store/states/project-context.state';
+import { ProjectContextModel } from '../../models/project-context.model';
 
 @Component({
   templateUrl: './project-team.component.html',
@@ -32,10 +32,8 @@ import { IpcService } from '../../../../global/services/ipc.service';
     `,
   ],
 })
-export class ProjectTeamComponent implements OnInit {
-  @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
-
-  projectSelected!: ProjectEntity;
+export class ProjectTeamComponent {
+  @Select(ProjectContextState) projectContext$: Observable<ProjectContextModel>;
 
   dialog = false;
 
@@ -63,20 +61,6 @@ export class ProjectTeamComponent implements OnInit {
 
   constructor(private readonly _ipcService: IpcService, private readonly _toastMessageService: ToastMessageService) {}
 
-  async ngOnInit(): Promise<void> {
-    this.currentProject$.subscribe(async (data: CurrentProjectModel) => {
-      this.projectSelected = data.project;
-      await this.updateUsers();
-    });
-  }
-
-  async updateUsers() {
-    this.projectMembers = await this._ipcService.query<ProjectMemberEntity[]>(
-      appIpcs.retrieveAllUsersInProject,
-      this.projectSelected.id
-    );
-  }
-
   async showDetails(item: ProjectMemberEntity) {
     this.selectedItem = item;
     this.dialog = true;
@@ -97,15 +81,15 @@ export class ProjectTeamComponent implements OnInit {
     this.usersTasks = t.filter((_) => this.selectedItem.user && _.users?.includes(this.selectedItem.user));
   }
 
-  selectColorStatus(it: TaskEntity): object {
-    return { 'background-color': it.status.backgroundColor, color: it.status.textColor };
+  selectColorStatus(task: TaskEntity): object {
+    return { 'background-color': task.status?.backgroundColor, color: task.status?.textColor };
   }
 
-  selectColorType(it: TaskEntity): object {
-    return { 'background-color': it.type.backgroundColor, color: it.type.textColor };
+  selectColorType(task: TaskEntity): object {
+    return { 'background-color': task.type?.backgroundColor, color: task.type?.textColor };
   }
 
   getInitials(user: UserEntity): string {
-    return '' + user.firstname?.charAt(0) + '' + user.lastname?.charAt(0);
+    return `${user.firstname?.charAt(0)}${user.lastname?.charAt(0)}`;
   }
 }

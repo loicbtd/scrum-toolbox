@@ -14,7 +14,6 @@ import { ProjectEntity } from './project.entity';
 import { TaskStatusEntity } from './task-status.entity';
 import { TaskTypeEntity } from './task-type.entity';
 import { UserEntity } from './user.entity';
-import { UserModel } from '../models/user.model';
 
 @Entity({ name: 'task' })
 export class TaskEntity {
@@ -38,11 +37,11 @@ export class TaskEntity {
 
   @ManyToOne(() => TaskStatusEntity, (taskStatus) => taskStatus.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'statusId' })
-  status!: TaskStatusEntity;
+  status?: TaskStatusEntity;
 
   @ManyToOne(() => TaskTypeEntity, (taskType) => taskType.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'typeId' })
-  type!: TaskTypeEntity;
+  type?: TaskTypeEntity;
 
   @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false })
   @JoinColumn({ name: 'projectId' })

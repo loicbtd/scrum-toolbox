@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { MyProfileState, ProjectsUpdatedState, ToastMessageService, UpdateProjects } from '@libraries/lib-angular';
+import { MyProfileState, ToastMessageService } from '@libraries/lib-angular';
 import { appIpcs, ProjectEntity, UserEntity } from '@libraries/lib-scrum-toolbox';
 import { IpcService } from '../../../../global/services/ipc.service';
 import { ConfirmationService } from 'primeng/api';
 import { Select, Store } from '@ngxs/store';
 import { MyProfileModel } from '../../../../global/models/my-profile.model';
-import { lastValueFrom, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
+import { ProjectContextState } from '../../store/states/project-context.state';
+import { ProjectContextModel } from '../../models/project-context.model';
 
 @Component({
   templateUrl: './crud-projects.component.html',
@@ -36,7 +38,7 @@ export class CrudProjectsComponent implements OnInit {
     return !this.item.id;
   }
 
-  @Select(ProjectsUpdatedState) projectsUdpated$: Observable<string>;
+  @Select(ProjectContextState) projectContext$: Observable<ProjectContextModel>;
 
   constructor(
     private readonly _toastMessageService: ToastMessageService,
@@ -75,7 +77,6 @@ export class CrudProjectsComponent implements OnInit {
           } catch (error) {
             this._toastMessageService.showError('Error while deleting item');
           }
-          this.triggerUpdateProject('DELETE', item);
         }
         this.selectedItems = [];
 
@@ -110,7 +111,6 @@ export class CrudProjectsComponent implements OnInit {
         } catch (error) {
           this._toastMessageService.showError(`Error while deleting item`);
         }
-        this.triggerUpdateProject('DELETE', item);
       },
     });
   }
@@ -141,7 +141,6 @@ export class CrudProjectsComponent implements OnInit {
       }
     }
 
-    this.triggerUpdateProject('ADD', this.item);
     this.items = [...this.items];
     this.dialog = false;
     this.item = {};
@@ -175,9 +174,5 @@ export class CrudProjectsComponent implements OnInit {
 
   saveAttendees() {
     console.log();
-  }
-
-  async triggerUpdateProject(action: string, project: ProjectEntity) {
-    await lastValueFrom(this._store.dispatch(new UpdateProjects(action, project.label + '')));
   }
 }

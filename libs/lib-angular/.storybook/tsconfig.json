@@ -5,5 +5,5 @@
   },
 
   "exclude": ["../**/*.spec.ts"],
-  "include": ["../src/**/*", "*.js"]
+  "include": ["../src/**/*", "*.js", "../../../apps/app-client-angular/src/app/global/services/current-project.service.ts", "../../../apps/app-client-angular/src/app/global/current-project-state"]
 }

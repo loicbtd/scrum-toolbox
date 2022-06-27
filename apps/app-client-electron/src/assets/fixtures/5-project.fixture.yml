@@ -2,7 +2,7 @@ entity: project
 items:
   project0:
     label: 'Agrid'
-    description: '{{lorem.paragraph}}'
+    description: 'The inventory management tool allows you to know at any time the status of your raw materials, work-in-process and finished goods inventory. Making an inventory becomes easier !'
 
   project1:
     label: 'Open Days with Alexa'

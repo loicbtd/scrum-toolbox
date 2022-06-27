@@ -45,6 +45,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { ColorPickerModule } from 'primeng/colorpicker';
 import { CalendarModule } from 'primeng/calendar';
+import { RippleModule } from 'primeng/ripple';
 
 const importedAndExportedModules = [
   CommonModule,
@@ -96,6 +97,7 @@ const importedAndExportedModules = [
   AutoCompleteModule,
   ColorPickerModule,
   CalendarModule,
+  RippleModule,
 ];
 
 @NgModule({

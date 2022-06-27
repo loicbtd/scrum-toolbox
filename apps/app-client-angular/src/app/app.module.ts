@@ -12,9 +12,6 @@ import {
   MyProfileState,
   MyProfileStateModule,
   VisitedRoutesStateModule,
-  CurrentProjectState,
-  CurrentProjectStateModule,
-  ProjectUpdatedStateModule,
 } from '@libraries/lib-angular';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
@@ -83,11 +80,9 @@ export class AppComponent {
     ),
     SharedModule,
     NgxsModule.forRoot(),
-    NgxsStoragePluginModule.forRoot({ key: [MyProfileState, CurrentProjectState] }),
+    NgxsStoragePluginModule.forRoot({ key: [MyProfileState] }),
     MyProfileStateModule,
-    CurrentProjectStateModule,
     VisitedRoutesStateModule,
-    ProjectUpdatedStateModule,
   ],
   bootstrap: [AppComponent],
 })

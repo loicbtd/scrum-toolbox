@@ -1,162 +1,165 @@
-<div class="px-4 py-8 md:px-6 lg:px-8">
-  <div class="grid">
-    <div class="col" *ngFor="let item of projectMembers">
-      <div class="p-3 h-full">
-        <p-card
-          header="{{ item.user?.firstname }} {{ item.user?.lastname | titlecase }}"
-          [style]="{ width: '250px', textAlign: 'center' }"
-          styleClass="p-card-shadow"
-        >
-          <ng-template pTemplate="header">
-            <div>
-              <em class="fa-solid fa-circle-user text-8xl"></em>
-            </div>
-          </ng-template>
-          <ng-template pTemplate="body">
-            <p class="text-xl user-type py-2" [innerText]="item.role"></p>
-          </ng-template>
-          <ng-template pTemplate="footer">
-            <button
-              pButton
-              pRipple
-              type="button"
-              label="See Details"
-              (click)="showDetails(item)"
-              class="p-button-raised p-button-text"
-            ></button>
-          </ng-template>
-        </p-card>
+<!-- <ng-container *ngIf="projectContext$ | async as projectContext; else noSelection">
+  <div class="px-4 py-8 md:px-6 lg:px-8">
+    <div class="grid">
+      <div class="col" *ngFor="let item of projectContext.members">
+        <div class="p-3 h-full">
+          <p-card
+            header="{{ item.user?.firstname }} {{ item.user?.lastname | titlecase }}"
+            [style]="{ width: '250px', textAlign: 'center' }"
+            styleClass="p-card-shadow"
+          >
+            <ng-template pTemplate="header">
+              <div>
+                <em class="fa-solid fa-circle-user text-8xl"></em>
+              </div>
+            </ng-template>
+            <ng-template pTemplate="body">
+              <p class="text-xl user-type py-2" [innerText]="item.role"></p>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <button
+                pButton
+                pRipple
+                type="button"
+                label="See Details"
+                (click)="showDetails(item)"
+                class="p-button-raised p-button-text"
+              ></button>
+            </ng-template>
+          </p-card>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<p-dialog
-  *ngIf="selectedItem"
-  [(visible)]="dialog"
-  [modal]="true"
-  [style]="{ width: '50vw' }"
-  [draggable]="false"
-  [resizable]="false"
-  (onHide)="hideDialog()"
->
-  <ng-template pTemplate="header">
-    <div>
-      <h2>{{ selectedItem.user?.firstname }} {{ selectedItem.user?.lastname | titlecase }}</h2>
-      <!-- <h3 class="user-type" [innerText]="selectedItem.userType?.label"></h3> -->
-    </div>
-  </ng-template>
-  <ng-template pTemplate="body">
-    <div *ngIf="userSprints">
-      <p>
-        <strong>{{ userSprints.length | i18nPlural: sprintsMapping }}</strong>
-      </p>
-      <p *ngIf="userSprints.length === 0"><em>No sprint</em></p>
-      <p-accordion (onOpen)="displayTaskForSprint($event.index)">
-        <p-accordionTab [header]="sprint.label + ''" *ngFor="let sprint of userSprints">
-          <p-table
-            [value]="usersTasks"
-            [rows]="10"
-            [paginator]="true"
-            [globalFilterFields]="['firstname', 'lastname']"
-            [rowHover]="true"
-            dataKey="id"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
-            [showCurrentPageReport]="true"
-            *ngIf="usersTasks && usersTasks.length !== 0"
-          >
-            <ng-template pTemplate="caption">
-              <div class="flex p-ai-center p-jc-between">
-                <h5 class="m-0">Manage items</h5>
-              </div>
-            </ng-template>
-            <ng-template pTemplate="header">
-              <tr>
-                <th id="header-checkbox" style="width: 3rem">
-                  <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
-                </th>
-                <th id="header-label" pSortableColumn="label" [ngStyle]="{ width: '10rem' }">
-                  Label <p-sortIcon field="label"></p-sortIcon>
-                </th>
-                <th id="header-description" [ngStyle]="{ width: '35rem' }">Description</th>
-                <th id="header-creation-date">Creation Date</th>
-                <th id="header-last-updated">Last Updated</th>
-                <th id="header-status" pSortableColumn="status.label">
-                  Status <p-sortIcon field="status.label"></p-sortIcon>
-                </th>
-                <th id="header-type" pSortableColumn="type.label">Type <p-sortIcon field="type.label"></p-sortIcon></th>
-                <th id="header-assigned" [ngStyle]="{ width: '10rem' }">Assigned To</th>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-item>
-              <tr>
-                <td>
-                  <p-tableCheckbox [value]="item"></p-tableCheckbox>
-                </td>
-                <td>{{ item.label }}</td>
-                <td>{{ item.description }}</td>
-                <td>{{ item.createdAt | date: 'd/MM/yyyy' }}</td>
-                <td>{{ item.updatedAt | date: 'd/MM/yyyy' }}</td>
-                <td>
-                  <span class="custom-tag" [ngStyle]="selectColorStatus(item)">{{ item.status.label }}</span>
-                </td>
-                <td>
-                  <span class="custom-tag" [ngStyle]="selectColorType(item)">{{ item.type.label }}</span>
-                </td>
-                <td>
-                  <span *ngFor="let user of item.users" class="user-initials">{{ getInitials(user) }}</span>
-                </td>
-              </tr>
-            </ng-template>
-            <ng-template pTemplate="summary">
-              <div class="flex p-ai-center p-jc-between">Items count : {{ usersTasks ? usersTasks.length : 0 }}</div>
-            </ng-template>
-          </p-table>
-          <div *ngIf="usersTasks && usersTasks.length === 0">
-            <h4>No tasks assigned</h4>
-          </div>
-        </p-accordionTab>
-      </p-accordion>
-    </div>
-    <div *ngIf="!userSprints">
-      <p-progressBar mode="indeterminate"></p-progressBar>
-    </div>
-  </ng-template>
-  <ng-template pTemplate="footer"> </ng-template>
-</p-dialog>
+  <p-dialog
+    *ngIf="selectedItem"
+    [(visible)]="dialog"
+    [modal]="true"
+    [style]="{ width: '50vw' }"
+    [draggable]="false"
+    [resizable]="false"
+    (onHide)="hideDialog()"
+  >
+    <ng-template pTemplate="header">
+      <div>
+        <h2>{{ selectedItem.user?.firstname }} {{ selectedItem.user?.lastname | titlecase }}</h2>
+        <h3 class="user-type" [innerText]="selectedItem.userType?.label"></h3>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="body">
+      <div *ngIf="userSprints">
+        <p>
+          <strong>{{ userSprints.length | i18nPlural: sprintsMapping }}</strong>
+        </p>
+        <p *ngIf="userSprints.length === 0"><em>No sprint</em></p>
+        <p-accordion (onOpen)="displayTaskForSprint($event.index)">
+          <p-accordionTab [header]="sprint.label + ''" *ngFor="let sprint of userSprints">
+            <p-table
+              [value]="usersTasks"
+              [rows]="10"
+              [paginator]="true"
+              [globalFilterFields]="['firstname', 'lastname']"
+              [rowHover]="true"
+              dataKey="id"
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+              [showCurrentPageReport]="true"
+              *ngIf="usersTasks && usersTasks.length !== 0"
+            >
+              <ng-template pTemplate="caption">
+                <div class="flex p-ai-center p-jc-between">
+                  <h5 class="m-0">Manage items</h5>
+                </div>
+              </ng-template>
+              <ng-template pTemplate="header">
+                <tr>
+                  <th id="header-checkbox" style="width: 3rem">
+                    <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                  </th>
+                  <th id="header-label" pSortableColumn="label" [ngStyle]="{ width: '10rem' }">
+                    Label <p-sortIcon field="label"></p-sortIcon>
+                  </th>
+                  <th id="header-description" [ngStyle]="{ width: '35rem' }">Description</th>
+                  <th id="header-creation-date">Creation Date</th>
+                  <th id="header-last-updated">Last Updated</th>
+                  <th id="header-status" pSortableColumn="status.label">
+                    Status <p-sortIcon field="status.label"></p-sortIcon>
+                  </th>
+                  <th id="header-type" pSortableColumn="type.label">
+                    Type <p-sortIcon field="type.label"></p-sortIcon>
+                  </th>
+                  <th id="header-assigned" [ngStyle]="{ width: '10rem' }">Assigned To</th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-item>
+                <tr>
+                  <td>
+                    <p-tableCheckbox [value]="item"></p-tableCheckbox>
+                  </td>
+                  <td>{{ item.label }}</td>
+                  <td>{{ item.description }}</td>
+                  <td>{{ item.createdAt | date: 'd/MM/yyyy' }}</td>
+                  <td>{{ item.updatedAt | date: 'd/MM/yyyy' }}</td>
+                  <td>
+                    <span class="custom-tag" [ngStyle]="selectColorStatus(item)">{{ item.status.label }}</span>
+                  </td>
+                  <td>
+                    <span class="custom-tag" [ngStyle]="selectColorType(item)">{{ item.type.label }}</span>
+                  </td>
+                  <td>
+                    <span *ngFor="let user of item.users" class="user-initials">{{ getInitials(user) }}</span>
+                  </td>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="summary">
+                <div class="flex p-ai-center p-jc-between">Items count : {{ usersTasks ? usersTasks.length : 0 }}</div>
+              </ng-template>
+            </p-table>
+            <div *ngIf="usersTasks && usersTasks.length === 0">
+              <h4>No tasks assigned</h4>
+            </div>
+          </p-accordionTab>
+        </p-accordion>
+      </div>
+      <div *ngIf="!userSprints">
+        <p-progressBar mode="indeterminate"></p-progressBar>
+      </div>
+    </ng-template>
+    <ng-template pTemplate="footer"> </ng-template>
+  </p-dialog>
 
-<p-dialog
-  [(visible)]="dialogNew"
-  [style]="{ width: '450px', minHeight: '10rem' }"
-  header="User to add"
-  [modal]="true"
-  styleClass="p-fluid"
->
-  <ng-template pTemplate="content">
-    <div class="field flex flex-column">
-      <label for="label">User</label>
-      <p-dropdown
-        [options]="usersAvailables"
-        [(ngModel)]="newUser"
-        [filter]="true"
-        [showClear]="true"
-        placeholder="Select user"
-        appendTo="body"
-      >
-        <ng-template pTemplate="selectedItem">
-          <div class="country-item country-item-value" *ngIf="newUser">
-            <div>{{ newUser.firstname }} {{ newUser.lastname | titlecase }}</div>
-          </div>
-        </ng-template>
-        <ng-template let-u pTemplate="item">
-          <div>{{ u.firstname }} {{ u.lastname | titlecase }}</div>
-        </ng-template>
-      </p-dropdown>
-      <small class="p-invalid" *ngIf="newSubmitted && !newUser">Required field</small>
-    </div>
-    <div class="field flex flex-column">
-      <label for="label">Position</label>
-      <!-- <p-dropdown
+  <p-dialog
+    [(visible)]="dialogNew"
+    [style]="{ width: '450px', minHeight: '10rem' }"
+    header="User to add"
+    [modal]="true"
+    styleClass="p-fluid"
+  >
+    <ng-template pTemplate="content">
+      <div class="field flex flex-column">
+        <label for="label">User</label>
+        <p-dropdown
+          [options]="usersAvailables"
+          [(ngModel)]="newUser"
+          [filter]="true"
+          [showClear]="true"
+          placeholder="Select user"
+          appendTo="body"
+        >
+          <ng-template pTemplate="selectedItem">
+            <div class="country-item country-item-value" *ngIf="newUser">
+              <div>{{ newUser.firstname }} {{ newUser.lastname | titlecase }}</div>
+            </div>
+          </ng-template>
+          <ng-template let-u pTemplate="item">
+            <div>{{ u.firstname }} {{ u.lastname | titlecase }}</div>
+          </ng-template>
+        </p-dropdown>
+        <small class="p-invalid" *ngIf="newSubmitted && !newUser">Required field</small>
+      </div>
+      <div class="field flex flex-column">
+        <label for="label">Position</label>
+        <p-dropdown
         [options]="usersPositions"
         [(ngModel)]="newUserPosition"
         [showClear]="true"
@@ -171,8 +174,13 @@
         <ng-template let-position pTemplate="item">
           <div>{{ position.label }}</div>
         </ng-template>
-      </p-dropdown> -->
-      <small class="p-invalid" *ngIf="newSubmitted && !newUserPosition">Required field</small>
-    </div>
-  </ng-template>
-</p-dialog>
+      </p-dropdown>
+        <small class="p-invalid" *ngIf="newSubmitted && !newUserPosition">Required field</small>
+      </div>
+    </ng-template>
+  </p-dialog>
+</ng-container>
+
+<ng-template #noSelection>
+  <div>No project selected</div>
+</ng-template> -->

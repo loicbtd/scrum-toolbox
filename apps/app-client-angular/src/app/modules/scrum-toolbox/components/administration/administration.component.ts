@@ -34,7 +34,7 @@ export class AdministrationComponent {
     {
       label: 'Dev',
       icon: 'fa-solid fa-code',
-      routerLink: [appRoutes.scrumToolbox.administration.development]
+      routerLink: [appRoutes.scrumToolbox.administration.development],
     },
   ];
 }

@@ -11,13 +11,13 @@ items:
     users:
       - '@user{12..14}'
 
-      
   task{100..199}:
     label: '{{lorem.words}}'
     description: '{{lorem.paragraph}}'
     status: '@task_status*'
     type: '@task_type*'
-    project: '@sprint{4..9}'
+    project: '@project1'
+    sprint: '@sprint{4..9}'
     capacity: '{{datatype.number(10)}}'
     users:
       - '@user{12..15}'

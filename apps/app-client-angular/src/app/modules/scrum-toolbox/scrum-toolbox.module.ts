@@ -1,25 +1,16 @@
-import { NgModule, Component, ViewChild } from '@angular/core';
+import { NgModule, Component, OnInit, ViewChild } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SharedModule } from '../../shared.module';
-import {
-  AuthenticationService,
-  CurrentProjectState,
-  MyProfileState,
-  NavigationItemInterface,
-  CurrentProjectService,
-  ProjectsUpdatedState,
-} from '@libraries/lib-angular';
+import { AuthenticationService, MyProfileState, NavigationItemInterface } from '@libraries/lib-angular';
 import { appIpcs, appRoutes, ProjectEntity } from '@libraries/lib-scrum-toolbox';
-import { Select } from '@ngxs/store';
-import { Observable } from 'rxjs';
+import { NgxsModule, Select, Store } from '@ngxs/store';
+import { lastValueFrom, Observable } from 'rxjs';
 import { MyProfileModel } from '../../global/models/my-profile.model';
 import { CrudUsersComponent } from './components/crud-users/crud-users.component';
 import { AdministrationComponent } from './components/administration/administration.component';
 import { CrudProjectsComponent } from './components/crud-projects/crud-projects.component';
 import { CrudBacklogSprintComponent } from './components/crud-backlog-sprint/crud-backlog-sprint.component';
 import { IpcService } from '../../global/services/ipc.service';
-import { CurrentProjectModel } from '../../global/models/current-project.model';
-import { Dropdown } from 'primeng/dropdown';
 import { CrudTaskStatusComponent } from './components/crud-task-status/crud-task-status.component';
 import { CrudSprintStatusComponent } from './components/crud-sprint-status/crud-sprint-status.component';
 import { CrudTaskTypeComponent } from './components/crud-task-type/crud-task-type.component';
@@ -27,6 +18,9 @@ import { ProjectTeamComponent } from './components/project-team/project-team.com
 import { CrudBacklogProductComponent } from './components/crud-backlog-product/crud-backlog-product.component';
 import { DevelopmentComponent } from './components/development/development.component';
 import { MetricsComponent } from './components/project-metrics/project-metrics.component';
+import { ProjectContextState } from './store/states/project-context.state';
+import { RefreshAvailableProjects, RefreshSelectedProject } from './store/actions/project-context.actions';
+import { Dropdown } from 'primeng/dropdown';
 
 @Component({
   template: `
@@ -37,14 +31,15 @@ import { MetricsComponent } from './components/project-metrics/project-metrics.c
       avatarImageSource="assets/images/avatar.png"
       [username]="getFormattedUsername((myProfile$ | async)?.user?.firstname, (myProfile$ | async)?.user?.lastname)"
     >
-      <div navigationBarContent class="flex align-content-center align-items-center">
-        <h2 class="mr-2">Current project :</h2>
+      <div navigationBarContent class="flex align-content-center align-items-center ml-5">
+        <h3 class="mr-2">Current project :</h3>
+
         <p-dropdown
-          #dropDownProject
-          (onChange)="updateProject($event.value)"
-          [options]="projects"
+          #dropdown
           optionLabel="label"
-          optionValue="id"
+          [options]="(availableProjects$ | async) || []"
+          [ngModel]="project$ | async"
+          (ngModelChange)="refreshSelectedProject($event)"
           placeholder="Select a project"
         >
         </p-dropdown>
@@ -53,7 +48,7 @@ import { MetricsComponent } from './components/project-metrics/project-metrics.c
     </app-navigation-container>
   `,
 })
-export class ScrumToolboxComponent {
+export class ScrumToolboxComponent implements OnInit {
   navigationItems: NavigationItemInterface[] = [
     {
       label: 'Product backlog',
@@ -85,13 +80,32 @@ export class ScrumToolboxComponent {
 
   @Select(MyProfileState) myProfile$: Observable<MyProfileModel>;
 
-  @Select(CurrentProjectState) currentProject$: Observable<CurrentProjectModel>;
+  @Select(ProjectContextState.availableProjects) availableProjects$: Observable<ProjectEntity[]>;
 
-  projects!: ProjectEntity[];
+  @Select(ProjectContextState.project) project$: Observable<ProjectEntity>;
 
-  @Select(ProjectsUpdatedState) projectsUdpated$: Observable<string>;
+  @ViewChild('dropdown') dropdown: Dropdown;
 
-  @ViewChild('dropDownProject') dropDownProject: Dropdown;
+  constructor(
+    private readonly _authenticationService: AuthenticationService,
+    private readonly _ipcService: IpcService,
+    private readonly _store: Store
+  ) {}
+
+  async ngOnInit(): Promise<void> {
+    const availableProjects = await this._ipcService.query<ProjectEntity[]>(appIpcs.retrieveAllProjects);
+
+    await lastValueFrom(this._store.dispatch(new RefreshAvailableProjects(availableProjects)));
+
+    if (availableProjects.length > 0) {
+      this.dropdown.value = availableProjects[0];
+      await lastValueFrom(this._store.dispatch(new RefreshSelectedProject(availableProjects[0])));
+    }
+  }
+
+  async refreshSelectedProject(project: ProjectEntity) {
+    await lastValueFrom(this._store.dispatch(new RefreshSelectedProject(project)));
+  }
 
   getFormattedUsername(firstname?: string, lastname?: string): string {
     const formattedFirstname = firstname ? firstname.charAt(0).toUpperCase() + firstname.slice(1) : '';
@@ -103,38 +117,6 @@ export class ScrumToolboxComponent {
     }
 
     return `${formattedFirstname} ${formattedLastname}`;
-  }
-
-  async updateProject(projectId: string) {
-    const selected = this.projects.find((p: ProjectEntity) => p.id == projectId);
-    if (selected) {
-      await this._currentProjectService.refreshProject<CurrentProjectModel>({
-        project: selected,
-      });
-    }
-  }
-
-  constructor(
-    private readonly _authenticationService: AuthenticationService,
-    private readonly _ipcService: IpcService,
-    private readonly _currentProjectService: CurrentProjectService
-  ) {}
-
-  private async updateAllProjects() {
-    this.projects = await this._ipcService.query<ProjectEntity[]>(appIpcs.retrieveAllProjects);
-  }
-
-  async ngOnInit(): Promise<void> {
-    await this.updateAllProjects();
-    this.projectsUdpated$.subscribe(async () => {
-      await this.updateAllProjects();
-    });
-
-    this.currentProject$.subscribe((data: CurrentProjectModel) => {
-      if (data.project) {
-        this.dropDownProject.value = data.project.id;
-      }
-    });
   }
 }
 
@@ -156,6 +138,7 @@ export class ScrumToolboxComponent {
   providers: [ScrumToolboxModule],
   imports: [
     SharedModule,
+    NgxsModule.forFeature([ProjectContextState]),
     RouterModule.forChild([
       {
         path: '',
