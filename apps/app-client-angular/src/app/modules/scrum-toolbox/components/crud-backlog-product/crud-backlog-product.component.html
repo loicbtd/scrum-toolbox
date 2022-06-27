@@ -44,6 +44,7 @@
         <th id="header-sprint">Sprint</th>
         <th id="header-status" pSortableColumn="status.label">Status <p-sortIcon field="status.label"></p-sortIcon></th>
         <th id="header-type" pSortableColumn="type.label">Type <p-sortIcon field="type.label"></p-sortIcon></th>
+        <th id="header-capacity">Capacity</th>
         <th id="header-assigned" [ngStyle]="{ width: '10rem' }">Assigned To</th>
         <th id="header-action">Edit/Delete</th>
       </tr>
@@ -66,6 +67,7 @@
         <td>
           <span class="custom-tag" [ngStyle]="selectColorType(item)">{{ item.type.label }}</span>
         </td>
+        <td>{{ item.capacity }}</td>
         <td>
           <span *ngFor="let user of item.users" class="user-initials">{{ getInitials(user) }}</span>
         </td>
@@ -97,7 +99,7 @@
     <div class="field">
       <label for="label">Label</label>
       <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
-      <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.label">Required field</small>
     </div>
 
     <div class="field">
@@ -114,10 +116,9 @@
           </div>
         </ng-template>
       </p-dropdown>
-      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.type">Required field</small>
     </div>
 
-    <!-- TODO assign sprint to task -->
     <div class="field">
       <label for="sprint">Sprint</label>
       <p-dropdown
@@ -126,7 +127,7 @@
         optionLabel="label"
         appendTo="body"
       ></p-dropdown>
-      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.type">Required field</small>
     </div>
 
     <div class="field">
@@ -147,7 +148,7 @@
         [(ngModel)]="item.description"
         required
       ></textarea>
-      <small class="p-invalid" *ngIf="submitted && !item.description">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.description">Required field</small>
     </div>
   </ng-template>
 
@@ -168,7 +169,7 @@
     <div class="field">
       <label for="label">Label</label>
       <input type="text" pInputText id="label" [(ngModel)]="item.label" required autofocus />
-      <small class="p-invalid" *ngIf="submitted && !item.label">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.label">Required field</small>
     </div>
 
     <div class="field">
@@ -185,7 +186,7 @@
           </div>
         </ng-template>
       </p-dropdown>
-      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.type">Required field</small>
     </div>
 
     <div class="field">
@@ -196,7 +197,7 @@
         optionLabel="label"
         appendTo="body"
       ></p-dropdown>
-      <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.type">Required field</small>
     </div>
 
     <div class="field">
@@ -217,7 +218,7 @@
         [(ngModel)]="item.description"
         required
       ></textarea>
-      <small class="p-invalid" *ngIf="submitted && !item.description">Required field</small>
+      <small class="p-error" *ngIf="submitted && !item.description">Required field</small>
     </div>
   </ng-template>
 

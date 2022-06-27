@@ -44,6 +44,8 @@ export class CrudBacklogProductComponent {
   sub: Subscription;
   sprintNull: SprintEntity;
 
+  capa: number | undefined;
+
   get isCreationMode() {
     return !this.item.id;
   }
@@ -153,6 +155,11 @@ export class CrudBacklogProductComponent {
     this.submitted = true;
 
     if (this.item.id) {
+
+      if (this.item.label === '' || this.item.description === '') {
+        return;
+      }
+
       try {
         this.item.type = this.selectedType;
 
@@ -172,6 +179,7 @@ export class CrudBacklogProductComponent {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
     } else {
+     
       try {
         this.item.type = this.selectedType;
         this.item.project = this.selectedProject;

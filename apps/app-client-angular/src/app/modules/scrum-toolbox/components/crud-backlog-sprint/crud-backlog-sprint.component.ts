@@ -56,6 +56,8 @@ export class CrudBacklogSprintComponent {
 
   sub: Subscription;
 
+  capa: number | undefined;
+
   get isCreationMode() {
     return !this.item.id;
   }
@@ -87,7 +89,10 @@ export class CrudBacklogSprintComponent {
           this.selectedSprint = this.sprints[0];
         }
 
-        this.updateTasks(this.selectedSprint);
+        console.log(this.selectedSprint);
+        
+
+        this.updateTasks();
       }
     });
   }
@@ -96,7 +101,8 @@ export class CrudBacklogSprintComponent {
     this.initDialogFieldsNew();
     const tempStatus = this.item?.status as TaskStatusEntity;
     const tempType = this.item?.type as TaskTypeEntity;
-    this.item = { status: tempStatus, type: tempType };
+    this.capa = 5;
+    this.item = { status: tempStatus, type: tempType, capacity: this.capa };
     this.submitted = false;
     this.dialogNew = true;
   }
@@ -126,6 +132,7 @@ export class CrudBacklogSprintComponent {
     this.selectedUsers = [];
     this.selectedStatus = item.status;
     this.selectedType = item.type;
+    this.capa = item.capacity;
     this.filterUsers(item);
   }
 
@@ -172,10 +179,14 @@ export class CrudBacklogSprintComponent {
     this.submitted = true;
 
     if (this.item.id) {
+      if (this.item.label === '' || this.item.description === '') {
+        return;
+      }
       try {
         this.item.users = this.selectedUsers;
         this.item.status = this.selectedStatus;
         this.item.type = this.selectedType;
+        this.item.capacity = this.capa;
 
         await this._ipcService.query(appIpcs.updateTask, this.item);
 
@@ -190,6 +201,7 @@ export class CrudBacklogSprintComponent {
         this.selectedTasks.forEach(async (task) => {
           task.status = this.selectedStatus;
           task.type = this.selectedType;
+          task.capacity = this.capa;
 
           const t = await this._ipcService.query<TaskEntity>(appIpcs.updateTask, task);
           await this._ipcService.query<SprintEntity>(appIpcs.assignTaskToSprint, {
@@ -245,8 +257,7 @@ export class CrudBacklogSprintComponent {
     return `${user.firstname?.charAt(0)}${user.lastname?.charAt(0)}}`;
   }
 
-  async updateTasks(sprint: SprintEntity) {
-    this.selectedSprint = sprint;
+  async updateTasks() {
     const a = await this._ipcService.query<TaskEntity[]>(appIpcs.retrieveAllTasksBySprint, this.selectedSprint.id);
 
     this.items = a;

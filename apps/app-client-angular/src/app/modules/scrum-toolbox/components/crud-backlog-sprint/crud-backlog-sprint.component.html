@@ -3,7 +3,7 @@
     <ng-template pTemplate="left">
       <span class="mr-2">Current sprint :</span>
       <p-dropdown
-        (onChange)="updateTasks($event.value)"
+        (onChange)="updateTasks()"
         class="sprint-dropdown"
         [options]="sprints"
         [(ngModel)]="selectedSprint"
@@ -58,6 +58,7 @@
         <th id="header-last-updated">Last Updated</th>
         <th id="header-status" pSortableColumn="status.label">Status <p-sortIcon field="status.label"></p-sortIcon></th>
         <th id="header-type" pSortableColumn="type.label">Type <p-sortIcon field="type.label"></p-sortIcon></th>
+        <th id="header-capacity">Capacity</th>
         <th id="header-assigned" [ngStyle]="{ width: '10rem' }">Assigned To</th>
         <th id="header-action">Edit/Delete</th>
       </tr>
@@ -77,6 +78,7 @@
         <td>
           <span class="custom-tag" [ngStyle]="selectColorType(item)">{{ item.type.label }}</span>
         </td>
+        <td>{{ item.capacity }}</td>
         <td>
           <span *ngFor="let user of item.users" class="user-initials">{{ getInitials(user) }}</span>
         </td>
@@ -125,6 +127,12 @@
       >
       </p-autoComplete>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
+    </div>
+
+    <div class="field">
+      <label for="capacity">Capacity</label>
+      <p-inputNumber inputId="integeronly" [(ngModel)]="capa">
+      </p-inputNumber>
     </div>
 
     <div class="field">
@@ -246,6 +254,13 @@
       </p-dropdown>
       <small class="p-invalid" *ngIf="submitted && !item.type">Required field</small>
     </div>
+
+    <div class="field">
+      <label for="capacity">Capacity</label>
+      <p-inputNumber inputId="integeronly" [(ngModel)]="capa">
+      </p-inputNumber>
+    </div>
+
   </ng-template>
 
   <ng-template pTemplate="footer">
