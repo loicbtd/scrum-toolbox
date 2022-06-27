@@ -9,8 +9,8 @@ export class TaskStatusEntity {
   label?: string;
 
   @Column({ length: '7' })
-  backgroundColor: string;
+  backgroundColor?: string;
 
   @Column({ length: '7' })
-  textColor: string;
+  textColor?: string;
 }

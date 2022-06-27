@@ -33,11 +33,11 @@ export class SprintEntity {
   updatedAt?: Date;
 
   @ManyToOne(() => SprintStatusEntity, (sprintStatus) => sprintStatus.id, { eager: true, nullable: false })
-  @JoinColumn({ name: 'statusId' })
+  @JoinColumn({ name: 'status_id' })
   status?: SprintStatusEntity;
 
   @ManyToOne(() => ProjectEntity, (project) => project.id, { eager: true, nullable: false })
-  @JoinColumn({ name: 'projectId' })
+  @JoinColumn({ name: 'project_id' })
   project?: ProjectEntity;
 
   @OneToMany(() => TaskEntity, (task) => task.sprint)
