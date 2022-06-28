@@ -60,9 +60,10 @@ export class CrudBacklogProductComponent implements OnInit, OnDestroy {
   }
 
   openNew() {
-    this.item = { project: this._store.selectSnapshot<ProjectContextModel>(ProjectContextState).project };
-    this.capa = 5;
-    this.item = {  capacity: this.capa };
+    const context = this._store.selectSnapshot<ProjectContextModel>(ProjectContextState);
+
+    this.item = { project: context.project, sprint: context.sprint };
+
     this.submitted = false;
     this.dialog = true;
   }
@@ -118,7 +119,6 @@ export class CrudBacklogProductComponent implements OnInit, OnDestroy {
     this.submitted = true;
 
     if (this.item.id) {
-
       if (this.item.label === '' || this.item.description === '') {
         return;
       }
@@ -137,7 +137,6 @@ export class CrudBacklogProductComponent implements OnInit, OnDestroy {
         this._toastMessageService.showError(error.message, `Error while updating item`);
       }
     } else {
-     
       try {
         this.item = await this._ipcService.query<TaskEntity>(appIpcs.createTask, this.item);
 
